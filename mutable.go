@@ -11,3 +11,21 @@ func CopyTo(dst Mutable, src Const) {
 		dst.Set(i, src.At(i))
 	}
 }
+
+func AddTo(dst Mutable, src Const) {
+	for i := 0; i < src.Size(); i++ {
+		dst.Set(i, dst.At(i)+src.At(i))
+	}
+}
+
+func SubtractFrom(dst Mutable, src Const) {
+	for i := 0; i < src.Size(); i++ {
+		dst.Set(i, dst.At(i)-src.At(i))
+	}
+}
+
+func ScaleAndCopyTo(dst Mutable, a float64, src Const) {
+	for i := 0; i < src.Size(); i++ {
+		dst.Set(i, a*src.At(i))
+	}
+}
