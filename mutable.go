@@ -1,8 +1,16 @@
 package vec
 
+import "math/rand"
+
 func Fill(x Mutable, v float64) {
 	for i := 0; i < x.Size(); i++ {
 		x.Set(i, v)
+	}
+}
+
+func Randn(x Mutable) {
+	for i := 0; i < x.Size(); i++ {
+		x.Set(i, rand.NormFloat64())
 	}
 }
 
