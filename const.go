@@ -72,7 +72,7 @@ func InfNorm(x Const) float64 {
 	return max
 }
 
-func SquareDistance(x, y Const) float64 {
+func SqrDist(x, y Const) float64 {
 	var total float64
 	for i := 0; i < x.Size(); i++ {
 		d := x.At(i) - y.At(i)
@@ -81,8 +81,8 @@ func SquareDistance(x, y Const) float64 {
 	return total
 }
 
-func Distance(x, y Const) float64 {
-	return math.Sqrt(SquareDistance(x, y))
+func Dist(x, y Const) float64 {
+	return math.Sqrt(SqrDist(x, y))
 }
 
 func String(x Const) string {

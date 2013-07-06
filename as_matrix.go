@@ -32,7 +32,7 @@ func (x AsMatrix) GetSize() (int, int) {
 
 func (x AsMatrix) Get(i, j int) float64 {
 	n := x.Vector.Size()
-	if j != 0 || !(i >= 0 && i < n)  {
+	if j != 0 || !(i >= 0 && i < n) {
 		problem := fmt.Sprintf("Out of range: Tried to access (%d, %d) in %dx1 matrix", i, j, n)
 		panic(problem)
 	}
