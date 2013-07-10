@@ -30,7 +30,7 @@ func (p Index) T() Index {
 
 type Rect struct{ Min, Max Index }
 
-func MakeRect(i0, j0, i1, j1 int) {
+func MakeRect(i0, j0, i1, j1 int) Rect {
 	return Rect{Index{i0, j0}, Index{i1, j1}}
 }
 

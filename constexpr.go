@@ -14,7 +14,7 @@ type IdentityExpr struct {
 }
 
 func (expr IdentityExpr) Size() Size {
-	return expr.N, expr.N
+	return Size{expr.N, expr.N}
 }
 
 func (expr IdentityExpr) At(i, j int) float64 {
