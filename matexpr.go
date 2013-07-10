@@ -1,83 +1,75 @@
 package mat
 
 // Returns a thin wrapper which transposes a constant matrix.
-func T(A Const) TExpr {
-	return TExpr{A}
+func T(A Const) Const {
+	return tExpr{A}
 }
 
-// Thin wrapper which transposes a constant matrix.
-type TExpr struct {
-	Matrix Const
-}
+type tExpr struct{ Matrix Const }
 
-func (expr TExpr) Size() Size {
+func (expr tExpr) Size() Size {
 	return expr.Matrix.Size().T()
 }
 
-func (expr TExpr) At(i, j int) float64 {
+func (expr tExpr) At(i, j int) float64 {
 	return expr.Matrix.At(j, i)
 }
 
 // Returns a thin wrapper which transposes a mutable matrix.
-func MutableT(A Mutable) MutableTExpr {
-	return MutableTExpr{A}
+func MutableT(A Mutable) Mutable {
+	return mutableTExpr{A}
 }
 
-// Thin wrapper which transposes a mutable matrix.
-type MutableTExpr struct {
-	Matrix Mutable
-}
+type mutableTExpr struct{ Matrix Mutable }
 
-func (expr MutableTExpr) Size() Size {
+func (expr mutableTExpr) Size() Size {
 	return expr.Matrix.Size().T()
 }
 
-func (expr MutableTExpr) At(i, j int) float64 {
+func (expr mutableTExpr) At(i, j int) float64 {
 	return expr.Matrix.At(j, i)
 }
 
-func (expr MutableTExpr) Set(i, j int, v float64) {
+func (expr mutableTExpr) Set(i, j int, v float64) {
 	expr.Matrix.Set(j, i, v)
 }
 
 // Returns a thin wrapper which selects a constant submatrix.
-func Submatrix(A Const, r Rect) ConstSubmatrixExpr {
-	return ConstSubmatrixExpr{A, r}
+func Submatrix(A Const, r Rect) Const {
+	return submatrixExpr{A, r}
 }
 
-// Thin wrapper which selects a constant submatrix.
-type ConstSubmatrixExpr struct {
+type submatrixExpr struct {
 	Matrix Const
 	Rect   Rect
 }
 
-func (expr ConstSubmatrixExpr) Size() Size {
+func (expr submatrixExpr) Size() Size {
 	return expr.Rect.Size()
 }
 
-func (expr ConstSubmatrixExpr) At(i, j int) float64 {
+func (expr submatrixExpr) At(i, j int) float64 {
 	return expr.Matrix.At(i-expr.Rect.Min.I, j-expr.Rect.Min.J)
 }
 
 // Returns a thin wrapper which selects a mutable submatrix.
-func MutableSubmatrix(A Mutable, r Rect) MutableSubmatrixExpr {
-	return MutableSubmatrixExpr{A, r}
+func MutableSubmatrix(A Mutable, r Rect) Mutable {
+	return mutableSubmatrixExpr{A, r}
 }
 
-// Thin wrapper which selects a mutable submatrix.
-type MutableSubmatrixExpr struct {
+type mutableSubmatrixExpr struct {
 	Matrix Mutable
 	Rect   Rect
 }
 
-func (expr MutableSubmatrixExpr) Size() Size {
+func (expr mutableSubmatrixExpr) Size() Size {
 	return expr.Rect.Size()
 }
 
-func (expr MutableSubmatrixExpr) At(i, j int) float64 {
+func (expr mutableSubmatrixExpr) At(i, j int) float64 {
 	return expr.Matrix.At(i-expr.Rect.Min.I, j-expr.Rect.Min.J)
 }
 
-func (expr MutableSubmatrixExpr) Set(i, j int, x float64) {
+func (expr mutableSubmatrixExpr) Set(i, j int, x float64) {
 	expr.Matrix.Set(i-expr.Rect.Min.I, j-expr.Rect.Min.J, x)
 }

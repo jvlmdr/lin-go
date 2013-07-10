@@ -1,5 +1,7 @@
 package mat
 
+import "github.com/jackvalmadre/go-vec"
+
 // Submatrix within a contiguous matrix, column-major order.
 type SubContiguous struct {
 	Rows   int
@@ -31,6 +33,6 @@ func (A SubContiguous) Submatrix(r Rect) SubContiguous {
 }
 
 // Returns a wrapper for accessing elements as a vector.
-func (A SubContiguous) Vec() MutableVecExpr {
+func (A SubContiguous) Vec() vec.Mutable {
 	return MutableVec(A)
 }

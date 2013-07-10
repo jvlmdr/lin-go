@@ -2,13 +2,8 @@ package mat
 
 import "github.com/jackvalmadre/go-vec"
 
-// Adds two matrices. Lazily evaluated.
-//
-// Provided as a convenience to allow
-//	C := mat.DenseCopy(mat.Plus(A, B))
-// instead of
-//	C := mat.MakeDense(Rows(A), Cols(A))
-//	vec.Copy(C.Vec(), vec.Plus(mat.Vec(A), mat.Vec(B)))
+// Adds two matrices of the same dimension.
+// Returns a thin wrapper which evaluates the operation on demand.
 func Plus(A, B Const) Const {
 	if !A.Size().Equals(B.Size()) {
 		panic(ErrNotSameSize)
@@ -17,7 +12,8 @@ func Plus(A, B Const) Const {
 	return Reshape(vec.Plus(Vec(A), Vec(B)), rows, cols)
 }
 
-// Lazily subtracts one matrix from another using default vectorization.
+// Subtracts one matrix  of the same dimension.
+// Returns a thin wrapper which evaluates the operation on demand.
 func Minus(A, B Const) Const {
 	if !A.Size().Equals(B.Size()) {
 		panic(ErrNotSameSize)
