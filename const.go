@@ -92,7 +92,7 @@ func InfNorm(x Const) float64 {
 	return y
 }
 
-func AppendToSlice(s []float64, x Const) []float64 {
+func Append(s []float64, x Const) []float64 {
 	n := len(s) + x.Size()
 	// Re-allocate only once if at all.
 	if n > cap(s) {
