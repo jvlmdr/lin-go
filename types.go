@@ -1,3 +1,5 @@
+// A vector package without matrices.
+
 package vec
 
 // Describes a list of real numbers.

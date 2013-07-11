@@ -2,6 +2,6 @@ package vec
 
 func Clone(x ConstTyped) MutableTyped {
 	y := x.Type().New()
-	CopyTo(y, x)
+	Copy(y, x)
 	return y
 }

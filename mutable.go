@@ -1,19 +1,9 @@
 package vec
 
-import "math/rand"
+// Miscellaneous operations you can do with a Mutable vector.
 
-func Randn(x Mutable) {
-	for i := 0; i < x.Size(); i++ {
-		x.Set(i, rand.NormFloat64())
-	}
-}
-
-func CopyTo(dst Mutable, src Const) {
+func Copy(dst Mutable, src Const) {
 	for i := 0; i < src.Size(); i++ {
 		dst.Set(i, src.At(i))
 	}
-}
-
-func AddTo(x Mutable, y Const) {
-	CopyTo(x, Plus(x, y))
 }

@@ -55,10 +55,11 @@ func unvectorizeIndex(k int, rows, cols int, rowMajor bool) (i, j int) {
 	return
 }
 
-func vectorizeIndex(i, j int, rows, cols int, rowMajor bool) int {
+func vectorizeIndex(i, j int, rows, cols int, rowMajor bool) (n int) {
 	if rowMajor {
-		return i*cols + j
+		n = i*cols + j
 	} else {
-		return i + j*rows
+		n = i + j*rows
 	}
+	return
 }

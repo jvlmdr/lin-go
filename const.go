@@ -1,9 +1,13 @@
 package vec
 
+// Miscellaneous operations you can do with a Const vector.
+
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"math"
+	"os"
 )
 
 func Dot(x, y Const) float64 {
@@ -85,15 +89,39 @@ func Dist(x, y Const) float64 {
 	return math.Sqrt(SqrDist(x, y))
 }
 
-func String(x Const) string {
-	var b bytes.Buffer
-	b.WriteString("(")
+func AppendToSlice(s []float64, x Const) []float64 {
+	n := len(s) + x.Size()
+	// Re-allocate only once if at all.
+	if n > cap(s) {
+		// At least double the previous capacity.
+		t := make([]float64, len(s), max(n, 2*cap(s)))
+		copy(t, s)
+		s = t
+	}
+	// Append new elements.
+	for i := 0; i < x.Size(); i++ {
+		s = append(s, x.At(i))
+	}
+	return s
+}
+
+func Fprint(w io.Writer, x Const, format string) {
+	fmt.Fprint(w, "(")
 	for i := 0; i < x.Size(); i++ {
 		if i > 0 {
-			b.WriteString(", ")
+			fmt.Fprint(w, ", ")
 		}
-		fmt.Fprintf(&b, "%g", x.At(i))
+		fmt.Fprintf(w, format, x.At(i))
 	}
-	b.WriteString(")")
+	fmt.Fprint(w, ")")
+}
+
+func String(x Const) string {
+	var b bytes.Buffer
+	Fprint(&b, x, "%g")
 	return b.String()
+}
+
+func Print(x Const, format string) {
+	Fprint(os.Stdout, x, format)
 }
