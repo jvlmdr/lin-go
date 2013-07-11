@@ -13,9 +13,14 @@ These wrappers all return Const vectors or matrices, and are designed for idioma
 
 	// In-place version:
 	mat.Copy(A, mat.Plus(A, B))
-Although it's important to be aware of when an operation actually can be performed in-place! This is more common than in the vector library.
+Although it's important to be aware of when an operation cannot be performed in-place! This occurs more commonly than in the vector library.
+	// Probably not what you want:
+	vec.Copy(x, mat.TimesVector(A, x))
+
 	// World's ugliest way to ensure A is symmetric?
 	mat.Copy(A, A.T())
+This was a difficult design decision, but for me the nice syntax outweighs the danger (see design doc).
+
 The simple arithmetic operations are mostly thin wrappers around the vector arithmetic operations, allowing
 	C := mat.MakeCopy(mat.Plus(A, B))
 
