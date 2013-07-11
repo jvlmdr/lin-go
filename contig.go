@@ -55,7 +55,7 @@ func (A Contiguous) AppendVector(x vec.Const) Contiguous {
 	if A.Rows != x.Size() {
 		panic("Dimension of vector does not match matrix")
 	}
-	elements := vec.AppendToSlice(A.Elements, x)
+	elements := vec.Append(A.Elements, x)
 	return Contiguous{A.Rows, A.Cols + 1, elements}
 }
 
@@ -66,7 +66,7 @@ func (A Contiguous) AppendMatrix(B Const) Contiguous {
 	if A.Rows != Rows(B) {
 		panic("Dimension of matrices does not match")
 	}
-	elements := vec.AppendToSlice(A.Elements, Vec(B))
+	elements := vec.Append(A.Elements, Vec(B))
 	return Contiguous{A.Rows, A.Cols + Cols(B), elements}
 }
 
