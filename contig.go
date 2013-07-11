@@ -13,21 +13,22 @@ type Contiguous struct {
 	Elements []float64
 }
 
+// Makes a new rows x cols contiguous matrix.
 func MakeContiguous(rows, cols int) Contiguous {
 	return Contiguous{rows, cols, make([]float64, rows*cols)}
 }
 
-func (A Contiguous) Size() Size {
-	return Size{A.Rows, A.Cols}
+// Copies B into a new contiguous matrix.
+func MakeContiguousCopy(B Const) Contiguous {
+	rows, cols := RowsCols(B)
+	A := MakeContiguous(rows, cols)
+	Copy(A, B)
+	return A
 }
 
-func (A Contiguous) At(i, j int) float64 {
-	return A.Elements[j*A.Rows+i]
-}
-
-func (A Contiguous) Set(i, j int, x float64) {
-	A.Elements[j*A.Rows+i] = x
-}
+func (A Contiguous) Size() Size              { return Size{A.Rows, A.Cols} }
+func (A Contiguous) At(i, j int) float64     { return A.Elements[j*A.Rows+i] }
+func (A Contiguous) Set(i, j int, x float64) { A.Elements[j*A.Rows+i] = x }
 
 // Modifies the rows and columns of a contiguous matrix.
 // The number of elements must remain constant.
@@ -89,21 +90,14 @@ func (A Contiguous) Submatrix(r Rect) SubContiguous {
 }
 
 // Returns a vectorization which accesses the array directly.
-func (A Contiguous) Vec() ContiguousAsVector {
-	return ContiguousAsVector(A)
-}
+func (A Contiguous) Vec() vec.Mutable { return contiguousAsVector(A) }
 
-// Vectorization which accesses the array directly.
-type ContiguousAsVector Contiguous
+// Specialized vectorization which accesses the array directly.
+type contiguousAsVector Contiguous
 
-func (x ContiguousAsVector) Size() int {
-	return x.Rows * x.Cols
-}
+func (x contiguousAsVector) Size() int            { return x.Rows * x.Cols }
+func (x contiguousAsVector) At(i int) float64     { return x.Elements[i] }
+func (x contiguousAsVector) Set(i int, v float64) { x.Elements[i] = v }
 
-func (x ContiguousAsVector) At(i int) float64 {
-	return x.Elements[i]
-}
-
-func (x ContiguousAsVector) Set(i int, v float64) {
-	x.Elements[i] = v
-}
+// Returns MutableT(A).
+func (A Contiguous) T() Mutable { return MutableT(A) }

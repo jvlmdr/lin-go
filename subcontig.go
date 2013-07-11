@@ -11,17 +11,9 @@ type SubContiguous struct {
 	Elements []float64
 }
 
-func (A SubContiguous) Size() Size {
-	return Size{A.Rows, A.Cols}
-}
-
-func (A SubContiguous) At(i, j int) float64 {
-	return A.Elements[j*A.Stride+i]
-}
-
-func (A SubContiguous) Set(i, j int, x float64) {
-	A.Elements[j*A.Stride+i] = x
-}
+func (A SubContiguous) Size() Size              { return Size{A.Rows, A.Cols} }
+func (A SubContiguous) At(i, j int) float64     { return A.Elements[j*A.Stride+i] }
+func (A SubContiguous) Set(i, j int, x float64) { A.Elements[j*A.Stride+i] = x }
 
 func (A SubContiguous) Submatrix(r Rect) SubContiguous {
 	// Extract from first to last elements.
@@ -33,6 +25,7 @@ func (A SubContiguous) Submatrix(r Rect) SubContiguous {
 }
 
 // Returns a wrapper for accessing elements as a vector.
-func (A SubContiguous) Vec() vec.Mutable {
-	return MutableVec(A)
-}
+func (A SubContiguous) Vec() vec.Mutable { return MutableVec(A) }
+
+// Returns MutableT(A).
+func (A SubContiguous) T() Mutable { return MutableT(A) }
