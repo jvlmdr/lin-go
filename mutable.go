@@ -8,5 +8,5 @@ func Copy(A Mutable, B Const) {
 	if !A.Size().Equals(B.Size()) {
 		panic(ErrNotSameSize)
 	}
-	vec.CopyTo(MutableVec(A), Vec(B))
+	vec.Copy(MutableVec(A), Vec(B))
 }
