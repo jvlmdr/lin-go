@@ -1,5 +1,7 @@
 package mat
 
+// This file contains operations which modify the shape of a matrix.
+
 // Returns a thin wrapper which transposes a constant matrix.
 func T(A Const) Const { return tExpr{A} }
 

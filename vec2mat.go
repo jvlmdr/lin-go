@@ -2,6 +2,8 @@ package mat
 
 import "github.com/jackvalmadre/go-vec"
 
+// This file contains operations which address vectors as matrices.
+
 // Addresses a const vector as a column matrix.
 func Mat(x vec.Const) Const { return matExpr{x} }
 

@@ -2,6 +2,8 @@ package mat
 
 import "github.com/jackvalmadre/go-vec"
 
+// This file contains operations which treat matrices as vectors.
+
 // Adds two matrices of the same dimension.
 // Returns a thin wrapper which evaluates the operation on demand.
 func Plus(A, B Const) Const {

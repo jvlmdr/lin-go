@@ -2,6 +2,8 @@ package mat
 
 import "github.com/jackvalmadre/go-vec"
 
+// This file contains operations which address matrices as vectors.
+
 // Vectorizes a constant matrix in column-major order.
 func Vec(A Const) vec.Const { return vecExpr{A} }
 
