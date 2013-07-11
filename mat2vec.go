@@ -43,7 +43,7 @@ func (x mutableVecExpr) Set(i int, v float64) {
 }
 
 // Accesses a column in a constant matrix as a vector.
-func Column(A Const, j int) vec.Const { return columnExpr{A, j} }
+func Col(A Const, j int) vec.Const { return columnExpr{A, j} }
 
 type columnExpr struct {
 	Matrix Const
@@ -54,16 +54,16 @@ func (col columnExpr) Size() int        { return Rows(col.Matrix) }
 func (col columnExpr) At(i int) float64 { return col.Matrix.At(i, col.J) }
 
 // Accesses a column in a mutable matrix as a vector.
-func MutableColumn(A Mutable, j int) vec.Mutable { return mutableColumnExpr{A, j} }
+func MutableCol(A Mutable, j int) vec.Mutable { return mutableColExpr{A, j} }
 
-type mutableColumnExpr struct {
+type mutableColExpr struct {
 	Matrix Mutable
 	J      int
 }
 
-func (col mutableColumnExpr) Size() int            { return Rows(col.Matrix) }
-func (col mutableColumnExpr) At(i int) float64     { return col.Matrix.At(i, col.J) }
-func (col mutableColumnExpr) Set(i int, v float64) { col.Matrix.Set(i, col.J, v) }
+func (col mutableColExpr) Size() int            { return Rows(col.Matrix) }
+func (col mutableColExpr) At(i int) float64     { return col.Matrix.At(i, col.J) }
+func (col mutableColExpr) Set(i int, v float64) { col.Matrix.Set(i, col.J, v) }
 
 // Accesses a row in a constant matrix as a vector.
 func Row(A Const, i int) vec.Const { return rowExpr{A, i} }

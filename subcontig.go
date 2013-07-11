@@ -29,3 +29,9 @@ func (A SubContiguous) Vec() vec.Mutable { return MutableVec(A) }
 
 // Returns MutableT(A).
 func (A SubContiguous) T() Mutable { return MutableT(A) }
+
+// Returns MutableColumn(A).
+func (A SubContiguous) Col(j int) vec.Mutable { return MutableCol(A, j) }
+
+// Returns MutableRow(A).
+func (A SubContiguous) Row(i int) vec.Mutable { return MutableRow(A, i) }

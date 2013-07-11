@@ -19,7 +19,7 @@ type timesExpr struct{ A, B Const }
 func (expr timesExpr) Size() Size { return Size{Rows(expr.A), Cols(expr.B)} }
 
 func (expr timesExpr) At(i, j int) float64 {
-	return TimesVec(expr.A, Column(expr.B, j)).At(i)
+	return TimesVec(expr.A, Col(expr.B, j)).At(i)
 }
 
 // Multiplies a vector by a matrix.

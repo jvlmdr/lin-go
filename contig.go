@@ -101,3 +101,9 @@ func (x contiguousAsVector) Set(i int, v float64) { x.Elements[i] = v }
 
 // Returns MutableT(A).
 func (A Contiguous) T() Mutable { return MutableT(A) }
+
+// Returns MutableColumn(A).
+func (A Contiguous) Col(j int) vec.Mutable { return MutableCol(A, j) }
+
+// Returns MutableRow(A).
+func (A Contiguous) Row(i int) vec.Mutable { return MutableRow(A, i) }

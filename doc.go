@@ -7,7 +7,7 @@ Then there are a number of concrete implementations (Contiguous, SubContiguous, 
 Different modes enable different manipulations.
 
 There are a number of thin wrappers for doing simple operations.
-For example, converting between a matrix and a vector using Vec(), Mat(), Reshape(), simple arithmetic operations such as Plus() and Minus(), and matrix shape operations such as Submatrix(), Column().
+For example, converting between a matrix and a vector using Vec(), Mat(), Reshape(), simple arithmetic operations such as Plus() and Minus(), and matrix shape operations such as Submatrix(), Row() and Col().
 These wrappers all return Const vectors or matrices, and are designed for idiomatic use with Copy(), like in the vector library. For example,
 	mat.Copy(C, mat.Plus(A, B))
 
@@ -30,7 +30,7 @@ The simple arithmetic operations are mostly thin wrappers around the vector arit
 
 	// Or:
 	C := mat.MakeCopy(mat.Reshape(vec.Plus(A.Vec(), B.Vec())), mat.Rows(A), mat.Cols(A))
-Note that the concrete type idiomatically provide T() and Vec() methods which return mutable wrappers for succinctness.
+Note that the concrete type idiomatically provide T(), Vec(), Row() and Col() methods which return mutable wrappers for succinctness.
 	mat.Copy(A.Vec(), B.Vec())
 
 	// As opposed to:
