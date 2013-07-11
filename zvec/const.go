@@ -1,4 +1,4 @@
-package vec
+package zvec
 
 // Miscellaneous operations you can do with a Const vector.
 
@@ -9,20 +9,20 @@ import (
 	"os"
 )
 
-func Sum(x Const) float64 {
-	var total float64
+func Sum(x Const) complex128 {
+	var total complex128
 	for i := 0; i < x.Size(); i++ {
 		total += x.At(i)
 	}
 	return total
 }
 
-func Append(s []float64, x Const) []float64 {
+func Append(s []complex128, x Const) []complex128 {
 	n := len(s) + x.Size()
 	// Re-allocate only once if at all.
 	if n > cap(s) {
 		// At least double the previous capacity.
-		t := make([]float64, len(s), max(n, 2*cap(s)))
+		t := make([]complex128, len(s), max(n, 2*cap(s)))
 		copy(t, s)
 		s = t
 	}
