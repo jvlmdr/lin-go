@@ -22,13 +22,15 @@ func Minus(A, B Const) Const {
 	return Reshape(vec.Minus(Vec(A), Vec(B)), rows, cols)
 }
 
-// Lazily scales a matrix using default vectorization.
+// Scales all elements of a matrix.
+// Returns a thin wrapper which evaluates the operation on demand.
 func Scale(k float64, A Const) Const {
 	rows, cols := RowsCols(A)
 	return Reshape(vec.Scale(k, Vec(A)), rows, cols)
 }
 
-// Lazy element-wise multiplication of two matrices using default vectorization.
+// Element-wise multiplication of two matrices.
+// Returns a thin wrapper which evaluates the operation on demand.
 func VectorMultiply(A, B Const) Const {
 	if !A.Size().Equals(B.Size()) {
 		panic(ErrNotSameSize)

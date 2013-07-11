@@ -15,7 +15,7 @@ These wrappers all return Const vectors or matrices, and are designed for idioma
 	mat.Copy(A, mat.Plus(A, B))
 Although it's important to be aware of when an operation cannot be performed in-place! This occurs more commonly than in the vector library.
 	// Probably not what you want:
-	vec.Copy(x, mat.TimesVector(A, x))
+	vec.Copy(x, mat.TimesVec(A, x))
 
 	// World's ugliest way to ensure A is symmetric?
 	mat.Copy(A, A.T())
