@@ -7,7 +7,7 @@ Then there are a number of concrete implementations (Contiguous, SubContiguous, 
 Different modes enable different manipulations.
 
 There are a number of thin wrappers for doing simple operations.
-For example, converting between a matrix and a vector using Vec(), Mat(), Reshape(), simple arithmetic operations such as Plus() and Minus(), and matrix shape operations such as Submatrix(), Row() and Col().
+For example, converting between a matrix and a vector using Vec(), Mat(), Unvec(), simple arithmetic operations such as Plus() and Minus(), and matrix shape operations such as Row(), Col(), Submatrix() and Reshape().
 These wrappers all return Const vectors or matrices, and are designed for idiomatic use with Copy(), like in the vector library. For example,
 	mat.Copy(C, mat.Plus(A, B))
 
@@ -29,8 +29,8 @@ The simple arithmetic operations are mostly thin wrappers around the vector arit
 	vec.Copy(C.Vec(), vec.Plus(A.Vec(), B.Vec()))
 
 	// Or:
-	C := mat.MakeCopy(mat.Reshape(vec.Plus(A.Vec(), B.Vec())), mat.Rows(A), mat.Cols(A))
-Note that the concrete type idiomatically provide T(), Vec(), Row() and Col() methods which return mutable wrappers for succinctness.
+	C := mat.MakeCopy(mat.Unvec(vec.Plus(A.Vec(), B.Vec())), mat.Rows(A), mat.Cols(A))
+Note that the concrete types idiomatically provide T(), Vec(), Row() and Col() methods which return mutable wrappers for succinctness.
 	mat.Copy(A.Vec(), B.Vec())
 
 	// As opposed to:
@@ -41,6 +41,6 @@ Mutable versions of these operations allow interesting syntax, such as
 	// Equivalent to:
 	mat.Copy(C, mat.Times(B.T(), A.T()))
 
-Note that Mat(x) converts a length-n vector to an nx1 matrix and Reshape(x, m, n) converts an (mn)-vector to an mxn matrix.
+Note that Mat(x) converts a length-n vector to an nx1 matrix, Unvec(x, m, n) converts an (mn)-vector to an mxn matrix and Reshape(A, m, n) is equivalent to Unvec(Vec(A), m, n).
 */
 package mat

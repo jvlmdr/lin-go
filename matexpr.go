@@ -58,3 +58,13 @@ func (expr mutableSubmatrixExpr) Set(i, j int, x float64) {
 	j0 := expr.Rect.Min.J
 	expr.Matrix.Set(i-i0, j-j0, x)
 }
+
+// Address a constant matrix by a different shape.
+// Equivalent to vectorizing then unvectorizing.
+func Reshape(A Const, rows, cols int) Const { return Unvec(Vec(A), rows, cols) }
+
+// Address a mutable matrix by a different shape.
+// Equivalent to vectorizing then unvectorizing.
+func MutableReshape(A Mutable, rows, cols int) Mutable {
+	return MutableUnvec(MutableVec(A), rows, cols)
+}

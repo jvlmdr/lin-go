@@ -20,39 +20,39 @@ func (A mutableMatExpr) At(i, j int) float64     { return A.Vector.At(i) }
 func (A mutableMatExpr) Set(i, j int, v float64) { A.Vector.Set(i, v) }
 
 // Address a constant vector as a matrix.
-func Reshape(x vec.Const, rows, cols int) Const { return reshapeExpr{x, rows, cols} }
+func Unvec(x vec.Const, rows, cols int) Const { return unvecExpr{x, rows, cols} }
 
 // Gives a constant vector a matrix shape.
-type reshapeExpr struct {
+type unvecExpr struct {
 	Vector vec.Const
 	Rows   int
 	Cols   int
 }
 
-func (expr reshapeExpr) Size() Size { return Size{expr.Rows, expr.Cols} }
+func (expr unvecExpr) Size() Size { return Size{expr.Rows, expr.Cols} }
 
-func (expr reshapeExpr) At(i, j int) float64 {
+func (expr unvecExpr) At(i, j int) float64 {
 	return expr.Vector.At(i*expr.Cols + j)
 }
 
 // Address a mutable vector as a matrix.
-func MutableReshape(x vec.Mutable, rows, cols int) Mutable {
-	return mutableReshapeExpr{x, rows, cols}
+func MutableUnvec(x vec.Mutable, rows, cols int) Mutable {
+	return mutableUnvecExpr{x, rows, cols}
 }
 
 // Gives a mutable vector a matrix shape.
-type mutableReshapeExpr struct {
+type mutableUnvecExpr struct {
 	Vector vec.Mutable
 	Rows   int
 	Cols   int
 }
 
-func (expr mutableReshapeExpr) Size() Size { return Size{expr.Rows, expr.Cols} }
+func (expr mutableUnvecExpr) Size() Size { return Size{expr.Rows, expr.Cols} }
 
-func (expr mutableReshapeExpr) At(i, j int) float64 {
+func (expr mutableUnvecExpr) At(i, j int) float64 {
 	return expr.Vector.At(i*expr.Cols + j)
 }
 
-func (expr mutableReshapeExpr) Set(i, j int, v float64) {
+func (expr mutableUnvecExpr) Set(i, j int, v float64) {
 	expr.Vector.Set(i*expr.Cols+j, v)
 }
