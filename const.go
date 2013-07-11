@@ -10,12 +10,16 @@ import (
 	"os"
 )
 
-func Dot(x, y Const) float64 {
+func Sum(x Const) float64 {
 	var total float64
 	for i := 0; i < x.Size(); i++ {
-		total += x.At(i) * y.At(i)
+		total += x.At(i)
 	}
 	return total
+}
+
+func Dot(x, y Const) float64 {
+	return Sum(Multiply(x, y))
 }
 
 func SqrNorm(x Const) float64 {
@@ -26,67 +30,66 @@ func Norm(x Const) float64 {
 	return math.Sqrt(SqrNorm(x))
 }
 
-func Sum(x Const) float64 {
-	var total float64
-	for i := 0; i < x.Size(); i++ {
-		total += x.At(i)
-	}
-	return total
-}
-
-func OneNorm(x Const) float64 {
-	var total float64
-	for i := 0; i < x.Size(); i++ {
-		total += math.Abs(x.At(i))
-	}
-	return total
-}
-
-func Min(x Const) float64 {
-	min := math.Inf(1)
-	for i := 0; i < x.Size(); i++ {
-		min = math.Min(min, x.At(i))
-	}
-	return min
-}
-
-func Max(x Const) float64 {
-	max := math.Inf(-1)
-	for i := 0; i < x.Size(); i++ {
-		max = math.Max(max, x.At(i))
-	}
-	return max
-}
-
-func MinMax(x Const) (float64, float64) {
-	min := math.Inf(1)
-	max := math.Inf(-1)
-	for i := 0; i < x.Size(); i++ {
-		min = math.Min(min, x.At(i))
-		max = math.Max(max, x.At(i))
-	}
-	return min, max
-}
-
-func InfNorm(x Const) float64 {
-	var max float64
-	for i := 0; i < x.Size(); i++ {
-		max = math.Max(max, math.Abs(x.At(i)))
-	}
-	return max
-}
-
 func SqrDist(x, y Const) float64 {
-	var total float64
-	for i := 0; i < x.Size(); i++ {
-		d := x.At(i) - y.At(i)
-		total += d * d
-	}
-	return total
+	return SqrNorm(Minus(x, y))
 }
 
 func Dist(x, y Const) float64 {
 	return math.Sqrt(SqrDist(x, y))
+}
+
+func OneNorm(x Const) float64 {
+	return Sum(Abs(x))
+}
+
+func Min(x Const) (float64, int) {
+	argmin := -1
+	xmin := math.Inf(1)
+	for i := 0; i < x.Size(); i++ {
+		xi := x.At(i)
+		if xi < xmin {
+			xmin = xi
+			argmin = i
+		}
+	}
+	return xmin, argmin
+}
+
+func Max(x Const) (float64, int) {
+	argmax := -1
+	xmax := math.Inf(-1)
+	for i := 0; i < x.Size(); i++ {
+		xi := x.At(i)
+		if xi > xmax {
+			xmax = xi
+			argmax = i
+		}
+	}
+	return xmax, argmax
+}
+
+func MinMax(x Const) (xmin float64, argmin int, xmax float64, argmax int) {
+	argmin = -1
+	argmax = -1
+	xmin = math.Inf(1)
+	xmax = math.Inf(-1)
+	for i := 0; i < x.Size(); i++ {
+		xi := x.At(i)
+		if xi < xmin {
+			xmin = xi
+			argmin = i
+		}
+		if xi > xmax {
+			xmax = xi
+			argmax = i
+		}
+	}
+	return
+}
+
+func InfNorm(x Const) float64 {
+	y, _ := Max(Abs(x))
+	return y
 }
 
 func AppendToSlice(s []float64, x Const) []float64 {
