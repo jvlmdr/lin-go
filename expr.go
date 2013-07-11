@@ -41,3 +41,25 @@ func (expr timesVecExpr) At(i int) float64 {
 	}
 	return y
 }
+
+// Returns the horizontal augmentation [A, B].
+func Augment(A, B Const) Const {
+	return Unvec(vec.Cat(Vec(A), Vec(B)), Rows(A), Cols(A)+Cols(B))
+}
+
+// Returns the vertical stacking [A; B].
+func Stack(A, B Const) Const {
+	return T(Augment(T(A), T(B)))
+}
+
+// Returns the horizontal augmentation [A, B].
+func MutableAugment(A, B Mutable) Mutable {
+	rows := Rows(A)
+	cols := Cols(A) + Cols(B)
+	return MutableUnvec(vec.MutableCat(MutableVec(A), MutableVec(B)), rows, cols)
+}
+
+// Returns the vertical stacking [A; B].
+func MutableStack(A, B Mutable) Mutable {
+	return MutableT(MutableAugment(MutableT(A), MutableT(B)))
+}
