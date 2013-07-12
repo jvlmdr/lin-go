@@ -16,3 +16,7 @@ func MakeSliceCopy(x Const) Slice {
 	Copy(y, x)
 	return y
 }
+
+func (s Slice) Subvec(a, b int) Slice {
+	return Slice(s[a:b])
+}
