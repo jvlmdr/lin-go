@@ -1,9 +1,9 @@
 #!/bin/bash
 
-dir=..
+dir=../mat
 gofile=.gofiles
 
-vec='github.com\/jackvalmadre\/go-vec'
+vec='github.com\/jackvalmadre\/go-vec\/vec'
 zvec='github.com\/jackvalmadre\/go-vec\/zvec'
 
 ls $dir | grep '\.go$' | grep -v '_real[_.]' >$gofile

@@ -2,7 +2,7 @@ package mat
 
 // This file contains Const matrix expressions which do not have a Mutable partner.
 
-import "github.com/jackvalmadre/go-vec"
+import "github.com/jackvalmadre/go-vec/vec"
 
 // Matrix whose (i, j)-th element is f(i, j).
 func IndexMap(m, n int, f func(int, int) float64) Const {

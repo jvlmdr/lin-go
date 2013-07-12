@@ -1,6 +1,6 @@
 package mat
 
-import "github.com/jackvalmadre/go-vec"
+import "github.com/jackvalmadre/go-vec/vec"
 
 // Copies from a Const matrix to a Mutable matrix.
 // The size of A must match that of B.

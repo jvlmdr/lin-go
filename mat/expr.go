@@ -1,6 +1,6 @@
 package mat
 
-import "github.com/jackvalmadre/go-vec"
+import "github.com/jackvalmadre/go-vec/vec"
 
 // Evaluates a matrix multiplication element by element.
 // Returns a thin wrapper which evaluates the operation on demand.
