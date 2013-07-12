@@ -17,3 +17,9 @@ func RowsCols(A Const) (int, int) {
 	s := A.Size()
 	return s.Rows, s.Cols
 }
+
+// Returns the bounds of the matrix as a rectangle starting at (0, 0).
+func Bounds(A Const) Rect {
+	rows, cols := RowsCols(A)
+	return MakeRect(0, 0, rows, cols)
+}
