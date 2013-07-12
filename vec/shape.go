@@ -44,3 +44,34 @@ func (expr mutableCatExpr) Set(i int, x float64) {
 	}
 	expr.Y.Set(i-n, x)
 }
+
+// Concatenate many vectors.
+func CatN(x ...Const) Const {
+	if len(x) == 0 {
+		return nil
+	}
+	if len(x) == 1 {
+		return x[0]
+	}
+	m := (len(x) + 1) / 2
+	return Cat(CatN(x[:m]...), CatN(x[m:]...))
+}
+
+// Subvector of elements in [a, b).
+func Subvec(x Const, a, b int) Const {
+	at := func(i int) float64 {
+		return x.At(i - a)
+	}
+	return MapIndex(b-a, at)
+}
+
+// Subvector of elements in [a, b).
+func MutableSubvec(x Mutable, a, b int) Mutable {
+	at := func(i int) float64 {
+		return x.At(i - a)
+	}
+	set := func(i int, v float64) {
+		x.Set(i-a, v)
+	}
+	return MutableMapIndex(b-a, at, set)
+}

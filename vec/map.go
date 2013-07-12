@@ -46,3 +46,18 @@ type mapIndexExpr struct {
 
 func (expr mapIndexExpr) Size() int        { return expr.N }
 func (expr mapIndexExpr) At(i int) float64 { return expr.F(i) }
+
+// Vector whose i-th element is f(i) and modified by g(i, x).
+func MutableMapIndex(n int, f func(int) float64, g func(int, float64)) Mutable {
+	return mutableMapIndexExpr{n, f, g}
+}
+
+type mutableMapIndexExpr struct {
+	N int
+	F func(int) float64
+	G func(int, float64)
+}
+
+func (expr mutableMapIndexExpr) Size() int            { return expr.N }
+func (expr mutableMapIndexExpr) At(i int) float64     { return expr.F(i) }
+func (expr mutableMapIndexExpr) Set(i int, x float64) { expr.G(i, x) }
