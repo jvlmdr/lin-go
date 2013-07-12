@@ -1,7 +1,7 @@
 package zvec
 
 import (
-	"github.com/jackvalmadre/go-vec"
+	"github.com/jackvalmadre/go-vec/vec"
 	"math/cmplx"
 )
 

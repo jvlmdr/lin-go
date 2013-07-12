@@ -4,7 +4,7 @@ package zvec
 // Operations which are not easily converted from real to complex by sed.
 
 import (
-	"github.com/jackvalmadre/go-vec"
+	"github.com/jackvalmadre/go-vec/vec"
 	"math"
 )
 

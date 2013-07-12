@@ -1,6 +1,6 @@
 #!/bin/bash
 
-dir=..
+dir=../vec
 gofile=.gofiles
 
 ls $dir | grep '\.go$' | grep -v '_real[_.]' >$gofile

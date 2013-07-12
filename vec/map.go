@@ -61,12 +61,12 @@ func Divide(x, y Const) Const {
 }
 
 // Constant vector of ones.
-func One(n int) Const {
+func Ones(n int) Const {
 	return Constant(n, 1)
 }
 
 // Constant vector of zeros.
-func Zero(n int) Const {
+func Zeros(n int) Const {
 	return Constant(n, 0)
 }
 
