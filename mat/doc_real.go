@@ -1,5 +1,5 @@
 /*
-This package provides common functionality for working with real, dense matrices, including BLAS and LAPACK bindings.
+Package mat provides common functionality for working with real, dense matrices.
 
 The core of the package is in the Const and Mutable interfaces. One of the key methods is Copy(Mutable, Const).
 
