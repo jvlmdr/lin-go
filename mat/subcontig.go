@@ -1,6 +1,6 @@
 package mat
 
-import "github.com/jackvalmadre/go-vec/vec"
+import "github.com/jackvalmadre/lin-go/vec"
 
 // Submatrix within a contiguous matrix, column-major order.
 type SubContiguous struct {

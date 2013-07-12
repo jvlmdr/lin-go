@@ -2,7 +2,7 @@ package zmat
 
 // This file contains Const matrix expressions which do not have a Mutable partner.
 
-import "github.com/jackvalmadre/go-vec/zvec"
+import "github.com/jackvalmadre/lin-go/zvec"
 
 // Matrix whose (i, j)-th element is f(i, j).
 func IndexMap(m, n int, f func(int, int) complex128) Const {

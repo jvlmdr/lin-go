@@ -1,6 +1,6 @@
 package zmat
 
-import "github.com/jackvalmadre/go-vec/zvec"
+import "github.com/jackvalmadre/lin-go/zvec"
 
 // Copies from a Const matrix to a Mutable matrix.
 // The size of A must match that of B.

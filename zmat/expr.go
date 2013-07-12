@@ -1,6 +1,6 @@
 package zmat
 
-import "github.com/jackvalmadre/go-vec/zvec"
+import "github.com/jackvalmadre/lin-go/zvec"
 
 // Evaluates a matrix multiplication element by element.
 // Returns a thin wrapper which evaluates the operation on demand.

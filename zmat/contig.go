@@ -1,6 +1,6 @@
 package zmat
 
-import "github.com/jackvalmadre/go-vec/zvec"
+import "github.com/jackvalmadre/lin-go/zvec"
 
 // Describes a dense matrix with contiguous storage in column-major order.
 //

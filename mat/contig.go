@@ -1,6 +1,6 @@
 package mat
 
-import "github.com/jackvalmadre/go-vec/vec"
+import "github.com/jackvalmadre/lin-go/vec"
 
 // Describes a dense matrix with contiguous storage in column-major order.
 //

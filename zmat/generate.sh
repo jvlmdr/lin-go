@@ -3,8 +3,8 @@
 dir=../mat
 gofile=.gofiles
 
-vec='github.com\/jackvalmadre\/go-vec\/vec'
-zvec='github.com\/jackvalmadre\/go-vec\/zvec'
+vec='github.com\/jackvalmadre\/lin-go\/vec'
+zvec='github.com\/jackvalmadre\/lin-go\/zvec'
 
 ls $dir | grep '\.go$' | grep -v '_real[_.]' >$gofile
 for f in `cat $gofile`

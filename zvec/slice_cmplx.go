@@ -1,6 +1,6 @@
 package zvec
 
-import "github.com/jackvalmadre/go-vec/vec"
+import "github.com/jackvalmadre/lin-go/vec"
 
 func (x Slice) Conj() Mutable {
 	return ConjMutable(x)

@@ -1,6 +1,6 @@
 package zmat
 
-import "github.com/jackvalmadre/go-vec/zvec"
+import "github.com/jackvalmadre/lin-go/zvec"
 
 // This file contains operations which address matrices as vectors.
 

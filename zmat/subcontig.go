@@ -1,6 +1,6 @@
 package zmat
 
-import "github.com/jackvalmadre/go-vec/zvec"
+import "github.com/jackvalmadre/lin-go/zvec"
 
 // Submatrix within a contiguous matrix, column-major order.
 type SubContiguous struct {

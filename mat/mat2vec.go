@@ -1,6 +1,6 @@
 package mat
 
-import "github.com/jackvalmadre/go-vec/vec"
+import "github.com/jackvalmadre/lin-go/vec"
 
 // This file contains operations which address matrices as vectors.
 
