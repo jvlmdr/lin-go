@@ -39,5 +39,5 @@ func Pow(x Const, p float64) Const {
 // Vector whose entries are random and normally distributed.
 func Randn(n int) Const {
 	f := func() float64 { return rand.NormFloat64() }
-	return ConstantMap(n, f)
+	return MapNil(n, f)
 }

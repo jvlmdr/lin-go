@@ -89,3 +89,33 @@ type mutableRowExpr struct {
 func (row mutableRowExpr) Size() int            { return Rows(row.Matrix) }
 func (row mutableRowExpr) At(j int) float64     { return row.Matrix.At(row.I, j) }
 func (row mutableRowExpr) Set(j int, v float64) { row.Matrix.Set(row.I, j, v) }
+
+// Returns a constant min(rows, cols)-vector of the leading diagonal.
+func DiagVec(A Const) vec.Const {
+	rows, cols := RowsCols(A)
+	n := min(rows, cols)
+	f := func(i int) float64 {
+		return A.At(i, i)
+	}
+	return vec.MapIndex(n, f)
+}
+
+// Returns a mutable min(rows, cols)-vector of the leading diagonal.
+func MutableDiagVec(A Mutable) vec.Mutable {
+	return mutableDiagVecExpr{A}
+}
+
+type mutableDiagVecExpr struct{ Matrix Mutable }
+
+func (expr mutableDiagVecExpr) Size() int {
+	rows, cols := RowsCols(expr.Matrix)
+	return min(rows, cols)
+}
+
+func (expr mutableDiagVecExpr) At(i int) float64 {
+	return expr.Matrix.At(i, i)
+}
+
+func (expr mutableDiagVecExpr) Set(i int, x float64) {
+	expr.Matrix.Set(i, i, x)
+}

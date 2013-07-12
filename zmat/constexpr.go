@@ -5,37 +5,31 @@ package zmat
 import "github.com/jackvalmadre/lin-go/zvec"
 
 // Matrix whose (i, j)-th element is f(i, j).
-func IndexMap(m, n int, f func(int, int) complex128) Const {
-	return indexMapExpr{m, n, f}
+func MapIndex(m, n int, f func(int, int) complex128) Const {
+	return mapIndexExpr{m, n, f}
 }
 
-type indexMapExpr struct {
+type mapIndexExpr struct {
 	M int
 	N int
 	F func(int, int) complex128
 }
 
-func (expr indexMapExpr) Size() Size {
+func (expr mapIndexExpr) Size() Size {
 	return Size{expr.M, expr.N}
 }
 
-func (expr indexMapExpr) At(i, j int) complex128 {
+func (expr mapIndexExpr) At(i, j int) complex128 {
 	return expr.F(i, j)
 }
 
 // Returns an nxn identity matrix.
 func Identity(n int) Const {
-	f := func(i, j int) complex128 {
-		if i == j {
-			return 1
-		}
-		return 0
-	}
-	return IndexMap(n, n, f)
+	return DiagMat(zvec.Ones(n))
 }
 
 // Returns an nxn read-only diagonal matrix.
-func Diag(v zvec.Const) Const {
+func DiagMat(v zvec.Const) Const {
 	n := v.Size()
 	f := func(i, j int) complex128 {
 		if i == j {
@@ -43,7 +37,7 @@ func Diag(v zvec.Const) Const {
 		}
 		return 0
 	}
-	return IndexMap(n, n, f)
+	return MapIndex(n, n, f)
 }
 
 // Returns an mxn zero matrix.

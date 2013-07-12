@@ -4,6 +4,10 @@ package vec
 
 import "math"
 
+func Mean(x Const) float64 {
+	return Sum(x) / float64(x.Size())
+}
+
 func Dot(x, y Const) float64 {
 	return Sum(Multiply(x, y))
 }

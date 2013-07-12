@@ -8,6 +8,10 @@ import (
 	"math"
 )
 
+func Mean(x Const) complex128 {
+	return Sum(x) * complex(1/float64(x.Size()), 0)
+}
+
 // Computes x^H y = sum_i conj(x_i) y_i.
 // Note that the complex dot product is not commutative.
 // Dot(x, y) = cmplx.Conj(Dot(y, x))

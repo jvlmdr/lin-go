@@ -1,95 +1,6 @@
 package vec
 
-// This file contains element-wise operations.
-
-// Lazy evaluators for vector-valued functions.
-// Idiomatic use is x <- x - y written vec.Copy(x, vec.Minus(x, y)).
-
-// Multiplication by a scalar.
-// Lazily evaluated.
-func Scale(a float64, x Const) Const {
-	f := func(x float64) float64 { return a * x }
-	return Map(x, f)
-}
-
-// Compute 1/x for every element in the vector.
-// Lazily evaluated.
-func Invert(x Const) Const {
-	return Ldivide(x, 1)
-}
-
-// Compute a/x for every element in the vector.
-// Lazily evaluated.
-func Ldivide(x Const, a float64) Const {
-	f := func(x float64) float64 { return a / x }
-	return Map(x, f)
-}
-
-// Compute x^2 for every element in the vector.
-// Lazily evaluated.
-func Square(x Const) Const {
-	f := func(x float64) float64 { return x * x }
-	return Map(x, f)
-}
-
-// Addition of two vectors.
-// Lazily evaluated.
-func Plus(x, y Const) Const {
-	f := func(x, y float64) float64 { return x + y }
-	return BinaryMap(x, y, f)
-}
-
-// Difference between two vectors.
-// Lazily evaluated.
-func Minus(x, y Const) Const {
-	f := func(x, y float64) float64 { return x - y }
-	return BinaryMap(x, y, f)
-}
-
-// Element-wise multiplication.
-// Lazily evaluated.
-func Multiply(x, y Const) Const {
-	f := func(x, y float64) float64 { return x * y }
-	return BinaryMap(x, y, f)
-}
-
-// Element-wise division.
-// Lazily evaluated.
-func Divide(x, y Const) Const {
-	f := func(x, y float64) float64 { return x / y }
-	return BinaryMap(x, y, f)
-}
-
-// Constant vector of ones.
-func Ones(n int) Const {
-	return Constant(n, 1)
-}
-
-// Constant vector of zeros.
-func Zeros(n int) Const {
-	return Constant(n, 0)
-}
-
-// Constant vector.
-func Constant(n int, a float64) Const {
-	f := func() float64 { return a }
-	return ConstantMap(n, f)
-}
-
-// Applies the same zero-ary function for every argument.
-// Lazily evaluated.
-func ConstantMap(n int, f func() float64) Const { return constantMapExpr{n, f} }
-
-type constantMapExpr struct {
-	N int
-	F func() float64
-}
-
-func (expr constantMapExpr) Size() int        { return expr.N }
-func (expr constantMapExpr) At(i int) float64 { return expr.F() }
-
-// Applies the same unary function to every element.
-// Lazily evaluated.
+// Vector whose i-th element is f(x.At(i)).
 func Map(x Const, f func(float64) float64) Const { return mapExpr{x, f} }
 
 type mapExpr struct {
@@ -100,17 +11,38 @@ type mapExpr struct {
 func (expr mapExpr) Size() int        { return expr.X.Size() }
 func (expr mapExpr) At(i int) float64 { return expr.F(expr.X.At(i)) }
 
-// Applies the same binary function to every element.
-// Lazily evaluated.
-func BinaryMap(x, y Const, f func(float64, float64) float64) Const {
-	return binaryMapExpr{x, y, f}
+// Vector whose i-th element is f(x.At(i), y.At(i)).
+func MapTwo(x, y Const, f func(float64, float64) float64) Const {
+	return mapTwoExpr{x, y, f}
 }
 
-type binaryMapExpr struct {
+type mapTwoExpr struct {
 	X Const
 	Y Const
 	F func(float64, float64) float64
 }
 
-func (expr binaryMapExpr) Size() int        { return expr.X.Size() }
-func (expr binaryMapExpr) At(i int) float64 { return expr.F(expr.X.At(i), expr.Y.At(i)) }
+func (expr mapTwoExpr) Size() int        { return expr.X.Size() }
+func (expr mapTwoExpr) At(i int) float64 { return expr.F(expr.X.At(i), expr.Y.At(i)) }
+
+// Vector whose i-th element is f().
+func MapNil(n int, f func() float64) Const { return mapNilExpr{n, f} }
+
+type mapNilExpr struct {
+	N int
+	F func() float64
+}
+
+func (expr mapNilExpr) Size() int        { return expr.N }
+func (expr mapNilExpr) At(i int) float64 { return expr.F() }
+
+// Vector whose i-th element is f(i).
+func MapIndex(n int, f func(int) float64) Const { return mapIndexExpr{n, f} }
+
+type mapIndexExpr struct {
+	N int
+	F func(int) float64
+}
+
+func (expr mapIndexExpr) Size() int        { return expr.N }
+func (expr mapIndexExpr) At(i int) float64 { return expr.F(i) }
