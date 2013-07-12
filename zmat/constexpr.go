@@ -4,91 +4,64 @@ package zmat
 
 import "github.com/jackvalmadre/go-vec/zvec"
 
+// Matrix whose (i, j)-th element is f(i, j).
+func IndexMap(m, n int, f func(int, int) complex128) Const {
+	return indexMapExpr{m, n, f}
+}
+
+type indexMapExpr struct {
+	M int
+	N int
+	F func(int, int) complex128
+}
+
+func (expr indexMapExpr) Size() Size {
+	return Size{expr.M, expr.N}
+}
+
+func (expr indexMapExpr) At(i, j int) complex128 {
+	return expr.F(i, j)
+}
+
 // Returns an nxn identity matrix.
 func Identity(n int) Const {
-	return identityExpr{n}
-}
-
-type identityExpr struct {
-	N int
-}
-
-func (expr identityExpr) Size() Size {
-	return Size{expr.N, expr.N}
-}
-
-func (expr identityExpr) At(i, j int) complex128 {
-	if i == j {
-		return 1
+	f := func(i, j int) complex128 {
+		if i == j {
+			return 1
+		}
+		return 0
 	}
-	return 0
+	return IndexMap(n, n, f)
 }
 
 // Returns an nxn read-only diagonal matrix.
 func Diag(v zvec.Const) Const {
-	return diagExpr{v}
-}
-
-type diagExpr struct {
-	Vector zvec.Const
-}
-
-func (expr diagExpr) Size() Size {
-	n := expr.Vector.Size()
-	return Size{n, n}
-}
-
-func (expr diagExpr) At(i, j int) complex128 {
-	if i == j {
-		return expr.Vector.At(i)
+	n := v.Size()
+	f := func(i, j int) complex128 {
+		if i == j {
+			return v.At(i)
+		}
+		return 0
 	}
-	return 0
+	return IndexMap(n, n, f)
 }
 
 // Returns an mxn zero matrix.
 func Zeros(m, n int) Const {
-	return zeroExpr{m, n}
-}
-
-type zeroExpr struct{ M, N int }
-
-func (expr zeroExpr) Size() Size {
-	return Size{expr.M, expr.N}
-}
-
-func (expr zeroExpr) At(i, j int) complex128 {
-	return 0
+	return Constant(m, n, 0)
 }
 
 // Returns an mxn one matrix.
 func Ones(m, n int) Const {
-	return onesExpr{m, n}
-}
-
-type onesExpr struct{ M, N int }
-
-func (expr onesExpr) Size() Size {
-	return Size{expr.M, expr.N}
-}
-
-func (expr onesExpr) At(i, j int) complex128 {
-	return 1
+	return Constant(m, n, 1)
 }
 
 // Returns an mxn constant matrix.
 func Constant(m, n int, alpha complex128) Const {
-	return constantExpr{m, n, alpha}
+	return Unvec(zvec.Constant(m*n, alpha), m, n)
 }
 
-type constantExpr struct {
-	M, N  int
-	Alpha complex128
-}
-
-func (expr constantExpr) Size() Size {
-	return Size{expr.M, expr.N}
-}
-
-func (expr constantExpr) At(i, j int) complex128 {
-	return expr.Alpha
+// Returns an mxn constant matrix.
+func Randn(m, n int, alpha complex128) Const {
+	return Unvec(zvec.Randn(m*n), m, n)
 }

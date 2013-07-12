@@ -4,91 +4,64 @@ package mat
 
 import "github.com/jackvalmadre/go-vec"
 
+// Matrix whose (i, j)-th element is f(i, j).
+func IndexMap(m, n int, f func(int, int) float64) Const {
+	return indexMapExpr{m, n, f}
+}
+
+type indexMapExpr struct {
+	M int
+	N int
+	F func(int, int) float64
+}
+
+func (expr indexMapExpr) Size() Size {
+	return Size{expr.M, expr.N}
+}
+
+func (expr indexMapExpr) At(i, j int) float64 {
+	return expr.F(i, j)
+}
+
 // Returns an nxn identity matrix.
 func Identity(n int) Const {
-	return identityExpr{n}
-}
-
-type identityExpr struct {
-	N int
-}
-
-func (expr identityExpr) Size() Size {
-	return Size{expr.N, expr.N}
-}
-
-func (expr identityExpr) At(i, j int) float64 {
-	if i == j {
-		return 1
+	f := func(i, j int) float64 {
+		if i == j {
+			return 1
+		}
+		return 0
 	}
-	return 0
+	return IndexMap(n, n, f)
 }
 
 // Returns an nxn read-only diagonal matrix.
 func Diag(v vec.Const) Const {
-	return diagExpr{v}
-}
-
-type diagExpr struct {
-	Vector vec.Const
-}
-
-func (expr diagExpr) Size() Size {
-	n := expr.Vector.Size()
-	return Size{n, n}
-}
-
-func (expr diagExpr) At(i, j int) float64 {
-	if i == j {
-		return expr.Vector.At(i)
+	n := v.Size()
+	f := func(i, j int) float64 {
+		if i == j {
+			return v.At(i)
+		}
+		return 0
 	}
-	return 0
+	return IndexMap(n, n, f)
 }
 
 // Returns an mxn zero matrix.
 func Zeros(m, n int) Const {
-	return zeroExpr{m, n}
-}
-
-type zeroExpr struct{ M, N int }
-
-func (expr zeroExpr) Size() Size {
-	return Size{expr.M, expr.N}
-}
-
-func (expr zeroExpr) At(i, j int) float64 {
-	return 0
+	return Constant(m, n, 0)
 }
 
 // Returns an mxn one matrix.
 func Ones(m, n int) Const {
-	return onesExpr{m, n}
-}
-
-type onesExpr struct{ M, N int }
-
-func (expr onesExpr) Size() Size {
-	return Size{expr.M, expr.N}
-}
-
-func (expr onesExpr) At(i, j int) float64 {
-	return 1
+	return Constant(m, n, 1)
 }
 
 // Returns an mxn constant matrix.
 func Constant(m, n int, alpha float64) Const {
-	return constantExpr{m, n, alpha}
+	return Unvec(vec.Constant(m*n, alpha), m, n)
 }
 
-type constantExpr struct {
-	M, N  int
-	Alpha float64
-}
-
-func (expr constantExpr) Size() Size {
-	return Size{expr.M, expr.N}
-}
-
-func (expr constantExpr) At(i, j int) float64 {
-	return expr.Alpha
+// Returns an mxn constant matrix.
+func Randn(m, n int, alpha float64) Const {
+	return Unvec(vec.Randn(m*n), m, n)
 }
