@@ -56,6 +56,6 @@ func Constant(m, n int, alpha float64) Const {
 }
 
 // Returns an mxn constant matrix.
-func Randn(m, n int, alpha float64) Const {
+func Randn(m, n int) Const {
 	return Unvec(vec.Randn(m*n), m, n)
 }

@@ -12,18 +12,18 @@ import (
 // #include "clapack.h"
 import "C"
 
-// Calls SolveVecInPlace on copies of A and b.
-func SolveVec(A mat.Const, b vec.Const) vec.Slice {
+// Calls SolveInPlace on copies of A and b.
+func Solve(A mat.Const, b vec.Const) vec.Slice {
 	// A x = b becomes Q x = u.
 	Q := mat.MakeContiguousCopy(A)
 	u := vec.MakeSliceCopy(b)
-	SolveVecInPlace(Q, u)
+	SolveInPlace(Q, u)
 	return u
 }
 
 // Calls SolveMatInPlace.
 // Result returned in b.
-func SolveVecInPlace(A mat.SubContiguous, b vec.Slice) {
+func SolveInPlace(A mat.SubContiguous, b vec.Slice) {
 	B := mat.ContiguousColMajor{b.Size(), 1, []float64(b)}
 	SolveMatInPlace(A, B)
 }
