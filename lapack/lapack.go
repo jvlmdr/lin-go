@@ -12,7 +12,9 @@ import (
 // #include "clapack.h"
 import "C"
 
-// Calls SolveInPlace on copies of A and b.
+// Solves a square system of equations A x = b.
+//
+// Copies A and b, then calls SolveInPlace.
 func Solve(A mat.Const, b vec.Const) vec.Slice {
 	// A x = b becomes Q x = u.
 	Q := mat.MakeContiguousCopy(A)
@@ -21,8 +23,10 @@ func Solve(A mat.Const, b vec.Const) vec.Slice {
 	return u
 }
 
-// Calls SolveMatInPlace.
-// Result returned in b.
+// Solves a square system of equations A x = b.
+// A is over-written with the LU factorization, result is returned in b.
+//
+// Wraps b as a matrix, then calls SolveMatInPlace.
 func SolveInPlace(A mat.SubContiguous, b vec.Slice) {
 	B := mat.ContiguousColMajor{b.Size(), 1, []float64(b)}
 	SolveMatInPlace(A, B)
