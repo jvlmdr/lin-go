@@ -21,8 +21,8 @@ do
 	sed -i '' "s/mat\./zmat\./g" $z
 	sed -i '' "s/Solve\([(A-Z]\)/SolveComplex\1/g" $z
 	sed -i '' "s/RealLU/ComplexLU/g" $z
-	sed -i '' "s/dgesv/zgesv/g" $z
-	sed -i '' "s/DGESV/ZGESV/g" $z
+	sed -i '' "s/dge\([a-z]*\)/zge\1/g" $z
+	sed -i '' "s/DGE\([A-Z]*\)/ZGE\1/g" $z
 	sed -i '' "s/doublereal/doublecomplex/g" $z
 	go fmt $z >/dev/null
 	chmod a-w $z

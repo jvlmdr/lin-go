@@ -1,0 +1,109 @@
+package lapack
+
+import (
+	"github.com/jackvalmadre/lin-go/mat"
+	"github.com/jackvalmadre/lin-go/vec"
+	"unsafe"
+)
+
+// #include "f2c.h"
+// #include "clapack.h"
+import "C"
+
+// Solves A x = b where A is full rank.
+//
+// Calls DGELS.
+func FullRankSolve(A mat.Const, b vec.Const) vec.Slice {
+	if mat.Rows(A) != b.Size() {
+		panic("Number of equations does not match dimension of vector")
+	}
+
+	// Translate A x = b into Q x = u.
+	m, n := mat.RowsCols(A)
+	Q := mat.MakeContiguousCopy(A)
+	// Allocate enough space for input and solution.
+	ux := vec.MakeSlice(max(m, n))
+	u := ux.Subvec(0, m)
+	x := ux.Subvec(0, n)
+	vec.Copy(u, b)
+
+	FullRankSolveInPlace(Q, NoTrans, ux)
+	return x
+}
+
+// Solves A x = b where A is full rank.
+//
+// Calls DGELS.
+func FullRankSolveInPlace(A mat.SemiContiguousColMajor, trans TransposeMode, b vec.Slice) {
+	B := mat.ContiguousColMajor{b.Size(), 1, []float64(b)}
+	FullRankSolveMatrixInPlace(A, trans, B)
+}
+
+// Solves A X = B where A is full rank.
+//
+// Calls DGELS.
+func FullRankSolveMatrix(A mat.Const, B mat.Const) mat.SemiContiguousColMajor {
+	if mat.Rows(A) != mat.Rows(B) {
+		panic("Matrices have different number of rows")
+	}
+
+	// Translate into Q X = U.
+	m, n := mat.RowsCols(A)
+	nrhs := mat.Cols(B)
+	Q := mat.MakeContiguousCopy(A)
+	// Allocate enough space for constraints and solution.
+	UX := mat.MakeContiguous(max(m, n), nrhs)
+	U := UX.Submat(mat.MakeRect(0, 0, m, nrhs))
+	X := UX.Submat(mat.MakeRect(0, 0, n, nrhs))
+	mat.Copy(U, B)
+
+	FullRankSolveMatrixInPlace(Q, NoTrans, UX)
+	return X
+}
+
+// Solves A X = B where A is full rank.
+//
+// Calls DGELS.
+//
+// B will contain the solution.
+// A will be over-written with either the LQ or QR factorization.
+func FullRankSolveMatrixInPlace(A mat.SemiContiguousColMajor, trans TransposeMode, B mat.SemiContiguousColMajor) {
+	// Check that B has enough space to contain input and solution.
+	if mat.Rows(B) < max(mat.Rows(A), mat.Cols(A)) {
+		m, n := mat.RowsCols(A)
+		// Transpose dimensions if necessary.
+		if trans != NoTrans {
+			m, n = n, m
+		}
+		if mat.Rows(B) < m {
+			panic("Not enough rows to contain constraints")
+		} else {
+			panic("Not enough rows to contain solution")
+		}
+	}
+
+	trans_ := C.char(trans)
+	m := C.integer(mat.Rows(A))
+	n := C.integer(mat.Cols(A))
+	nrhs := C.integer(mat.Cols(B))
+	p_a := (*C.doublereal)(unsafe.Pointer(&A.ColMajorArray()[0]))
+	lda := C.integer(A.Stride())
+	p_b := (*C.doublereal)(unsafe.Pointer(&B.ColMajorArray()[0]))
+	ldb := C.integer(B.Stride())
+	var info C.integer
+
+	// Determine optimal workspace size.
+	work := make([]float64, 1)
+	p_work := (*C.doublereal)(unsafe.Pointer(&work[0]))
+	C_lwork := C.integer(-1)
+	C.dgels_(&trans_, &m, &n, &nrhs, p_a, &lda, p_b, &ldb, p_work, &C_lwork, &info)
+
+	// Allocate optimal workspace size.
+	lwork := int(forceToReal(work[0]))
+	work = make([]float64, lwork)
+	p_work = (*C.doublereal)(unsafe.Pointer(&work[0]))
+	C_lwork = C.integer(lwork)
+
+	// Solve system.
+	C.dgels_(&trans_, &m, &n, &nrhs, p_a, &lda, p_b, &ldb, p_work, &C_lwork, &info)
+}
