@@ -6,8 +6,6 @@ import (
 	"github.com/jackvalmadre/lin-go/vec"
 	"github.com/jackvalmadre/lin-go/zmat"
 	"github.com/jackvalmadre/lin-go/zvec"
-	"math"
-	"math/cmplx"
 	"testing"
 )
 
@@ -46,7 +44,7 @@ func TestSquareSolve(t *testing.T) {
 	want := vec.MakeCopy(vec.Randn(4))
 	b := vec.MakeCopy(mat.TimesVec(A, want))
 	got, _ := SquareSolve(A, b)
-	checkVectorsEqual(t, want, got, 1e-6)
+	checkVectorsEqual(t, want, got, 1e-9)
 }
 
 func TestSquareSolveInPlace(t *testing.T) {
@@ -54,21 +52,7 @@ func TestSquareSolveInPlace(t *testing.T) {
 	want := vec.MakeCopy(vec.Randn(4))
 	got := vec.MakeSliceCopy(mat.TimesVec(A, want))
 	SquareSolveInPlace(A, got)
-	checkVectorsEqual(t, want, got, 1e-6)
-}
-
-func checkVectorsEqual(t *testing.T, want, got vec.Const, eps float64) {
-	if want.Size() != got.Size() {
-		t.Fatalf("Vector sizes do not match (want %d, got %d)", want.Size(), got.Size())
-	}
-
-	for i := 0; i < want.Size(); i++ {
-		x := want.At(i)
-		y := got.At(i)
-		if math.Abs(x-y) > 1e-6 {
-			t.Errorf("Wrong value at index %d (want %g, got %g)", i, x, y)
-		}
-	}
+	checkVectorsEqual(t, want, got, 1e-9)
 }
 
 func ExampleSquareSolveComplex() {
@@ -84,18 +68,4 @@ func ExampleSquareSolveComplex() {
 	fmt.Println(zvec.Sprintf("%.6g", x))
 	// Output:
 	// ((1+1i), (2+2i), (3+3i), (4+4i))
-}
-
-func checkComplexVectorsEqual(t *testing.T, want, got zvec.Const, eps float64) {
-	if want.Size() != got.Size() {
-		t.Fatalf("Vector sizes do not match (want %d, got %d)", want.Size(), got.Size())
-	}
-
-	for i := 0; i < want.Size(); i++ {
-		x := want.At(i)
-		y := got.At(i)
-		if cmplx.Abs(x-y) > 1e-6 {
-			t.Errorf("Wrong value at index %d (want %g, got %g)", i, x, y)
-		}
-	}
 }
