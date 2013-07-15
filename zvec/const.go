@@ -33,23 +33,32 @@ func Append(s []complex128, x Const) []complex128 {
 	return s
 }
 
-func Fprint(w io.Writer, x Const, format string) {
-	fmt.Fprint(w, "(")
+// Prints all elements using format (e.g. "%g").
+// Result is "(x.At(0), x.At(1), ..., x.At(n-1))".
+func Fprintf(w io.Writer, format string, x Const) {
+	fmt.Fprintf(w, "(")
 	for i := 0; i < x.Size(); i++ {
 		if i > 0 {
-			fmt.Fprint(w, ", ")
+			fmt.Fprintf(w, ", ")
 		}
 		fmt.Fprintf(w, format, x.At(i))
 	}
-	fmt.Fprint(w, ")")
+	fmt.Fprintf(w, ")")
 }
 
+// Returns Sprintf(x, "%g").
 func String(x Const) string {
+	return Sprintf("%g", x)
+}
+
+// See Fprintf.
+func Sprintf(format string, x Const) string {
 	var b bytes.Buffer
-	Fprint(&b, x, "%g")
+	Fprintf(&b, format, x)
 	return b.String()
 }
 
-func Print(x Const, format string) {
-	Fprint(os.Stdout, x, format)
+// See Fprintf.
+func Printf(format string, x Const) {
+	Fprintf(os.Stdout, format, x)
 }

@@ -19,9 +19,8 @@ func (A ContiguousRowMajor) Size() Size                 { return A.T().Size().T(
 func (A ContiguousRowMajor) At(i, j int) complex128     { return A.T().At(j, i) }
 func (A ContiguousRowMajor) Set(i, j int, x complex128) { A.T().Set(j, i, x) }
 
-func (A ContiguousRowMajor) RowMajor() bool      { return true }
-func (A ContiguousRowMajor) Array() []complex128 { return A.T().Array() }
-func (A ContiguousRowMajor) Stride() int         { return A.T().Stride() }
+func (A ContiguousRowMajor) RowMajorArray() []complex128 { return A.T().ColMajorArray() }
+func (A ContiguousRowMajor) Stride() int                 { return A.T().Stride() }
 
 // Transpose without copying.
 func (A ContiguousRowMajor) T() ContiguousColMajor { return ContiguousColMajor(A) }
@@ -63,7 +62,7 @@ func (A ContiguousRowMajor) Slice(i0, i1 int) ContiguousRowMajor {
 }
 
 // Selects a submatrix within the contiguous matrix.
-func (A ContiguousRowMajor) Submat(r Rect) SubContiguousRowMajor {
+func (A ContiguousRowMajor) Submat(r Rect) ContiguousRowMajorSubmat {
 	return A.T().Submat(r.T()).T()
 }
 

@@ -30,9 +30,8 @@ func (A ContiguousColMajor) Size() Size                 { return Size{A.Rows, A.
 func (A ContiguousColMajor) At(i, j int) complex128     { return A.Elements[j*A.Rows+i] }
 func (A ContiguousColMajor) Set(i, j int, x complex128) { A.Elements[j*A.Rows+i] = x }
 
-func (A ContiguousColMajor) RowMajor() bool      { return false }
-func (A ContiguousColMajor) Array() []complex128 { return A.Elements }
-func (A ContiguousColMajor) Stride() int         { return A.Rows }
+func (A ContiguousColMajor) ColMajorArray() []complex128 { return A.Elements }
+func (A ContiguousColMajor) Stride() int                 { return A.Rows }
 
 // Transpose without copying.
 func (A ContiguousColMajor) T() ContiguousRowMajor { return ContiguousRowMajor(A) }
@@ -92,11 +91,11 @@ func (A ContiguousColMajor) AppendContiguous(B ContiguousColMajor) ContiguousCol
 }
 
 // Selects a submatrix within the contiguous matrix.
-func (A ContiguousColMajor) Submat(r Rect) SubContiguousColMajor {
+func (A ContiguousColMajor) Submat(r Rect) ContiguousColMajorSubmat {
 	// Extract from first to last element.
 	a := r.Min.I + r.Min.J*A.Rows
 	b := (r.Max.I - 1) + (r.Max.J-1)*A.Rows + 1
-	return SubContiguousColMajor{r.Rows(), r.Cols(), A.Rows, A.Elements[a:b]}
+	return ContiguousColMajorSubmat{r.Rows(), r.Cols(), A.Rows, A.Elements[a:b]}
 }
 
 // Returns MutableColumn(A, j).
