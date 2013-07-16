@@ -2,10 +2,10 @@ package lapack
 
 import "C"
 
-type TransposeMode C.char
+type Transpose C.char
 
 const (
-	NoTrans   = TransposeMode(C.char('N'))
-	Trans     = TransposeMode(C.char('T'))
-	ConjTrans = TransposeMode(C.char('C'))
+	NoTrans   = Transpose(C.char('N'))
+	Trans     = Transpose(C.char('T'))
+	ConjTrans = Transpose(C.char('C'))
 )

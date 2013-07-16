@@ -1,6 +1,7 @@
 package lapack
 
 import (
+	"fmt"
 	"github.com/jackvalmadre/lin-go/mat"
 	"github.com/jackvalmadre/lin-go/vec"
 )
@@ -37,4 +38,29 @@ func SolveSquareMatrix(A mat.Const, B mat.Const) (mat.ContiguousColMajor, RealLU
 	X := mat.MakeContiguousCopy(B)
 	lu := SolveSquareMatrixInPlace(Q, X)
 	return X, lu
+}
+
+// Solves A X = B where A is square.
+//
+// Calls DGESV.
+//
+// Result is returned in B.
+func SolveSquareMatrixInPlace(A mat.SemiContiguousColMajor, B mat.SemiContiguousColMajor) RealLU {
+	if !A.Size().Square() {
+		panic("System of equations is not square")
+	}
+	if mat.Rows(A) != mat.Rows(B) {
+		panic("Matrix dimensions are incompatible")
+	}
+
+	n := mat.Rows(A)
+	ipiv := make(IntList, n)
+
+	info := DGESV(mat.Rows(A), mat.Cols(B), A.ColMajorArray(), A.Stride(), ipiv,
+		B.ColMajorArray(), B.Stride())
+	if info != 0 {
+		panic(fmt.Sprintf("info was non-zero (%d)", info))
+	}
+
+	return RealLU{A, ipiv}
 }

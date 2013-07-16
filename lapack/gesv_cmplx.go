@@ -1,6 +1,7 @@
 package lapack
 
 import (
+	"fmt"
 	"github.com/jackvalmadre/lin-go/zmat"
 	"github.com/jackvalmadre/lin-go/zvec"
 )
@@ -37,4 +38,29 @@ func SolveComplexSquareMatrix(A zmat.Const, B zmat.Const) (zmat.ContiguousColMaj
 	X := zmat.MakeContiguousCopy(B)
 	lu := SolveComplexSquareMatrixInPlace(Q, X)
 	return X, lu
+}
+
+// Solves A X = B where A is square.
+//
+// Calls ZGESV.
+//
+// Result is returned in B.
+func SolveComplexSquareMatrixInPlace(A zmat.SemiContiguousColMajor, B zmat.SemiContiguousColMajor) ComplexLU {
+	if !A.Size().Square() {
+		panic("System of equations is not square")
+	}
+	if zmat.Rows(A) != zmat.Rows(B) {
+		panic("Matrix dimensions are incompatible")
+	}
+
+	n := zmat.Rows(A)
+	ipiv := make(IntList, n)
+
+	info := ZGESV(zmat.Rows(A), zmat.Cols(B), A.ColMajorArray(), A.Stride(), ipiv,
+		B.ColMajorArray(), B.Stride())
+	if info != 0 {
+		panic(fmt.Sprintf("info was non-zero (%d)", info))
+	}
+
+	return ComplexLU{A, ipiv}
 }
