@@ -8,7 +8,7 @@ import (
 // Solves A x = b where A is full rank.
 //
 // Calls ZGELS.
-func FullRankSolveComplex(A zmat.Const, b zvec.Const) zvec.Slice {
+func SolveComplexFullRankSystem(A zmat.Const, b zvec.Const) zvec.Slice {
 	if zmat.Rows(A) != b.Size() {
 		panic("Number of equations does not match dimension of vector")
 	}
@@ -22,22 +22,22 @@ func FullRankSolveComplex(A zmat.Const, b zvec.Const) zvec.Slice {
 	x := ux.Subvec(0, n)
 	zvec.Copy(u, b)
 
-	FullRankSolveComplexInPlace(Q, NoTrans, ux)
+	SolveComplexFullRankSystemInPlace(Q, NoTrans, ux)
 	return x
 }
 
 // Solves A x = b where A is full rank.
 //
 // Calls ZGELS.
-func FullRankSolveComplexInPlace(A zmat.SemiContiguousColMajor, trans TransposeMode, b zvec.Slice) {
+func SolveComplexFullRankSystemInPlace(A zmat.SemiContiguousColMajor, trans TransposeMode, b zvec.Slice) {
 	B := zmat.ContiguousColMajor{b.Size(), 1, []complex128(b)}
-	FullRankSolveComplexMatrixInPlace(A, trans, B)
+	SolveComplexFullRankMatrixSystemInPlace(A, trans, B)
 }
 
 // Solves A X = B where A is full rank.
 //
 // Calls ZGELS.
-func FullRankSolveComplexMatrix(A zmat.Const, B zmat.Const) zmat.SemiContiguousColMajor {
+func SolveComplexFullRankMatrixSystem(A zmat.Const, B zmat.Const) zmat.SemiContiguousColMajor {
 	if zmat.Rows(A) != zmat.Rows(B) {
 		panic("Matrices have different number of rows")
 	}
@@ -52,6 +52,6 @@ func FullRankSolveComplexMatrix(A zmat.Const, B zmat.Const) zmat.SemiContiguousC
 	X := UX.Submat(zmat.MakeRect(0, 0, n, nrhs))
 	zmat.Copy(U, B)
 
-	FullRankSolveComplexMatrixInPlace(Q, NoTrans, UX)
+	SolveComplexFullRankMatrixSystemInPlace(Q, NoTrans, UX)
 	return X
 }

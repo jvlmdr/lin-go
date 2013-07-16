@@ -8,7 +8,7 @@ import (
 // Solves A x = b where A is full rank.
 //
 // Calls DGELS.
-func FullRankSolve(A mat.Const, b vec.Const) vec.Slice {
+func SolveFullRankSystem(A mat.Const, b vec.Const) vec.Slice {
 	if mat.Rows(A) != b.Size() {
 		panic("Number of equations does not match dimension of vector")
 	}
@@ -22,22 +22,22 @@ func FullRankSolve(A mat.Const, b vec.Const) vec.Slice {
 	x := ux.Subvec(0, n)
 	vec.Copy(u, b)
 
-	FullRankSolveInPlace(Q, NoTrans, ux)
+	SolveFullRankSystemInPlace(Q, NoTrans, ux)
 	return x
 }
 
 // Solves A x = b where A is full rank.
 //
 // Calls DGELS.
-func FullRankSolveInPlace(A mat.SemiContiguousColMajor, trans TransposeMode, b vec.Slice) {
+func SolveFullRankSystemInPlace(A mat.SemiContiguousColMajor, trans TransposeMode, b vec.Slice) {
 	B := mat.ContiguousColMajor{b.Size(), 1, []float64(b)}
-	FullRankSolveMatrixInPlace(A, trans, B)
+	SolveFullRankMatrixSystemInPlace(A, trans, B)
 }
 
 // Solves A X = B where A is full rank.
 //
 // Calls DGELS.
-func FullRankSolveMatrix(A mat.Const, B mat.Const) mat.SemiContiguousColMajor {
+func SolveFullRankMatrixSystem(A mat.Const, B mat.Const) mat.SemiContiguousColMajor {
 	if mat.Rows(A) != mat.Rows(B) {
 		panic("Matrices have different number of rows")
 	}
@@ -52,6 +52,6 @@ func FullRankSolveMatrix(A mat.Const, B mat.Const) mat.SemiContiguousColMajor {
 	X := UX.Submat(mat.MakeRect(0, 0, n, nrhs))
 	mat.Copy(U, B)
 
-	FullRankSolveMatrixInPlace(Q, NoTrans, UX)
+	SolveFullRankMatrixSystemInPlace(Q, NoTrans, UX)
 	return X
 }

@@ -15,7 +15,7 @@ import "C"
 //
 // B will contain the solution.
 // A will be over-written with either the LQ or QR factorization.
-func FullRankSolveMatrixInPlace(A mat.SemiContiguousColMajor, trans TransposeMode, B mat.SemiContiguousColMajor) {
+func SolveFullRankMatrixSystemInPlace(A mat.SemiContiguousColMajor, trans TransposeMode, B mat.SemiContiguousColMajor) {
 	// Check that B has enough space to contain input and solution.
 	if mat.Rows(B) < max(mat.Rows(A), mat.Cols(A)) {
 		m, n := mat.RowsCols(A)
