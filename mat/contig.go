@@ -20,7 +20,7 @@ func ContiguousCol(A ColMajor, j int) vec.Slice {
 }
 
 // Selects a submatrix within the contiguous matrix.
-func SemiContiguousSubmat(A ColMajor, r Rect) ContiguousSubmat {
+func ColMajorSubmat(A ColMajor, r Rect) ContiguousSubmat {
 	// Extract from first to last element.
 	a := r.Min.J*A.Stride() + r.Min.I
 	b := (r.Max.J-1)*A.Stride() + r.Max.I

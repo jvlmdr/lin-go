@@ -91,7 +91,7 @@ func SolveComplexMatrixInPlace(A zmat.ColMajor, B zmat.ColMajor, rcond float64) 
 		panic(fmt.Sprintf("info was non-zero (%d)", info))
 	}
 
-	X := zmat.SemiContiguousSubmat(B, zmat.MakeRect(0, 0, size.Cols, zmat.Cols(B)))
+	X := zmat.ColMajorSubmat(B, zmat.MakeRect(0, 0, size.Cols, zmat.Cols(B)))
 	return X, rank, sigma
 }
 

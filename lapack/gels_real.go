@@ -78,7 +78,7 @@ func SolveFullRankMatrixInPlace(A mat.ColMajor, trans Transpose, B mat.ColMajor)
 	DGELSAuto(trans, mat.Rows(A), mat.Cols(A), mat.Cols(B),
 		A.ColMajorArray(), A.Stride(), B.ColMajorArray(), B.Stride())
 
-	return mat.SemiContiguousSubmat(B, mat.MakeRect(0, 0, size.Cols, mat.Cols(B)))
+	return mat.ColMajorSubmat(B, mat.MakeRect(0, 0, size.Cols, mat.Cols(B)))
 }
 
 // Automatically allocates workspace.

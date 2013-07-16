@@ -90,7 +90,7 @@ func SolveMatrixInPlace(A mat.ColMajor, B mat.ColMajor, rcond float64) (mat.ColM
 		panic(fmt.Sprintf("info was non-zero (%d)", info))
 	}
 
-	X := mat.SemiContiguousSubmat(B, mat.MakeRect(0, 0, size.Cols, mat.Cols(B)))
+	X := mat.ColMajorSubmat(B, mat.MakeRect(0, 0, size.Cols, mat.Cols(B)))
 	return X, rank, sigma
 }
 

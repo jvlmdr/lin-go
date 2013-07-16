@@ -78,7 +78,7 @@ func SolveComplexFullRankMatrixInPlace(A zmat.ColMajor, trans Transpose, B zmat.
 	ZGELSAuto(trans, zmat.Rows(A), zmat.Cols(A), zmat.Cols(B),
 		A.ColMajorArray(), A.Stride(), B.ColMajorArray(), B.Stride())
 
-	return zmat.SemiContiguousSubmat(B, zmat.MakeRect(0, 0, size.Cols, zmat.Cols(B)))
+	return zmat.ColMajorSubmat(B, zmat.MakeRect(0, 0, size.Cols, zmat.Cols(B)))
 }
 
 // Automatically allocates workspace.
