@@ -5,8 +5,8 @@ import (
 	"unsafe"
 )
 
-// #include "f2c.h"
-// #include "clapack.h"
+// #include "../f2c.h"
+// #include "../clapack.h"
 import "C"
 
 // Solves A X = B where A is square.
@@ -16,7 +16,7 @@ import "C"
 // Result is returned in B.
 func SolveSquareMatrixInPlace(A mat.SemiContiguousColMajor, B mat.SemiContiguousColMajor) RealLU {
 	if !A.Size().Square() {
-		panic(" of equations is not square")
+		panic("System of equations is not square")
 	}
 	if mat.Rows(A) != mat.Rows(B) {
 		panic("Matrix dimensions are incompatible")

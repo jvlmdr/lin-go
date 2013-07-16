@@ -6,8 +6,8 @@ import (
 	"unsafe"
 )
 
-// #include "f2c.h"
-// #include "clapack.h"
+// #include "../f2c.h"
+// #include "../clapack.h"
 import "C"
 
 // Solves A X = B where A is not necessarily full rank.

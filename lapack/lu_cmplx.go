@@ -2,7 +2,7 @@ package lapack
 
 import "github.com/jackvalmadre/lin-go/zmat"
 
-// #include "f2c.h"
+// #include "../f2c.h"
 import "C"
 
 // Describes a real LU factorization.
