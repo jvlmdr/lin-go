@@ -58,7 +58,7 @@ type augmentExpr struct{ A, B Const }
 
 func (expr augmentExpr) Size() Size {
 	rows, cols := RowsCols(expr.A)
-	return Size{rows, cols+Cols(expr.B)}
+	return Size{rows, cols + Cols(expr.B)}
 }
 
 func (expr augmentExpr) At(i, j int) float64 {
