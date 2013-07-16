@@ -72,5 +72,5 @@ func (A ContiguousRowMajor) Vec() vec.Mutable { return MutableVec(A) }
 // Returns MutableColumn(A, j).
 func (A ContiguousRowMajor) Col(j int) vec.Mutable { return MutableCol(A, j) }
 
-// Returns MutableRow(A, i).
-func (A ContiguousRowMajor) Row(i int) vec.Mutable { return MutableRow(A, i) }
+// Returns a mutable row as a slice vector.
+func (A ContiguousRowMajor) Row(i int) vec.Slice { return A.T().Col(i) }

@@ -14,9 +14,10 @@ import "C"
 //
 // Calls DGELSD.
 //
-// Result is returned in B, which must be big enough to hold constraints and solution (not simultaneously).
-// Returns rank and singular values.
-func SolveMatrixInPlace(A mat.SemiContiguousColMajor, B mat.SemiContiguousColMajor, rcond float64) (int, []float64) {
+// B must be big enough to hold both constraints and solution (not simultaneously).
+// Returns solution, rank and singular values.
+// Solution references same data as B.
+func SolveMatrixInPlace(A mat.SemiContiguousColMajor, B mat.SemiContiguousColMajor, rcond float64) (mat.SemiContiguousColMajor, int, []float64) {
 	// Check that B has enough space to contain input and solution.
 	if mat.Rows(B) < max(mat.Rows(A), mat.Cols(A)) {
 		if mat.Rows(B) < mat.Rows(A) {
@@ -25,6 +26,7 @@ func SolveMatrixInPlace(A mat.SemiContiguousColMajor, B mat.SemiContiguousColMaj
 			panic("Not enough rows to contain solution")
 		}
 	}
+	X := mat.SemiContiguousSubmat(B, mat.MakeRect(0, 0, mat.Cols(A), mat.Cols(B)))
 
 	m := C.integer(mat.Rows(A))
 	n := C.integer(mat.Cols(A))
@@ -71,7 +73,7 @@ func SolveMatrixInPlace(A mat.SemiContiguousColMajor, B mat.SemiContiguousColMaj
 	C.dgelsd_(&m, &n, &nrhs, p_A, &lda, p_B, &ldb, p_s, &rcond_, &rank,
 		p_work, &lwork, p_iwork, &info)
 
-	return int(rank), sigma
+	return X, int(rank), sigma
 }
 
 // Solves A X = B where A is not necessarily full rank.
@@ -80,7 +82,7 @@ func SolveMatrixInPlace(A mat.SemiContiguousColMajor, B mat.SemiContiguousColMaj
 //
 // Result is returned in B, which must be big enough to hold constraints and solution (not simultaneously).
 // Returns rank and singular values.
-func SolveComplexMatrixInPlace(A zmat.SemiContiguousColMajor, B zmat.SemiContiguousColMajor, rcond float64) (int, []float64) {
+func SolveComplexMatrixInPlace(A zmat.SemiContiguousColMajor, B zmat.SemiContiguousColMajor, rcond float64) (zmat.SemiContiguousColMajor, int, []float64) {
 	// Check that B has enough space to contain input and solution.
 	if zmat.Rows(B) < max(zmat.Rows(A), zmat.Cols(A)) {
 		if zmat.Rows(B) < zmat.Rows(A) {
@@ -89,6 +91,7 @@ func SolveComplexMatrixInPlace(A zmat.SemiContiguousColMajor, B zmat.SemiContigu
 			panic("Not enough rows to contain solution")
 		}
 	}
+	X := zmat.SemiContiguousSubmat(B, zmat.MakeRect(0, 0, zmat.Cols(A), zmat.Cols(B)))
 
 	m := C.integer(zmat.Rows(A))
 	n := C.integer(zmat.Cols(A))
@@ -145,5 +148,5 @@ func SolveComplexMatrixInPlace(A zmat.SemiContiguousColMajor, B zmat.SemiContigu
 	C.zgelsd_(&m, &n, &nrhs, p_A, &lda, p_B, &ldb, p_s, &rcond_, &rank,
 		p_work, &lwork, p_rwork, p_iwork, &info)
 
-	return int(rank), sigma
+	return X, int(rank), sigma
 }

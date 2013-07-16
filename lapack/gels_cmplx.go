@@ -19,19 +19,18 @@ func SolveComplexFullRank(A zmat.Const, b zvec.Const) zvec.Slice {
 	// Allocate enough space for input and solution.
 	ux := zvec.MakeSlice(max(m, n))
 	u := ux.Subvec(0, m)
-	x := ux.Subvec(0, n)
 	zvec.Copy(u, b)
 
-	SolveComplexFullRankInPlace(Q, NoTrans, ux)
-	return x
+	return SolveComplexFullRankInPlace(Q, NoTrans, ux)
 }
 
 // Solves A x = b where A is full rank.
 //
 // Calls ZGELS.
-func SolveComplexFullRankInPlace(A zmat.SemiContiguousColMajor, trans TransposeMode, b zvec.Slice) {
+func SolveComplexFullRankInPlace(A zmat.SemiContiguousColMajor, trans TransposeMode, b zvec.Slice) zvec.Slice {
 	B := zmat.ContiguousColMajor{b.Size(), 1, []complex128(b)}
-	SolveComplexFullRankMatrixInPlace(A, trans, B)
+	X := SolveComplexFullRankMatrixInPlace(A, trans, B)
+	return zmat.ContiguousCol(X, 0)
 }
 
 // Solves A X = B where A is full rank.
@@ -49,9 +48,6 @@ func SolveComplexFullRankMatrix(A zmat.Const, B zmat.Const) zmat.SemiContiguousC
 	// Allocate enough space for constraints and solution.
 	UX := zmat.MakeContiguous(max(m, n), nrhs)
 	U := UX.Submat(zmat.MakeRect(0, 0, m, nrhs))
-	X := UX.Submat(zmat.MakeRect(0, 0, n, nrhs))
 	zmat.Copy(U, B)
-
-	SolveComplexFullRankMatrixInPlace(Q, NoTrans, UX)
-	return X
+	return SolveComplexFullRankMatrixInPlace(Q, NoTrans, UX)
 }

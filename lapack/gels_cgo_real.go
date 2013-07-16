@@ -13,22 +13,24 @@ import "C"
 //
 // Calls DGELS.
 //
-// B will contain the solution.
+// B must be large enough to hold both the constraints and the solution (not simultaneously).
+// Returns a matrix which references the elements of B.
 // A will be over-written with either the LQ or QR factorization.
-func SolveFullRankMatrixInPlace(A mat.SemiContiguousColMajor, trans TransposeMode, B mat.SemiContiguousColMajor) {
+func SolveFullRankMatrixInPlace(A mat.SemiContiguousColMajor, trans TransposeMode, B mat.SemiContiguousColMajor) mat.SemiContiguousColMajor {
+	// Transpose dimensions if necessary.
+	numeqs, numvars := mat.RowsCols(A)
+	if trans != NoTrans {
+		numeqs, numvars = numvars, numeqs
+	}
 	// Check that B has enough space to contain input and solution.
 	if mat.Rows(B) < max(mat.Rows(A), mat.Cols(A)) {
-		m, n := mat.RowsCols(A)
-		// Transpose dimensions if necessary.
-		if trans != NoTrans {
-			m, n = n, m
-		}
-		if mat.Rows(B) < m {
+		if mat.Rows(B) < numeqs {
 			panic("Not enough rows to contain constraints")
 		} else {
 			panic("Not enough rows to contain solution")
 		}
 	}
+	X := mat.SemiContiguousSubmat(B, mat.MakeRect(0, 0, numvars, mat.Cols(B)))
 
 	trans_ := C.char(trans)
 	m := C.integer(mat.Rows(A))
@@ -57,4 +59,6 @@ func SolveFullRankMatrixInPlace(A mat.SemiContiguousColMajor, trans TransposeMod
 
 	// Solve system.
 	C.dgels_(&trans_, &m, &n, &nrhs, p_a, &lda, p_b, &ldb, p_work, &lwork, &info)
+
+	return X
 }

@@ -19,19 +19,18 @@ func SolveFullRank(A mat.Const, b vec.Const) vec.Slice {
 	// Allocate enough space for input and solution.
 	ux := vec.MakeSlice(max(m, n))
 	u := ux.Subvec(0, m)
-	x := ux.Subvec(0, n)
 	vec.Copy(u, b)
 
-	SolveFullRankInPlace(Q, NoTrans, ux)
-	return x
+	return SolveFullRankInPlace(Q, NoTrans, ux)
 }
 
 // Solves A x = b where A is full rank.
 //
 // Calls DGELS.
-func SolveFullRankInPlace(A mat.SemiContiguousColMajor, trans TransposeMode, b vec.Slice) {
+func SolveFullRankInPlace(A mat.SemiContiguousColMajor, trans TransposeMode, b vec.Slice) vec.Slice {
 	B := mat.ContiguousColMajor{b.Size(), 1, []float64(b)}
-	SolveFullRankMatrixInPlace(A, trans, B)
+	X := SolveFullRankMatrixInPlace(A, trans, B)
+	return mat.ContiguousCol(X, 0)
 }
 
 // Solves A X = B where A is full rank.
@@ -49,9 +48,6 @@ func SolveFullRankMatrix(A mat.Const, B mat.Const) mat.SemiContiguousColMajor {
 	// Allocate enough space for constraints and solution.
 	UX := mat.MakeContiguous(max(m, n), nrhs)
 	U := UX.Submat(mat.MakeRect(0, 0, m, nrhs))
-	X := UX.Submat(mat.MakeRect(0, 0, n, nrhs))
 	mat.Copy(U, B)
-
-	SolveFullRankMatrixInPlace(Q, NoTrans, UX)
-	return X
+	return SolveFullRankMatrixInPlace(Q, NoTrans, UX)
 }

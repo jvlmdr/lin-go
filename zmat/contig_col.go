@@ -98,8 +98,10 @@ func (A ContiguousColMajor) Submat(r Rect) ContiguousColMajorSubmat {
 	return ContiguousColMajorSubmat{r.Rows(), r.Cols(), A.Rows, A.Elements[a:b]}
 }
 
-// Returns MutableColumn(A, j).
-func (A ContiguousColMajor) Col(j int) zvec.Mutable { return MutableCol(A, j) }
+// Returns a mutable column as a slice vector.
+func (A ContiguousColMajor) Col(j int) zvec.Slice {
+	return ContiguousCol(A, j)
+}
 
 // Returns MutableRow(A, i).
 func (A ContiguousColMajor) Row(i int) zvec.Mutable { return MutableRow(A, i) }

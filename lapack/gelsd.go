@@ -27,11 +27,9 @@ func Solve(A mat.Const, b vec.Const, rcond float64) (vec.Slice, int, []float64) 
 	// Allocate enough space for constraints or solution.
 	ux := vec.MakeSlice(max(m, n))
 	u := ux.Subvec(0, m)
-	x := ux.Subvec(0, n)
 	vec.Copy(u, b)
 
-	rank, sigma := SolveInPlace(Q, ux, rcond)
-	return x, rank, sigma
+	return SolveInPlace(Q, ux, rcond)
 }
 
 // Solves A x = b where A is not necessarily full rank.
@@ -40,9 +38,11 @@ func Solve(A mat.Const, b vec.Const, rcond float64) (vec.Slice, int, []float64) 
 //
 // The result is written to b, which must be big enough to hold constraints and solution (not simultaneously).
 // Returns rank and singular values.
-func SolveInPlace(A mat.SemiContiguousColMajor, b vec.Slice, rcond float64) (int, []float64) {
+func SolveInPlace(A mat.SemiContiguousColMajor, b vec.Slice, rcond float64) (vec.Slice, int, []float64) {
 	B := mat.ContiguousColMajor{b.Size(), 1, []float64(b)}
-	return SolveMatrixInPlace(A, B, rcond)
+	X, rank, sigma := SolveMatrixInPlace(A, B, rcond)
+	x := mat.ContiguousCol(X, 0)
+	return x, rank, sigma
 }
 
 // Solves A x = b where A is not necessarily full rank.
@@ -61,11 +61,9 @@ func SolveMatrix(A mat.Const, B mat.Const, rcond float64) (mat.SemiContiguousCol
 	Q := mat.MakeContiguousCopy(A)
 	UX := mat.MakeContiguous(max(m, n), nrhs)
 	U := UX.Submat(mat.MakeRect(0, 0, m, nrhs))
-	X := UX.Submat(mat.MakeRect(0, 0, n, nrhs))
 	mat.Copy(U, B)
 
-	rank, sigma := SolveMatrixInPlace(Q, UX, rcond)
-	return X, rank, sigma
+	return SolveMatrixInPlace(Q, UX, rcond)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,11 +89,9 @@ func SolveComplex(A zmat.Const, b zvec.Const, rcond float64) (zvec.Slice, int, [
 	// Allocate enough space for constraints or solution.
 	ux := zvec.MakeSlice(max(m, n))
 	u := ux.Subvec(0, m)
-	x := ux.Subvec(0, n)
 	zvec.Copy(u, b)
 
-	rank, sigma := SolveComplexInPlace(Q, ux, rcond)
-	return x, rank, sigma
+	return SolveComplexInPlace(Q, ux, rcond)
 }
 
 // Solves A x = b where A is not necessarily full rank.
@@ -104,9 +100,11 @@ func SolveComplex(A zmat.Const, b zvec.Const, rcond float64) (zvec.Slice, int, [
 //
 // The result is written to b, which must be big enough to hold constraints and solution (not simultaneously).
 // Returns rank and singular values.
-func SolveComplexInPlace(A zmat.SemiContiguousColMajor, b zvec.Slice, rcond float64) (int, []float64) {
+func SolveComplexInPlace(A zmat.SemiContiguousColMajor, b zvec.Slice, rcond float64) (zvec.Slice, int, []float64) {
 	B := zmat.ContiguousColMajor{b.Size(), 1, []complex128(b)}
-	return SolveComplexMatrixInPlace(A, B, rcond)
+	X, rank, sigma := SolveComplexMatrixInPlace(A, B, rcond)
+	x := zmat.ContiguousCol(X, 0)
+	return x, rank, sigma
 }
 
 // Solves A x = b where A is not necessarily full rank.
@@ -125,9 +123,7 @@ func SolveComplexMatrix(A zmat.Const, B zmat.Const, rcond float64) (zmat.SemiCon
 	Q := zmat.MakeContiguousCopy(A)
 	UX := zmat.MakeContiguous(max(m, n), nrhs)
 	U := UX.Submat(zmat.MakeRect(0, 0, m, nrhs))
-	X := UX.Submat(zmat.MakeRect(0, 0, n, nrhs))
 	zmat.Copy(U, B)
 
-	rank, sigma := SolveComplexMatrixInPlace(Q, UX, rcond)
-	return X, rank, sigma
+	return SolveComplexMatrixInPlace(Q, UX, rcond)
 }

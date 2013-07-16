@@ -35,8 +35,10 @@ func (A ContiguousColMajorSubmat) Submat(r Rect) ContiguousColMajorSubmat {
 // Returns MutableVec(A).
 func (A ContiguousColMajorSubmat) Vec() vec.Mutable { return MutableVec(A) }
 
-// Returns MutableColumn(A).
-func (A ContiguousColMajorSubmat) Col(j int) vec.Mutable { return MutableCol(A, j) }
+// Returns a mutable column as a slice vector.
+func (A ContiguousColMajorSubmat) Col(j int) vec.Slice {
+	return ContiguousCol(A, j)
+}
 
 // Returns MutableRow(A).
 func (A ContiguousColMajorSubmat) Row(i int) vec.Mutable { return MutableRow(A, i) }

@@ -13,22 +13,24 @@ import "C"
 //
 // Calls ZGELS.
 //
-// B will contain the solution.
+// B must be large enough to hold both the constraints and the solution (not simultaneously).
+// Returns a matrix which references the elements of B.
 // A will be over-written with either the LQ or QR factorization.
-func SolveComplexFullRankMatrixInPlace(A zmat.SemiContiguousColMajor, trans TransposeMode, B zmat.SemiContiguousColMajor) {
+func SolveComplexFullRankMatrixInPlace(A zmat.SemiContiguousColMajor, trans TransposeMode, B zmat.SemiContiguousColMajor) zmat.SemiContiguousColMajor {
+	// Transpose dimensions if necessary.
+	numeqs, numvars := zmat.RowsCols(A)
+	if trans != NoTrans {
+		numeqs, numvars = numvars, numeqs
+	}
 	// Check that B has enough space to contain input and solution.
 	if zmat.Rows(B) < max(zmat.Rows(A), zmat.Cols(A)) {
-		m, n := zmat.RowsCols(A)
-		// Transpose dimensions if necessary.
-		if trans != NoTrans {
-			m, n = n, m
-		}
-		if zmat.Rows(B) < m {
+		if zmat.Rows(B) < numeqs {
 			panic("Not enough rows to contain constraints")
 		} else {
 			panic("Not enough rows to contain solution")
 		}
 	}
+	X := zmat.SemiContiguousSubmat(B, zmat.MakeRect(0, 0, numvars, zmat.Cols(B)))
 
 	trans_ := C.char(trans)
 	m := C.integer(zmat.Rows(A))
@@ -57,4 +59,6 @@ func SolveComplexFullRankMatrixInPlace(A zmat.SemiContiguousColMajor, trans Tran
 
 	// Solve system.
 	C.zgels_(&trans_, &m, &n, &nrhs, p_a, &lda, p_b, &ldb, p_work, &lwork, &info)
+
+	return X
 }
