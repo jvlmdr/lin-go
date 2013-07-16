@@ -8,7 +8,7 @@ import (
 // Computes (alpha A B), with A and B optionally transposed.
 //
 // Inputs are unchanged.
-func MatrixTimesMatrix(alpha float64, A mat.SemiContiguousColMajor, tA Transpose, B mat.SemiContiguousColMajor, tB Transpose) mat.ContiguousColMajor {
+func MatrixTimesMatrix(alpha float64, A mat.ColMajor, tA Transpose, B mat.ColMajor, tB Transpose) mat.Contiguous {
 	// Get sizes of A and B after transposing.
 	sizeA := A.Size()
 	if tA != NoTrans {
@@ -29,7 +29,7 @@ func MatrixTimesMatrix(alpha float64, A mat.SemiContiguousColMajor, tA Transpose
 // Calls DGEMM.
 //
 // Inputs are unchanged.
-func MatrixTimesMatrixPlusMatrix(alpha float64, A mat.SemiContiguousColMajor, tA Transpose, B mat.SemiContiguousColMajor, tB Transpose, C mat.Const) mat.ContiguousColMajor {
+func MatrixTimesMatrixPlusMatrix(alpha float64, A mat.ColMajor, tA Transpose, B mat.ColMajor, tB Transpose, C mat.Const) mat.Contiguous {
 	D := mat.MakeCopy(C)
 	MatrixTimesMatrixPlusMatrixInPlace(alpha, A, tA, B, tB, 1, D)
 	return D
@@ -41,7 +41,7 @@ func MatrixTimesMatrixPlusMatrix(alpha float64, A mat.SemiContiguousColMajor, tA
 //
 // The result is returned in C.
 // A and B are unchanged.
-func MatrixTimesMatrixPlusMatrixInPlace(alpha float64, A mat.SemiContiguousColMajor, tA Transpose, B mat.SemiContiguousColMajor, tB Transpose, beta float64, C mat.SemiContiguousColMajor) {
+func MatrixTimesMatrixPlusMatrixInPlace(alpha float64, A mat.ColMajor, tA Transpose, B mat.ColMajor, tB Transpose, beta float64, C mat.ColMajor) {
 	// Get sizes of A and B after transposing.
 	sizeA := A.Size()
 	if tA != NoTrans {

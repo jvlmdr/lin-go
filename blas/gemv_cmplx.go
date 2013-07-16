@@ -9,7 +9,7 @@ import (
 // Computes (alpha A x), with A optionally transposed.
 //
 // Inputs are unchanged.
-func ComplexMatrixTimesVector(alpha complex128, A zmat.SemiContiguousColMajor, t Transpose, x zvec.Slice) zvec.Slice {
+func ComplexMatrixTimesVector(alpha complex128, A zmat.ColMajor, t Transpose, x zvec.Slice) zvec.Slice {
 	size := A.Size()
 	if t != NoTrans {
 		size = size.T()
@@ -25,7 +25,7 @@ func ComplexMatrixTimesVector(alpha complex128, A zmat.SemiContiguousColMajor, t
 // Calls ZGEMV.
 //
 // Inputs are unchanged.
-func ComplexMatrixTimesVectorPlusVector(alpha complex128, A zmat.SemiContiguousColMajor, t Transpose, x zvec.Slice, beta complex128, y zvec.Const) zvec.Slice {
+func ComplexMatrixTimesVectorPlusVector(alpha complex128, A zmat.ColMajor, t Transpose, x zvec.Slice, beta complex128, y zvec.Const) zvec.Slice {
 	z := zvec.MakeCopy(y)
 	ComplexMatrixTimesVectorPlusVectorInPlace(alpha, A, t, x, beta, z)
 	return z
@@ -37,7 +37,7 @@ func ComplexMatrixTimesVectorPlusVector(alpha complex128, A zmat.SemiContiguousC
 //
 // The result is returned in y.
 // A and x are unchanged.
-func ComplexMatrixTimesVectorPlusVectorInPlace(alpha complex128, A zmat.SemiContiguousColMajor, t Transpose, x zvec.Slice, beta complex128, y zvec.Slice) {
+func ComplexMatrixTimesVectorPlusVectorInPlace(alpha complex128, A zmat.ColMajor, t Transpose, x zvec.Slice, beta complex128, y zvec.Slice) {
 	size := A.Size()
 	if t != NoTrans {
 		size = size.T()

@@ -39,8 +39,8 @@ func SolveComplex(A zmat.Const, b zvec.Const, rcond float64) (zvec.Slice, int, [
 //
 // The result is written to b, which must be big enough to hold constraints and solution (not simultaneously).
 // Returns rank and singular values.
-func SolveComplexInPlace(A zmat.SemiContiguousColMajor, b zvec.Slice, rcond float64) (zvec.Slice, int, []float64) {
-	B := zmat.ContiguousColMajor{b.Size(), 1, []complex128(b)}
+func SolveComplexInPlace(A zmat.ColMajor, b zvec.Slice, rcond float64) (zvec.Slice, int, []float64) {
+	B := zmat.Contiguous{b.Size(), 1, []complex128(b)}
 	X, rank, sigma := SolveComplexMatrixInPlace(A, B, rcond)
 	x := zmat.ContiguousCol(X, 0)
 	return x, rank, sigma
@@ -51,7 +51,7 @@ func SolveComplexInPlace(A zmat.SemiContiguousColMajor, b zvec.Slice, rcond floa
 // Calls ZGELSD.
 //
 // Returns solution, rank and singular values.
-func SolveComplexMatrix(A zmat.Const, B zmat.Const, rcond float64) (zmat.SemiContiguousColMajor, int, []float64) {
+func SolveComplexMatrix(A zmat.Const, B zmat.Const, rcond float64) (zmat.ColMajor, int, []float64) {
 	if zmat.Rows(A) != zmat.Rows(B) {
 		panic("Matrices have different number of rows")
 	}
@@ -73,7 +73,7 @@ func SolveComplexMatrix(A zmat.Const, B zmat.Const, rcond float64) (zmat.SemiCon
 //
 // Result is returned in B, which must be big enough to hold constraints and solution (not simultaneously).
 // Returns rank and singular values.
-func SolveComplexMatrixInPlace(A zmat.SemiContiguousColMajor, B zmat.SemiContiguousColMajor, rcond float64) (zmat.SemiContiguousColMajor, int, []float64) {
+func SolveComplexMatrixInPlace(A zmat.ColMajor, B zmat.ColMajor, rcond float64) (zmat.ColMajor, int, []float64) {
 	size := A.Size()
 	// Check that B has enough space to contain input and solution.
 	if zmat.Rows(B) < size.Rows {

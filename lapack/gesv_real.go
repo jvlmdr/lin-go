@@ -21,11 +21,11 @@ func SolveSquare(A mat.Const, b vec.Const) (vec.Slice, RealLU) {
 // Calls DGESV.
 //
 // Result is returned in b.
-func SolveSquareInPlace(A mat.SemiContiguousColMajor, b vec.Slice) RealLU {
+func SolveSquareInPlace(A mat.ColMajor, b vec.Slice) RealLU {
 	if mat.Rows(A) != b.Size() {
 		panic("Matrix and vector dimensions are incompatible")
 	}
-	B := mat.ContiguousColMajor{b.Size(), 1, []float64(b)}
+	B := mat.Contiguous{b.Size(), 1, []float64(b)}
 	lu := SolveSquareMatrixInPlace(A, B)
 	return lu
 }
@@ -33,7 +33,7 @@ func SolveSquareInPlace(A mat.SemiContiguousColMajor, b vec.Slice) RealLU {
 // Solves A X = B where A is square.
 //
 // Calls DGESV.
-func SolveSquareMatrix(A mat.Const, B mat.Const) (mat.ContiguousColMajor, RealLU) {
+func SolveSquareMatrix(A mat.Const, B mat.Const) (mat.Contiguous, RealLU) {
 	Q := mat.MakeContiguousCopy(A)
 	X := mat.MakeContiguousCopy(B)
 	lu := SolveSquareMatrixInPlace(Q, X)
@@ -45,7 +45,7 @@ func SolveSquareMatrix(A mat.Const, B mat.Const) (mat.ContiguousColMajor, RealLU
 // Calls DGESV.
 //
 // Result is returned in B.
-func SolveSquareMatrixInPlace(A mat.SemiContiguousColMajor, B mat.SemiContiguousColMajor) RealLU {
+func SolveSquareMatrixInPlace(A mat.ColMajor, B mat.ColMajor) RealLU {
 	if !A.Size().Square() {
 		panic("System of equations is not square")
 	}

@@ -29,8 +29,8 @@ func SolveFullRank(A mat.Const, b vec.Const) vec.Slice {
 // Solves A x = b where A is full rank.
 //
 // Calls DGELS.
-func SolveFullRankInPlace(A mat.SemiContiguousColMajor, trans Transpose, b vec.Slice) vec.Slice {
-	B := mat.ContiguousColMajor{b.Size(), 1, []float64(b)}
+func SolveFullRankInPlace(A mat.ColMajor, trans Transpose, b vec.Slice) vec.Slice {
+	B := mat.Contiguous{b.Size(), 1, []float64(b)}
 	X := SolveFullRankMatrixInPlace(A, trans, B)
 	return mat.ContiguousCol(X, 0)
 }
@@ -38,7 +38,7 @@ func SolveFullRankInPlace(A mat.SemiContiguousColMajor, trans Transpose, b vec.S
 // Solves A X = B where A is full rank.
 //
 // Calls DGELS.
-func SolveFullRankMatrix(A mat.Const, B mat.Const) mat.SemiContiguousColMajor {
+func SolveFullRankMatrix(A mat.Const, B mat.Const) mat.ColMajor {
 	if mat.Rows(A) != mat.Rows(B) {
 		panic("Matrices have different number of rows")
 	}
@@ -61,7 +61,7 @@ func SolveFullRankMatrix(A mat.Const, B mat.Const) mat.SemiContiguousColMajor {
 // B must be large enough to hold both the constraints and the solution (not simultaneously).
 // Returns a matrix which references the elements of B.
 // A will be over-written with either the LQ or QR factorization.
-func SolveFullRankMatrixInPlace(A mat.SemiContiguousColMajor, trans Transpose, B mat.SemiContiguousColMajor) mat.SemiContiguousColMajor {
+func SolveFullRankMatrixInPlace(A mat.ColMajor, trans Transpose, B mat.ColMajor) mat.ColMajor {
 	size := A.Size()
 	// Transpose dimensions if necessary.
 	if trans != NoTrans {

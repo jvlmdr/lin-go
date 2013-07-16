@@ -37,8 +37,8 @@ func Solve(A mat.Const, b vec.Const, rcond float64) (vec.Slice, int, []float64) 
 //
 // The result is written to b, which must be big enough to hold constraints and solution (not simultaneously).
 // Returns rank and singular values.
-func SolveInPlace(A mat.SemiContiguousColMajor, b vec.Slice, rcond float64) (vec.Slice, int, []float64) {
-	B := mat.ContiguousColMajor{b.Size(), 1, []float64(b)}
+func SolveInPlace(A mat.ColMajor, b vec.Slice, rcond float64) (vec.Slice, int, []float64) {
+	B := mat.Contiguous{b.Size(), 1, []float64(b)}
 	X, rank, sigma := SolveMatrixInPlace(A, B, rcond)
 	x := mat.ContiguousCol(X, 0)
 	return x, rank, sigma
@@ -49,7 +49,7 @@ func SolveInPlace(A mat.SemiContiguousColMajor, b vec.Slice, rcond float64) (vec
 // Calls DGELSD.
 //
 // Returns solution, rank and singular values.
-func SolveMatrix(A mat.Const, B mat.Const, rcond float64) (mat.SemiContiguousColMajor, int, []float64) {
+func SolveMatrix(A mat.Const, B mat.Const, rcond float64) (mat.ColMajor, int, []float64) {
 	if mat.Rows(A) != mat.Rows(B) {
 		panic("Matrices have different number of rows")
 	}
@@ -72,7 +72,7 @@ func SolveMatrix(A mat.Const, B mat.Const, rcond float64) (mat.SemiContiguousCol
 // B must be big enough to hold both constraints and solution (not simultaneously).
 // Returns solution, rank and singular values.
 // Solution references same data as B.
-func SolveMatrixInPlace(A mat.SemiContiguousColMajor, B mat.SemiContiguousColMajor, rcond float64) (mat.SemiContiguousColMajor, int, []float64) {
+func SolveMatrixInPlace(A mat.ColMajor, B mat.ColMajor, rcond float64) (mat.ColMajor, int, []float64) {
 	size := A.Size()
 	// Check that B has enough space to contain input and solution.
 	if mat.Rows(B) < size.Rows {

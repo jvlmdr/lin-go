@@ -21,11 +21,11 @@ func SolveComplexSquare(A zmat.Const, b zvec.Const) (zvec.Slice, ComplexLU) {
 // Calls ZGESV.
 //
 // Result is returned in b.
-func SolveComplexSquareInPlace(A zmat.SemiContiguousColMajor, b zvec.Slice) ComplexLU {
+func SolveComplexSquareInPlace(A zmat.ColMajor, b zvec.Slice) ComplexLU {
 	if zmat.Rows(A) != b.Size() {
 		panic("Matrix and vector dimensions are incompatible")
 	}
-	B := zmat.ContiguousColMajor{b.Size(), 1, []complex128(b)}
+	B := zmat.Contiguous{b.Size(), 1, []complex128(b)}
 	lu := SolveComplexSquareMatrixInPlace(A, B)
 	return lu
 }
@@ -33,7 +33,7 @@ func SolveComplexSquareInPlace(A zmat.SemiContiguousColMajor, b zvec.Slice) Comp
 // Solves A X = B where A is square.
 //
 // Calls ZGESV.
-func SolveComplexSquareMatrix(A zmat.Const, B zmat.Const) (zmat.ContiguousColMajor, ComplexLU) {
+func SolveComplexSquareMatrix(A zmat.Const, B zmat.Const) (zmat.Contiguous, ComplexLU) {
 	Q := zmat.MakeContiguousCopy(A)
 	X := zmat.MakeContiguousCopy(B)
 	lu := SolveComplexSquareMatrixInPlace(Q, X)
@@ -45,7 +45,7 @@ func SolveComplexSquareMatrix(A zmat.Const, B zmat.Const) (zmat.ContiguousColMaj
 // Calls ZGESV.
 //
 // Result is returned in B.
-func SolveComplexSquareMatrixInPlace(A zmat.SemiContiguousColMajor, B zmat.SemiContiguousColMajor) ComplexLU {
+func SolveComplexSquareMatrixInPlace(A zmat.ColMajor, B zmat.ColMajor) ComplexLU {
 	if !A.Size().Square() {
 		panic("System of equations is not square")
 	}

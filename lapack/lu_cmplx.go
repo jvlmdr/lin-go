@@ -7,6 +7,6 @@ import "C"
 
 // Describes a real LU factorization.
 type ComplexLU struct {
-	A    zmat.SemiContiguousColMajor
+	A    zmat.ColMajor
 	Ipiv []C.integer
 }

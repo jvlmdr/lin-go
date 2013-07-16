@@ -7,6 +7,6 @@ import "C"
 
 // Describes a real LU factorization.
 type RealLU struct {
-	A    mat.SemiContiguousColMajor
+	A    mat.ColMajor
 	Ipiv []C.integer
 }

@@ -9,7 +9,7 @@ import (
 // Computes (alpha A x), with A optionally transposed.
 //
 // Inputs are unchanged.
-func MatrixTimesVector(alpha float64, A mat.SemiContiguousColMajor, t Transpose, x vec.Slice) vec.Slice {
+func MatrixTimesVector(alpha float64, A mat.ColMajor, t Transpose, x vec.Slice) vec.Slice {
 	size := A.Size()
 	if t != NoTrans {
 		size = size.T()
@@ -25,7 +25,7 @@ func MatrixTimesVector(alpha float64, A mat.SemiContiguousColMajor, t Transpose,
 // Calls DGEMV.
 //
 // Inputs are unchanged.
-func MatrixTimesVectorPlusVector(alpha float64, A mat.SemiContiguousColMajor, t Transpose, x vec.Slice, beta float64, y vec.Const) vec.Slice {
+func MatrixTimesVectorPlusVector(alpha float64, A mat.ColMajor, t Transpose, x vec.Slice, beta float64, y vec.Const) vec.Slice {
 	z := vec.MakeCopy(y)
 	MatrixTimesVectorPlusVectorInPlace(alpha, A, t, x, beta, z)
 	return z
@@ -37,7 +37,7 @@ func MatrixTimesVectorPlusVector(alpha float64, A mat.SemiContiguousColMajor, t 
 //
 // The result is returned in y.
 // A and x are unchanged.
-func MatrixTimesVectorPlusVectorInPlace(alpha float64, A mat.SemiContiguousColMajor, t Transpose, x vec.Slice, beta float64, y vec.Slice) {
+func MatrixTimesVectorPlusVectorInPlace(alpha float64, A mat.ColMajor, t Transpose, x vec.Slice, beta float64, y vec.Slice) {
 	size := A.Size()
 	if t != NoTrans {
 		size = size.T()

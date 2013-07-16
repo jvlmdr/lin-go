@@ -8,7 +8,7 @@ import (
 // Computes (alpha A B), with A and B optionally transposed.
 //
 // Inputs are unchanged.
-func ComplexMatrixTimesMatrix(alpha complex128, A zmat.SemiContiguousColMajor, tA Transpose, B zmat.SemiContiguousColMajor, tB Transpose) zmat.ContiguousColMajor {
+func ComplexMatrixTimesMatrix(alpha complex128, A zmat.ColMajor, tA Transpose, B zmat.ColMajor, tB Transpose) zmat.Contiguous {
 	// Get sizes of A and B after transposing.
 	sizeA := A.Size()
 	if tA != NoTrans {
@@ -29,7 +29,7 @@ func ComplexMatrixTimesMatrix(alpha complex128, A zmat.SemiContiguousColMajor, t
 // Calls ZGEMM.
 //
 // Inputs are unchanged.
-func ComplexMatrixTimesMatrixPlusMatrix(alpha complex128, A zmat.SemiContiguousColMajor, tA Transpose, B zmat.SemiContiguousColMajor, tB Transpose, C zmat.Const) zmat.ContiguousColMajor {
+func ComplexMatrixTimesMatrixPlusMatrix(alpha complex128, A zmat.ColMajor, tA Transpose, B zmat.ColMajor, tB Transpose, C zmat.Const) zmat.Contiguous {
 	D := zmat.MakeCopy(C)
 	ComplexMatrixTimesMatrixPlusMatrixInPlace(alpha, A, tA, B, tB, 1, D)
 	return D
@@ -41,7 +41,7 @@ func ComplexMatrixTimesMatrixPlusMatrix(alpha complex128, A zmat.SemiContiguousC
 //
 // The result is returned in C.
 // A and B are unchanged.
-func ComplexMatrixTimesMatrixPlusMatrixInPlace(alpha complex128, A zmat.SemiContiguousColMajor, tA Transpose, B zmat.SemiContiguousColMajor, tB Transpose, beta complex128, C zmat.SemiContiguousColMajor) {
+func ComplexMatrixTimesMatrixPlusMatrixInPlace(alpha complex128, A zmat.ColMajor, tA Transpose, B zmat.ColMajor, tB Transpose, beta complex128, C zmat.ColMajor) {
 	// Get sizes of A and B after transposing.
 	sizeA := A.Size()
 	if tA != NoTrans {

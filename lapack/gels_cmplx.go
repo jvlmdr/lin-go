@@ -29,8 +29,8 @@ func SolveComplexFullRank(A zmat.Const, b zvec.Const) zvec.Slice {
 // Solves A x = b where A is full rank.
 //
 // Calls ZGELS.
-func SolveComplexFullRankInPlace(A zmat.SemiContiguousColMajor, trans Transpose, b zvec.Slice) zvec.Slice {
-	B := zmat.ContiguousColMajor{b.Size(), 1, []complex128(b)}
+func SolveComplexFullRankInPlace(A zmat.ColMajor, trans Transpose, b zvec.Slice) zvec.Slice {
+	B := zmat.Contiguous{b.Size(), 1, []complex128(b)}
 	X := SolveComplexFullRankMatrixInPlace(A, trans, B)
 	return zmat.ContiguousCol(X, 0)
 }
@@ -38,7 +38,7 @@ func SolveComplexFullRankInPlace(A zmat.SemiContiguousColMajor, trans Transpose,
 // Solves A X = B where A is full rank.
 //
 // Calls ZGELS.
-func SolveComplexFullRankMatrix(A zmat.Const, B zmat.Const) zmat.SemiContiguousColMajor {
+func SolveComplexFullRankMatrix(A zmat.Const, B zmat.Const) zmat.ColMajor {
 	if zmat.Rows(A) != zmat.Rows(B) {
 		panic("Matrices have different number of rows")
 	}
@@ -61,7 +61,7 @@ func SolveComplexFullRankMatrix(A zmat.Const, B zmat.Const) zmat.SemiContiguousC
 // B must be large enough to hold both the constraints and the solution (not simultaneously).
 // Returns a matrix which references the elements of B.
 // A will be over-written with either the LQ or QR factorization.
-func SolveComplexFullRankMatrixInPlace(A zmat.SemiContiguousColMajor, trans Transpose, B zmat.SemiContiguousColMajor) zmat.SemiContiguousColMajor {
+func SolveComplexFullRankMatrixInPlace(A zmat.ColMajor, trans Transpose, B zmat.ColMajor) zmat.ColMajor {
 	size := A.Size()
 	// Transpose dimensions if necessary.
 	if trans != NoTrans {

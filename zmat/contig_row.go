@@ -3,16 +3,16 @@ package zmat
 import "github.com/jackvalmadre/lin-go/zvec"
 
 // Describes a dense matrix with contiguous storage in row-major order.
-type ContiguousRowMajor ContiguousColMajor
+type ContiguousRowMajor Contiguous
 
 // Makes a new rows x cols contiguous matrix.
 func MakeContiguousRowMajor(rows, cols int) ContiguousRowMajor {
-	return MakeContiguousColMajor(cols, rows).T()
+	return MakeContiguous(cols, rows).T()
 }
 
 // Copies B into a new contiguous matrix.
 func MakeContiguousRowMajorCopy(B Const) ContiguousRowMajor {
-	return MakeContiguousColMajorCopy(T(B)).T()
+	return MakeContiguousCopy(T(B)).T()
 }
 
 func (A ContiguousRowMajor) Size() Size                 { return A.T().Size().T() }
@@ -23,7 +23,7 @@ func (A ContiguousRowMajor) RowMajorArray() []complex128 { return A.T().ColMajor
 func (A ContiguousRowMajor) Stride() int                 { return A.T().Stride() }
 
 // Transpose without copying.
-func (A ContiguousRowMajor) T() ContiguousColMajor { return ContiguousColMajor(A) }
+func (A ContiguousRowMajor) T() Contiguous { return Contiguous(A) }
 
 // Modifies the rows and columns of a contiguous matrix.
 // The number of elements must remain constant.

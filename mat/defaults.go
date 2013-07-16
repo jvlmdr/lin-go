@@ -1,11 +1,11 @@
 package mat
 
 // Constructs default matrix.
-func Make(rows, cols int) ContiguousColMajor {
+func Make(rows, cols int) Contiguous {
 	return MakeContiguous(rows, cols)
 }
 
 // Constructs default matrix.
-func MakeCopy(B Const) ContiguousColMajor {
+func MakeCopy(B Const) Contiguous {
 	return MakeContiguousCopy(B)
 }
