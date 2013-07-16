@@ -1,5 +1,7 @@
 package zmat
 
+import "fmt"
+
 type Size struct{ Rows, Cols int }
 
 func (s Size) Equals(t Size) bool {
@@ -19,6 +21,10 @@ func (s Size) T() Size {
 // Returns Rows * Cols.
 func (s Size) Area() int {
 	return s.Rows * s.Cols
+}
+
+func (s Size) String() string {
+	return fmt.Sprintf("%dx%d", s.Rows, s.Cols)
 }
 
 type Index struct{ I, J int }

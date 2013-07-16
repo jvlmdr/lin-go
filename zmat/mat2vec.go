@@ -14,8 +14,8 @@ func (x vecExpr) Size() int { return x.Matrix.Size().Area() }
 func (x vecExpr) At(i int) complex128 {
 	M := x.Matrix
 	rows := Rows(M)
-	p := i / rows
-	q := i % rows
+	p := i % rows
+	q := i / rows
 	return M.At(p, q)
 }
 
@@ -31,16 +31,16 @@ func (x mutableVecExpr) Size() int { return x.Matrix.Size().Area() }
 func (x mutableVecExpr) At(i int) complex128 {
 	M := x.Matrix
 	rows := Rows(M)
-	p := i / rows
-	q := i % rows
+	p := i % rows
+	q := i / rows
 	return M.At(p, q)
 }
 
 func (x mutableVecExpr) Set(i int, v complex128) {
 	M := x.Matrix
 	rows := Rows(M)
-	p := i / rows
-	q := i % rows
+	p := i % rows
+	q := i / rows
 	M.Set(p, q, v)
 }
 

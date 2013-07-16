@@ -71,7 +71,7 @@ func TestFullRankOverdetermined(t *testing.T) {
 	AB := mat.MakeCopy(mat.Times(mat.T(A), B))
 	want, _ := SquareSolveMatrix(AA, AB)
 
-	checkMatricesEqual(t, want, got, 1e-9)
+	mat.CheckEqual(t, want, got, 1e-9)
 }
 
 // Compare against pseudo-inverse solution.
@@ -89,5 +89,5 @@ func TestFullRankUnderdetermined(t *testing.T) {
 	Y, _ := SquareSolveMatrix(AA, B)
 	want := mat.MakeCopy(mat.Times(mat.T(A), Y))
 
-	checkMatricesEqual(t, want, got, 1e-9)
+	mat.CheckEqual(t, want, got, 1e-9)
 }

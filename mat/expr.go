@@ -1,6 +1,9 @@
 package mat
 
-import "github.com/jackvalmadre/lin-go/vec"
+import (
+	"fmt"
+	"github.com/jackvalmadre/lin-go/vec"
+)
 
 // Evaluates a matrix multiplication element by element.
 // Returns a thin wrapper which evaluates the operation on demand.
@@ -44,11 +47,33 @@ func (expr timesVecExpr) At(i int) float64 {
 
 // Returns the horizontal augmentation [A, B].
 func Augment(A, B Const) Const {
-	return Unvec(vec.Cat(Vec(A), Vec(B)), Rows(A), Cols(A)+Cols(B))
+	if Rows(A) != Rows(B) {
+		panic(fmt.Sprintf("Matrices cannot be augmented (%v and %v)", A.Size(), B.Size()))
+	}
+	return augmentExpr{A, B}
+	//return Unvec(vec.Cat(Vec(A), Vec(B)), Rows(A), Cols(A)+Cols(B))
+}
+
+type augmentExpr struct{ A, B Const }
+
+func (expr augmentExpr) Size() Size {
+	rows, cols := RowsCols(expr.A)
+	return Size{rows, cols+Cols(expr.B)}
+}
+
+func (expr augmentExpr) At(i, j int) float64 {
+	n := Cols(expr.A)
+	if j < n {
+		return expr.A.At(i, j)
+	}
+	return expr.B.At(i, j-n)
 }
 
 // Returns the vertical stacking [A; B].
 func Stack(A, B Const) Const {
+	if Cols(A) != Cols(B) {
+		panic(fmt.Sprintf("Matrices cannot be stacked (%v and %v)", A.Size(), B.Size()))
+	}
 	return T(Augment(T(A), T(B)))
 }
 

@@ -34,7 +34,7 @@ type unvecExpr struct {
 func (expr unvecExpr) Size() Size { return Size{expr.Rows, expr.Cols} }
 
 func (expr unvecExpr) At(i, j int) float64 {
-	return expr.Vector.At(i*expr.Cols + j)
+	return expr.Vector.At(j*expr.Rows + i)
 }
 
 // Address a mutable vector as a matrix.
@@ -52,9 +52,9 @@ type mutableUnvecExpr struct {
 func (expr mutableUnvecExpr) Size() Size { return Size{expr.Rows, expr.Cols} }
 
 func (expr mutableUnvecExpr) At(i, j int) float64 {
-	return expr.Vector.At(i*expr.Cols + j)
+	return expr.Vector.At(j*expr.Rows + i)
 }
 
 func (expr mutableUnvecExpr) Set(i, j int, v float64) {
-	expr.Vector.Set(i*expr.Cols+j, v)
+	expr.Vector.Set(j*expr.Rows+i, v)
 }
