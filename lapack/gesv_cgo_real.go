@@ -14,9 +14,9 @@ import "C"
 // Calls DGESV.
 //
 // Result is returned in B.
-func SquareSolveMatrixInPlace(A mat.SemiContiguousColMajor, B mat.SemiContiguousColMajor) RealLU {
+func SolveSquareMatrixInPlace(A mat.SemiContiguousColMajor, B mat.SemiContiguousColMajor) RealLU {
 	if !A.Size().Square() {
-		panic("System of equations is not square")
+		panic(" of equations is not square")
 	}
 	if mat.Rows(A) != mat.Rows(B) {
 		panic("Matrix dimensions are incompatible")

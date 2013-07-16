@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func ExampleSquareSolve() {
+func ExampleSolveSquare() {
 	A := mat.MakeCopy(mat.Randn(4, 4))
 	z := vec.Make(4)
 	z.Set(0, 1)
@@ -18,13 +18,13 @@ func ExampleSquareSolve() {
 	z.Set(3, 4)
 
 	b := vec.MakeCopy(mat.TimesVec(A, z))
-	x, _ := SquareSolve(A, b)
+	x, _ := SolveSquare(A, b)
 	fmt.Println(vec.Sprintf("%.6g", x))
 	// Output:
 	// (1, 2, 3, 4)
 }
 
-func ExampleSquareSolveInPlace() {
+func ExampleSolveSquareInPlace() {
 	A := mat.MakeCopy(mat.Randn(4, 4))
 	z := vec.Make(4)
 	z.Set(0, 1)
@@ -33,29 +33,29 @@ func ExampleSquareSolveInPlace() {
 	z.Set(3, 4)
 
 	x := vec.MakeSliceCopy(mat.TimesVec(A, z))
-	SquareSolveInPlace(A, x)
+	SolveSquareInPlace(A, x)
 	fmt.Println(vec.Sprintf("%.6g", x))
 	// Output:
 	// (1, 2, 3, 4)
 }
 
-func TestSquareSolve(t *testing.T) {
+func TestSolveSquare(t *testing.T) {
 	A := mat.MakeCopy(mat.Randn(4, 4))
 	want := vec.MakeCopy(vec.Randn(4))
 	b := vec.MakeCopy(mat.TimesVec(A, want))
-	got, _ := SquareSolve(A, b)
+	got, _ := SolveSquare(A, b)
 	checkVectorsEqual(t, want, got, 1e-9)
 }
 
-func TestSquareSolveInPlace(t *testing.T) {
+func TestSolveSquareInPlace(t *testing.T) {
 	A := mat.MakeCopy(mat.Randn(4, 4))
 	want := vec.MakeCopy(vec.Randn(4))
 	got := vec.MakeSliceCopy(mat.TimesVec(A, want))
-	SquareSolveInPlace(A, got)
+	SolveSquareInPlace(A, got)
 	checkVectorsEqual(t, want, got, 1e-9)
 }
 
-func ExampleSquareSolveComplex() {
+func ExampleSolveComplexSquare() {
 	A := zmat.MakeCopy(zmat.Randn(4, 4))
 	z := zvec.Make(4)
 	z.Set(0, 1+1i)
@@ -64,7 +64,7 @@ func ExampleSquareSolveComplex() {
 	z.Set(3, 4+4i)
 
 	b := zvec.MakeCopy(zmat.TimesVec(A, z))
-	x, _ := SquareSolveComplex(A, b)
+	x, _ := SolveComplexSquare(A, b)
 	fmt.Println(zvec.Sprintf("%.6g", x))
 	// Output:
 	// ((1+1i), (2+2i), (3+3i), (4+4i))

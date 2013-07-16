@@ -11,7 +11,7 @@ import (
 //	x     = 3,
 //	    y = 6,
 //	x + y = 3.
-func ExampleSolveFullRankSystem_overdetermined() {
+func ExampleSolveFullRank_overdetermined() {
 	A := mat.Make(3, 2)
 	b := vec.Make(3)
 
@@ -27,7 +27,7 @@ func ExampleSolveFullRankSystem_overdetermined() {
 	A.Set(2, 1, 1)
 	b.Set(2, 3)
 
-	x := SolveFullRankSystem(A, b)
+	x := SolveFullRank(A, b)
 	fmt.Println(vec.Sprintf("%.6g", x))
 	// Output:
 	// (1, 4)
@@ -36,7 +36,7 @@ func ExampleSolveFullRankSystem_overdetermined() {
 // Find minimum-norm solution to
 //	x     + z = 6,
 //	    y + z = 9.
-func ExampleSolveFullRankSystem_underdetermined() {
+func ExampleSolveFullRank_underdetermined() {
 	A := mat.Make(2, 3)
 	b := vec.Make(2)
 
@@ -50,7 +50,7 @@ func ExampleSolveFullRankSystem_underdetermined() {
 	A.Set(1, 2, 1)
 	b.Set(1, 9)
 
-	x := SolveFullRankSystem(A, b)
+	x := SolveFullRank(A, b)
 	fmt.Println(vec.Sprintf("%.6g", x))
 	// Output:
 	// (1, 4, 5)
@@ -65,11 +65,11 @@ func TestFullRankOverdetermined(t *testing.T) {
 	)
 	A := mat.MakeCopy(mat.Randn(m, n))
 	B := mat.MakeCopy(mat.Randn(m, p))
-	got := SolveFullRankMatrixSystem(A, B)
+	got := SolveFullRankMatrix(A, B)
 
 	AA := mat.MakeCopy(mat.Times(mat.T(A), A))
 	AB := mat.MakeCopy(mat.Times(mat.T(A), B))
-	want, _ := SquareSolveMatrix(AA, AB)
+	want, _ := SolveSquareMatrix(AA, AB)
 
 	mat.CheckEqual(t, want, got, 1e-9)
 }
@@ -83,10 +83,10 @@ func TestFullRankUnderdetermined(t *testing.T) {
 	)
 	A := mat.MakeCopy(mat.Randn(m, n))
 	B := mat.MakeCopy(mat.Randn(m, p))
-	got := SolveFullRankMatrixSystem(A, B)
+	got := SolveFullRankMatrix(A, B)
 
 	AA := mat.MakeCopy(mat.Times(A, mat.T(A)))
-	Y, _ := SquareSolveMatrix(AA, B)
+	Y, _ := SolveSquareMatrix(AA, B)
 	want := mat.MakeCopy(mat.Times(mat.T(A), Y))
 
 	mat.CheckEqual(t, want, got, 1e-9)

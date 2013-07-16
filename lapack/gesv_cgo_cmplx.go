@@ -14,9 +14,9 @@ import "C"
 // Calls ZGESV.
 //
 // Result is returned in B.
-func SquareSolveComplexMatrixInPlace(A zmat.SemiContiguousColMajor, B zmat.SemiContiguousColMajor) ComplexLU {
+func SolveComplexSquareMatrixInPlace(A zmat.SemiContiguousColMajor, B zmat.SemiContiguousColMajor) ComplexLU {
 	if !A.Size().Square() {
-		panic("System of equations is not square")
+		panic(" of equations is not square")
 	}
 	if zmat.Rows(A) != zmat.Rows(B) {
 		panic("Matrix dimensions are incompatible")
