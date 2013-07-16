@@ -5,7 +5,7 @@ package lapack
 import "unsafe"
 
 // #include "../f2c.h"
-// #include "../clapack.h"
+// #include "../lapack.h"
 import "C"
 
 // Called by SolveComplexXxx.

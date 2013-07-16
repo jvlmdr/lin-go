@@ -3,7 +3,7 @@ package blas
 import "unsafe"
 
 // #include "../f2c.h"
-// #include "../clapack.h"
+// #include "../blas.h"
 import "C"
 
 // http://www.netlib.org/blas/dgemv.f
