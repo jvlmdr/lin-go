@@ -22,10 +22,10 @@ func SolveSquare(A mat.Const, b vec.Const) (vec.Slice, RealLU) {
 //
 // Result is returned in b.
 func SolveSquareInPlace(A mat.ColMajor, b vec.Slice) RealLU {
-	if mat.Rows(A) != b.Size() {
+	if mat.Rows(A) != b.Len() {
 		panic("Matrix and vector dimensions are incompatible")
 	}
-	B := mat.Contiguous{b.Size(), 1, []float64(b)}
+	B := mat.Contiguous{b.Len(), 1, []float64(b)}
 	lu := SolveSquareMatrixInPlace(A, B)
 	return lu
 }

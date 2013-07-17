@@ -11,7 +11,7 @@ import (
 //
 // Calls DGELS.
 func SolveFullRank(A mat.Const, b vec.Const) vec.Slice {
-	if mat.Rows(A) != b.Size() {
+	if mat.Rows(A) != b.Len() {
 		panic("Number of equations does not match dimension of vector")
 	}
 
@@ -30,7 +30,7 @@ func SolveFullRank(A mat.Const, b vec.Const) vec.Slice {
 //
 // Calls DGELS.
 func SolveFullRankInPlace(A mat.ColMajor, trans Transpose, b vec.Slice) vec.Slice {
-	B := mat.Contiguous{b.Size(), 1, []float64(b)}
+	B := mat.Contiguous{b.Len(), 1, []float64(b)}
 	X := SolveFullRankMatrixInPlace(A, trans, B)
 	return mat.ContiguousCol(X, 0)
 }

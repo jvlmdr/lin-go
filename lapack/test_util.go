@@ -9,11 +9,11 @@ import (
 )
 
 func checkVectorsEqual(t *testing.T, want, got vec.Const, eps float64) {
-	if want.Size() != got.Size() {
-		t.Fatalf("Vector sizes do not match (want %d, got %d)", want.Size(), got.Size())
+	if want.Len() != got.Len() {
+		t.Fatalf("Vector sizes do not match (want %d, got %d)", want.Len(), got.Len())
 	}
 
-	for i := 0; i < want.Size(); i++ {
+	for i := 0; i < want.Len(); i++ {
 		x := want.At(i)
 		y := got.At(i)
 		if math.Abs(x-y) > 1e-6 {
@@ -23,11 +23,11 @@ func checkVectorsEqual(t *testing.T, want, got vec.Const, eps float64) {
 }
 
 func checkComplexVectorsEqual(t *testing.T, want, got zvec.Const, eps float64) {
-	if want.Size() != got.Size() {
-		t.Fatalf("Vector sizes do not match (want %d, got %d)", want.Size(), got.Size())
+	if want.Len() != got.Len() {
+		t.Fatalf("Vector sizes do not match (want %d, got %d)", want.Len(), got.Len())
 	}
 
-	for i := 0; i < want.Size(); i++ {
+	for i := 0; i < want.Len(); i++ {
 		x := want.At(i)
 		y := got.At(i)
 		if cmplx.Abs(x-y) > 1e-6 {

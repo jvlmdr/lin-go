@@ -7,10 +7,10 @@ import "fmt"
 // Copies src into dst.
 // Must have same size.
 func Copy(dst Mutable, src Const) {
-	if dst.Size() != src.Size() {
-		panic(fmt.Sprintf("Vectors are different sizes (%d and %d)", dst.Size(), src.Size()))
+	if dst.Len() != src.Len() {
+		panic(fmt.Sprintf("Vectors are different sizes (%d and %d)", dst.Len(), src.Len()))
 	}
-	for i := 0; i < src.Size(); i++ {
+	for i := 0; i < src.Len(); i++ {
 		dst.Set(i, src.At(i))
 	}
 }
@@ -21,14 +21,14 @@ func Copy(dst Mutable, src Const) {
 //
 // Result is such that
 //	dst.At(0) == src.At(0)
-//	dst.At(src.Size() - 1) == Sum(src)
+//	dst.At(src.Len() - 1) == Sum(src)
 func CumSum(dst Mutable, src Const) {
-	if dst.Size() != src.Size() {
-		panic(fmt.Sprintf("Vectors are different sizes (%d and %d)", dst.Size(), src.Size()))
+	if dst.Len() != src.Len() {
+		panic(fmt.Sprintf("Vectors are different sizes (%d and %d)", dst.Len(), src.Len()))
 	}
 
 	var total complex128
-	for i := 0; i < src.Size(); i++ {
+	for i := 0; i < src.Len(); i++ {
 		total += src.At(i)
 		dst.Set(i, total)
 	}

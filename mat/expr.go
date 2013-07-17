@@ -34,10 +34,10 @@ type timesVecExpr struct {
 	X vec.Const
 }
 
-func (expr timesVecExpr) Size() int { return Rows(expr.A) }
+func (expr timesVecExpr) Len() int { return Rows(expr.A) }
 
 func (expr timesVecExpr) At(i int) float64 {
-	n := expr.X.Size()
+	n := expr.X.Len()
 	var y float64
 	for j := 0; j < n; j++ {
 		y += expr.A.At(i, j) * expr.X.At(j)

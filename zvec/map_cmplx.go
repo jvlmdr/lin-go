@@ -80,7 +80,7 @@ type mapToRealExpr struct {
 	F func(complex128) float64
 }
 
-func (expr mapToRealExpr) Size() int        { return expr.X.Size() }
+func (expr mapToRealExpr) Len() int         { return expr.X.Len() }
 func (expr mapToRealExpr) At(i int) float64 { return expr.F(expr.X.At(i)) }
 
 // Mutable wrapper which accesses the real part of a complex vector.
@@ -88,7 +88,7 @@ func RealMutable(x Mutable) vec.Mutable { return realExpr{x} }
 
 type realExpr struct{ X Mutable }
 
-func (expr realExpr) Size() int        { return expr.X.Size() }
+func (expr realExpr) Len() int         { return expr.X.Len() }
 func (expr realExpr) At(i int) float64 { return real(expr.X.At(i)) }
 
 func (expr realExpr) Set(i int, x float64) {
@@ -100,7 +100,7 @@ func ImagMutable(x Mutable) vec.Mutable { return imagExpr{x} }
 
 type imagExpr struct{ X Mutable }
 
-func (expr imagExpr) Size() int        { return expr.X.Size() }
+func (expr imagExpr) Len() int         { return expr.X.Len() }
 func (expr imagExpr) At(i int) float64 { return imag(expr.X.At(i)) }
 
 func (expr imagExpr) Set(i int, x float64) {
@@ -114,7 +114,7 @@ func ConjMutable(x Mutable) Mutable {
 
 type conjExpr struct{ X Mutable }
 
-func (expr conjExpr) Size() int           { return expr.X.Size() }
+func (expr conjExpr) Len() int            { return expr.X.Len() }
 func (expr conjExpr) At(i int) complex128 { return cmplx.Conj(expr.X.At(i)) }
 
 func (expr conjExpr) Set(i int, x complex128) {
@@ -133,7 +133,7 @@ type mapToComplex struct {
 	F func(float64, float64) complex128
 }
 
-func (expr mapToComplex) Size() int { return expr.X.Size() }
+func (expr mapToComplex) Len() int { return expr.X.Len() }
 
 func (expr mapToComplex) At(i int) complex128 {
 	return expr.F(expr.X.At(i), expr.Y.At(i))

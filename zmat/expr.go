@@ -34,10 +34,10 @@ type timesVecExpr struct {
 	X zvec.Const
 }
 
-func (expr timesVecExpr) Size() int { return Rows(expr.A) }
+func (expr timesVecExpr) Len() int { return Rows(expr.A) }
 
 func (expr timesVecExpr) At(i int) complex128 {
-	n := expr.X.Size()
+	n := expr.X.Len()
 	var y complex128
 	for j := 0; j < n; j++ {
 		y += expr.A.At(i, j) * expr.X.At(j)

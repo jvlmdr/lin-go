@@ -5,7 +5,7 @@ package vec
 import "math"
 
 func Mean(x Const) float64 {
-	return Sum(x) / float64(x.Size())
+	return Sum(x) / float64(x.Len())
 }
 
 func Dot(x, y Const) float64 {
@@ -44,7 +44,7 @@ func LpNorm(x Const, p float64) float64 {
 func Min(x Const) (float64, int) {
 	argmin := -1
 	xmin := math.Inf(1)
-	for i := 0; i < x.Size(); i++ {
+	for i := 0; i < x.Len(); i++ {
 		xi := x.At(i)
 		if xi < xmin {
 			xmin = xi
@@ -57,7 +57,7 @@ func Min(x Const) (float64, int) {
 func Max(x Const) (float64, int) {
 	argmax := -1
 	xmax := math.Inf(-1)
-	for i := 0; i < x.Size(); i++ {
+	for i := 0; i < x.Len(); i++ {
 		xi := x.At(i)
 		if xi > xmax {
 			xmax = xi
@@ -72,7 +72,7 @@ func MinMax(x Const) (xmin float64, argmin int, xmax float64, argmax int) {
 	argmax = -1
 	xmin = math.Inf(1)
 	xmax = math.Inf(-1)
-	for i := 0; i < x.Size(); i++ {
+	for i := 0; i < x.Len(); i++ {
 		xi := x.At(i)
 		if xi < xmin {
 			xmin = xi

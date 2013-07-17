@@ -22,10 +22,10 @@ func SolveComplexSquare(A zmat.Const, b zvec.Const) (zvec.Slice, ComplexLU) {
 //
 // Result is returned in b.
 func SolveComplexSquareInPlace(A zmat.ColMajor, b zvec.Slice) ComplexLU {
-	if zmat.Rows(A) != b.Size() {
+	if zmat.Rows(A) != b.Len() {
 		panic("Matrix and vector dimensions are incompatible")
 	}
-	B := zmat.Contiguous{b.Size(), 1, []complex128(b)}
+	B := zmat.Contiguous{b.Len(), 1, []complex128(b)}
 	lu := SolveComplexSquareMatrixInPlace(A, B)
 	return lu
 }

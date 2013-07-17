@@ -19,7 +19,7 @@ func TestCumSum(t *testing.T) {
 		t.Errorf("First elements should be equal (want %g, got %g)", x.At(0), y.At(0))
 	}
 	sum := Sum(x)
-	if math.Abs(y.At(y.Size()-1)-sum) > eps {
-		t.Errorf("Last element should equal sum (want %g, got %g)", sum, y.At(y.Size()-1))
+	if math.Abs(y.At(y.Len()-1)-sum) > eps {
+		t.Errorf("Last element should equal sum (want %g, got %g)", sum, y.At(y.Len()-1))
 	}
 }

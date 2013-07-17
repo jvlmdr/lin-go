@@ -11,7 +11,7 @@ import (
 //
 // Calls ZGELS.
 func SolveComplexFullRank(A zmat.Const, b zvec.Const) zvec.Slice {
-	if zmat.Rows(A) != b.Size() {
+	if zmat.Rows(A) != b.Len() {
 		panic("Number of equations does not match dimension of vector")
 	}
 
@@ -30,7 +30,7 @@ func SolveComplexFullRank(A zmat.Const, b zvec.Const) zvec.Slice {
 //
 // Calls ZGELS.
 func SolveComplexFullRankInPlace(A zmat.ColMajor, trans Transpose, b zvec.Slice) zvec.Slice {
-	B := zmat.Contiguous{b.Size(), 1, []complex128(b)}
+	B := zmat.Contiguous{b.Len(), 1, []complex128(b)}
 	X := SolveComplexFullRankMatrixInPlace(A, trans, B)
 	return zmat.ContiguousCol(X, 0)
 }

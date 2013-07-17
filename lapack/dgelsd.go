@@ -16,7 +16,7 @@ import (
 // Singular values <= rcond * sigma_1 are considered zero.
 // If rcond < 0, machine precision is used.
 func Solve(A mat.Const, b vec.Const, rcond float64) (vec.Slice, int, []float64) {
-	if mat.Rows(A) != b.Size() {
+	if mat.Rows(A) != b.Len() {
 		panic("Number of equations does not match dimension of vector")
 	}
 
@@ -38,7 +38,7 @@ func Solve(A mat.Const, b vec.Const, rcond float64) (vec.Slice, int, []float64) 
 // The result is written to b, which must be big enough to hold constraints and solution (not simultaneously).
 // Returns rank and singular values.
 func SolveInPlace(A mat.ColMajor, b vec.Slice, rcond float64) (vec.Slice, int, []float64) {
-	B := mat.Contiguous{b.Size(), 1, []float64(b)}
+	B := mat.Contiguous{b.Len(), 1, []float64(b)}
 	X, rank, sigma := SolveMatrixInPlace(A, B, rcond)
 	x := mat.ContiguousCol(X, 0)
 	return x, rank, sigma

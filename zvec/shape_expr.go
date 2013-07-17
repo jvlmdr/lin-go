@@ -9,10 +9,10 @@ func Cat(x, y Const) Const {
 
 type catExpr struct{ X, Y Const }
 
-func (expr catExpr) Size() int { return expr.X.Size() + expr.Y.Size() }
+func (expr catExpr) Len() int { return expr.X.Len() + expr.Y.Len() }
 
 func (expr catExpr) At(i int) complex128 {
-	n := expr.X.Size()
+	n := expr.X.Len()
 	if i < n {
 		return expr.X.At(i)
 	}
@@ -26,10 +26,10 @@ func MutableCat(x, y Mutable) Mutable {
 
 type mutableCatExpr struct{ X, Y Mutable }
 
-func (expr mutableCatExpr) Size() int { return expr.X.Size() + expr.Y.Size() }
+func (expr mutableCatExpr) Len() int { return expr.X.Len() + expr.Y.Len() }
 
 func (expr mutableCatExpr) At(i int) complex128 {
-	n := expr.X.Size()
+	n := expr.X.Len()
 	if i < n {
 		return expr.X.At(i)
 	}
@@ -37,7 +37,7 @@ func (expr mutableCatExpr) At(i int) complex128 {
 }
 
 func (expr mutableCatExpr) Set(i int, x complex128) {
-	n := expr.X.Size()
+	n := expr.X.Len()
 	if i < n {
 		expr.X.Set(i, x)
 		return

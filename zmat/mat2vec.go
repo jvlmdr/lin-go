@@ -9,7 +9,7 @@ func Vec(A Const) zvec.Const { return vecExpr{A} }
 
 type vecExpr struct{ Matrix Const }
 
-func (x vecExpr) Size() int { return x.Matrix.Size().Area() }
+func (x vecExpr) Len() int { return x.Matrix.Size().Area() }
 
 func (x vecExpr) At(i int) complex128 {
 	M := x.Matrix
@@ -26,7 +26,7 @@ func MutableVec(A Mutable) zvec.Mutable {
 
 type mutableVecExpr struct{ Matrix Mutable }
 
-func (x mutableVecExpr) Size() int { return x.Matrix.Size().Area() }
+func (x mutableVecExpr) Len() int { return x.Matrix.Size().Area() }
 
 func (x mutableVecExpr) At(i int) complex128 {
 	M := x.Matrix
@@ -52,7 +52,7 @@ type columnExpr struct {
 	J      int
 }
 
-func (col columnExpr) Size() int           { return Rows(col.Matrix) }
+func (col columnExpr) Len() int            { return Rows(col.Matrix) }
 func (col columnExpr) At(i int) complex128 { return col.Matrix.At(i, col.J) }
 
 // Accesses a column in a mutable matrix as a vector.
@@ -63,7 +63,7 @@ type mutableColExpr struct {
 	J      int
 }
 
-func (col mutableColExpr) Size() int               { return Rows(col.Matrix) }
+func (col mutableColExpr) Len() int                { return Rows(col.Matrix) }
 func (col mutableColExpr) At(i int) complex128     { return col.Matrix.At(i, col.J) }
 func (col mutableColExpr) Set(i int, v complex128) { col.Matrix.Set(i, col.J, v) }
 
@@ -75,7 +75,7 @@ type rowExpr struct {
 	I      int
 }
 
-func (row rowExpr) Size() int           { return Rows(row.Matrix) }
+func (row rowExpr) Len() int            { return Rows(row.Matrix) }
 func (row rowExpr) At(j int) complex128 { return row.Matrix.At(row.I, j) }
 
 // Accesses a row in a constant matrix as a vector.
@@ -86,7 +86,7 @@ type mutableRowExpr struct {
 	I      int
 }
 
-func (row mutableRowExpr) Size() int               { return Rows(row.Matrix) }
+func (row mutableRowExpr) Len() int                { return Rows(row.Matrix) }
 func (row mutableRowExpr) At(j int) complex128     { return row.Matrix.At(row.I, j) }
 func (row mutableRowExpr) Set(j int, v complex128) { row.Matrix.Set(row.I, j, v) }
 
@@ -107,7 +107,7 @@ func MutableDiagVec(A Mutable) zvec.Mutable {
 
 type mutableDiagVecExpr struct{ Matrix Mutable }
 
-func (expr mutableDiagVecExpr) Size() int {
+func (expr mutableDiagVecExpr) Len() int {
 	rows, cols := RowsCols(expr.Matrix)
 	return min(rows, cols)
 }

@@ -5,7 +5,7 @@ package zvec
 // Describes a list of real numbers.
 type Const interface {
 	// Returns the vector space which the vector belongs to.
-	Size() int
+	Len() int
 	// Accesses the i-th element.
 	At(i int) complex128
 }
@@ -20,7 +20,7 @@ type Mutable interface {
 // Knows the dimension of the vector space.
 type Space interface {
 	// Returns the dimension of the vector space.
-	Size() int
+	Len() int
 }
 
 // Knows the dimension of the vector space and how to create a new vector.

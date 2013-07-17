@@ -18,7 +18,7 @@ import (
 // Singular values <= rcond * sigma_1 are considered zero.
 // If rcond < 0, machine precision is used.
 func SolveComplex(A zmat.Const, b zvec.Const, rcond float64) (zvec.Slice, int, []float64) {
-	if zmat.Rows(A) != b.Size() {
+	if zmat.Rows(A) != b.Len() {
 		panic("Number of equations does not match dimension of vector")
 	}
 
@@ -40,7 +40,7 @@ func SolveComplex(A zmat.Const, b zvec.Const, rcond float64) (zvec.Slice, int, [
 // The result is written to b, which must be big enough to hold constraints and solution (not simultaneously).
 // Returns rank and singular values.
 func SolveComplexInPlace(A zmat.ColMajor, b zvec.Slice, rcond float64) (zvec.Slice, int, []float64) {
-	B := zmat.Contiguous{b.Size(), 1, []complex128(b)}
+	B := zmat.Contiguous{b.Len(), 1, []complex128(b)}
 	X, rank, sigma := SolveComplexMatrixInPlace(A, B, rcond)
 	x := zmat.ContiguousCol(X, 0)
 	return x, rank, sigma

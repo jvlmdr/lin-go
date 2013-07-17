@@ -43,11 +43,11 @@ func MatrixTimesVectorPlusVectorInPlace(alpha float64, A mat.ColMajor, t Transpo
 		size = size.T()
 	}
 
-	if size.Cols != x.Size() {
-		panic(fmt.Sprintf("A and x have incompatible dimension (%v and %v)", size, x.Size()))
+	if size.Cols != x.Len() {
+		panic(fmt.Sprintf("A and x have incompatible dimension (%v and %v)", size, x.Len()))
 	}
-	if size.Rows != y.Size() {
-		panic(fmt.Sprintf("A and y have incompatible dimension (%v and %v)", size, y.Size()))
+	if size.Rows != y.Len() {
+		panic(fmt.Sprintf("A and y have incompatible dimension (%v and %v)", size, y.Len()))
 	}
 
 	DGEMV(t, mat.Rows(A), mat.Cols(A), alpha, A.ColMajorArray(), A.Stride(),

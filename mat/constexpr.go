@@ -30,7 +30,7 @@ func Identity(n int) Const {
 
 // Returns an nxn read-only diagonal matrix.
 func DiagMat(v vec.Const) Const {
-	n := v.Size()
+	n := v.Len()
 	f := func(i, j int) float64 {
 		if i == j {
 			return v.At(i)

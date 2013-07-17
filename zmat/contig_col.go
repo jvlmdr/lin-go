@@ -61,7 +61,7 @@ func (A Contiguous) Slice(j0, j1 int) Contiguous {
 //
 // The returned matrix may reference the same data.
 func (A Contiguous) AppendVector(x zvec.Const) Contiguous {
-	if A.Rows != x.Size() {
+	if A.Rows != x.Len() {
 		panic("Dimension of vector does not match matrix")
 	}
 	elements := zvec.Append(A.Elements, x)

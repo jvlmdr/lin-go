@@ -43,11 +43,11 @@ func ComplexMatrixTimesVectorPlusVectorInPlace(alpha complex128, A zmat.ColMajor
 		size = size.T()
 	}
 
-	if size.Cols != x.Size() {
-		panic(fmt.Sprintf("A and x have incompatible dimension (%v and %v)", size, x.Size()))
+	if size.Cols != x.Len() {
+		panic(fmt.Sprintf("A and x have incompatible dimension (%v and %v)", size, x.Len()))
 	}
-	if size.Rows != y.Size() {
-		panic(fmt.Sprintf("A and y have incompatible dimension (%v and %v)", size, y.Size()))
+	if size.Rows != y.Len() {
+		panic(fmt.Sprintf("A and y have incompatible dimension (%v and %v)", size, y.Len()))
 	}
 
 	ZGEMV(t, zmat.Rows(A), zmat.Cols(A), alpha, A.ColMajorArray(), A.Stride(),

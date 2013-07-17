@@ -9,7 +9,7 @@ import (
 )
 
 func Mean(x Const) complex128 {
-	return Sum(x) * complex(1/float64(x.Size()), 0)
+	return Sum(x) * complex(1/float64(x.Len()), 0)
 }
 
 // Computes x^H y = sum_i conj(x_i) y_i.

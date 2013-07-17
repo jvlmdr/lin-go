@@ -9,7 +9,7 @@ func Mat(x zvec.Const) Const { return matExpr{x} }
 
 type matExpr struct{ Vector zvec.Const }
 
-func (A matExpr) Size() Size             { return Size{A.Vector.Size(), 1} }
+func (A matExpr) Size() Size             { return Size{A.Vector.Len(), 1} }
 func (A matExpr) At(i, j int) complex128 { return A.Vector.At(i) }
 
 // Addresses a mutable vector as a column matrix.
@@ -17,7 +17,7 @@ func MutableMat(x zvec.Mutable) Mutable { return mutableMatExpr{x} }
 
 type mutableMatExpr struct{ Vector zvec.Mutable }
 
-func (A mutableMatExpr) Size() Size                 { return Size{A.Vector.Size(), 1} }
+func (A mutableMatExpr) Size() Size                 { return Size{A.Vector.Len(), 1} }
 func (A mutableMatExpr) At(i, j int) complex128     { return A.Vector.At(i) }
 func (A mutableMatExpr) Set(i, j int, v complex128) { A.Vector.Set(i, v) }
 
