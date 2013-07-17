@@ -17,6 +17,8 @@ func MakeSliceCopy(x Const) Slice {
 	return y
 }
 
+// Returns a mutable reference to the same data.
+// Subvector contains elements[a:b].
 func (s Slice) Subvec(a, b int) Slice {
 	return Slice(s[a:b])
 }

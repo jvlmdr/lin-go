@@ -18,5 +18,10 @@ These thin wrappers also give a neat mechanism for chaining operations:
 	// Compute root-mean-square magnitude.
 	rms := math.Sqrt(vec.Mean(vec.Square(x)))
 The package contains a single concrete implementation of a vector, vec.Slice, which simply augments a []float64 with the necessary methods.
+
+Methods which do not lend themselves to independent element-wise evaluation have a different signature.
+	c := vec.MakeCopy(vec.Randn(n))
+	d := vec.Make(n)
+	vec.CumSum(d, c)
 */
 package vec
