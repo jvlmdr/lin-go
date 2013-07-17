@@ -9,10 +9,20 @@ import (
 	"os"
 )
 
+// Computes the sum of all elements.
 func Sum(x Const) complex128 {
 	var total complex128
 	for i := 0; i < x.Len(); i++ {
 		total += x.At(i)
+	}
+	return total
+}
+
+// Computes the product of all elements.
+func Prod(x Const) complex128 {
+	var total complex128 = 1
+	for i := 0; i < x.Len(); i++ {
+		total *= x.At(i)
 	}
 	return total
 }

@@ -30,9 +30,8 @@ func Square(x Const) Const {
 
 // Addition of two vectors.
 // Lazily evaluated.
-func Plus(x, y Const) Const {
-	f := func(x, y complex128) complex128 { return x + y }
-	return MapTwo(x, y, f)
+func Plus(xs ...Const) Const {
+	return MapN(Sum, xs...)
 }
 
 // Difference between two vectors.
@@ -44,9 +43,8 @@ func Minus(x, y Const) Const {
 
 // Element-wise multiplication.
 // Lazily evaluated.
-func Multiply(x, y Const) Const {
-	f := func(x, y complex128) complex128 { return x * y }
-	return MapTwo(x, y, f)
+func Multiply(xs ...Const) Const {
+	return MapN(Prod, xs...)
 }
 
 // Element-wise division.

@@ -9,10 +9,20 @@ import (
 	"os"
 )
 
+// Computes the sum of all elements.
 func Sum(x Const) float64 {
 	var total float64
 	for i := 0; i < x.Len(); i++ {
 		total += x.At(i)
+	}
+	return total
+}
+
+// Computes the product of all elements.
+func Prod(x Const) float64 {
+	var total float64 = 1
+	for i := 0; i < x.Len(); i++ {
+		total *= x.At(i)
 	}
 	return total
 }

@@ -27,6 +27,31 @@ type mapTwoExpr struct {
 func (expr mapTwoExpr) Len() int         { return expr.X.Len() }
 func (expr mapTwoExpr) At(i int) float64 { return expr.F(expr.X.At(i), expr.Y.At(i)) }
 
+// Vector whose i-th element is f(vec.Slice([]float64{x[0].At(i), ..., x[n-1].At(i)}))
+func MapN(f func(Const) float64, xs ...Const) Const {
+	if len(xs) == 0 {
+		panic("Empty list of vectors")
+	}
+	panicIfNotSameLength(xs...)
+	return mapNExpr{xs, f}
+}
+
+type mapNExpr struct {
+	X []Const
+	F func(Const) float64
+}
+
+func (expr mapNExpr) Len() int         { return expr.X[0].Len() }
+func (expr mapNExpr) At(i int) float64 { return expr.F(sameElementMultipleVectors{expr.X, i}) }
+
+type sameElementMultipleVectors struct {
+	X []Const
+	I int
+}
+
+func (expr sameElementMultipleVectors) Len() int         { return len(expr.X) }
+func (expr sameElementMultipleVectors) At(i int) float64 { return expr.X[i].At(expr.I) }
+
 // Vector whose i-th element is f().
 func MapNil(n int, f func() float64) Const { return mapNilExpr{n, f} }
 
