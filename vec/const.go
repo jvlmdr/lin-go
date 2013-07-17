@@ -46,7 +46,7 @@ func Fprintf(w io.Writer, format string, x Const) {
 	fmt.Fprintf(w, ")")
 }
 
-// Returns Sprintf(x, "%g").
+// Returns Sprintf("%g", x).
 func String(x Const) string {
 	return Sprintf("%g", x)
 }
