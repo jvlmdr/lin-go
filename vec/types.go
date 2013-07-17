@@ -4,7 +4,7 @@ package vec
 
 // Describes a list of real numbers.
 type Const interface {
-	// Returns the vector space which the vector belongs to.
+	// Returns the dimension of the vector space.
 	Len() int
 	// Accesses the i-th element.
 	At(i int) float64
