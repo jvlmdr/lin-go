@@ -5,8 +5,12 @@ package zvec
 // Describes a list of real numbers.
 type Const interface {
 	// Returns the dimension of the vector space.
+	//
+	// Should take constant time (e.g. for Cat).
 	Len() int
 	// Accesses the i-th element.
+	//
+	// Should take at worst log(N) time (e.g. for Copy).
 	At(i int) complex128
 }
 
