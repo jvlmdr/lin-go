@@ -1,5 +1,7 @@
 package zvec
 
+// This file constains constant vector expressions expressed as a map.
+
 // Vector whose i-th element is f(x.At(i)).
 func Map(x Const, f func(complex128) complex128) Const { return mapExpr{x, f} }
 

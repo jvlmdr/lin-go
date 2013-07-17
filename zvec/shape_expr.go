@@ -1,6 +1,6 @@
 package zvec
 
-// This file contains operations involving the shape of a vector.
+// This file contains expressions which manipulate the shape of vectors.
 
 // Lazily concatenates two vectors.
 func Cat(x, y Const) Const {

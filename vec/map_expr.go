@@ -1,5 +1,7 @@
 package vec
 
+// This file constains constant vector expressions expressed as a map.
+
 // Vector whose i-th element is f(x.At(i)).
 func Map(x Const, f func(float64) float64) Const { return mapExpr{x, f} }
 

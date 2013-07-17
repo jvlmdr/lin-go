@@ -17,6 +17,7 @@ func Copy(dst Mutable, src Const) {
 
 // Computes cumulative sum.
 // src and dst must have same size.
+// Can be done in-place.
 //
 // Result is such that
 //	dst.At(0) == src.At(0)
