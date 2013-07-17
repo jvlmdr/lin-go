@@ -1,7 +1,7 @@
 /*
 Package vec provides common functionality for working with vectors.
 
-The core of the package is the vec.Const interface, which has Len() and At(i, j) methods, and the vec.Mutable interface, which adds Set(i, j, x).
+The core of the package is the vec.Const interface, which has Len() and At(i) methods, and the vec.Mutable interface, which adds Set(i, x).
 These interfaces combined with a Copy(Mutable, Const) method and thin wrappers for Plus(), Minus(), etc. provide idiomatic use:
 	c := vec.Make(n)
 	vec.Copy(c, vec.Plus(a, b))
