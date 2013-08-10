@@ -1,6 +1,12 @@
 package mat
 
-import "github.com/jackvalmadre/lin-go/vec"
+import (
+	"github.com/jackvalmadre/lin-go/vec"
+
+	"bytes"
+	"fmt"
+	"io"
+)
 
 // Describes a dense matrix with contiguous storage in column-major order.
 //
@@ -18,6 +24,11 @@ func MakeContiguous(rows, cols int) Contiguous {
 	return Contiguous{rows, cols, make([]float64, rows*cols)}
 }
 
+// Creates a column matrix from x.
+func FromSlice(x []float64) Contiguous {
+	return Contiguous{len(x), 1, x}
+}
+
 // Copies B into a new contiguous matrix.
 func MakeContiguousCopy(B Const) Contiguous {
 	rows, cols := RowsCols(B)
@@ -32,6 +43,56 @@ func (A Contiguous) Set(i, j int, x float64) { A.Elements[j*A.Rows+i] = x }
 
 func (A Contiguous) ColMajorArray() []float64 { return A.Elements }
 func (A Contiguous) Stride() int              { return A.Rows }
+
+func (A Contiguous) String() string {
+	var b bytes.Buffer
+	if err := A.Fprintf(&b, "%.4g"); err != nil {
+		panic(err)
+	}
+	return b.String()
+}
+
+func (A Contiguous) Fprintf(w io.Writer, format string) error {
+	// One pass to get max length.
+	var maxlen int
+	for j := 0; j < A.Cols; j++ {
+		for i := 0; i < A.Rows; i++ {
+			s := fmt.Sprintf(format, A.At(i, j))
+			if len(s) > maxlen {
+				maxlen = len(s)
+			}
+		}
+	}
+
+	var b bytes.Buffer
+	b.WriteString("[")
+
+	for j := 0; j < A.Cols; j++ {
+		for i := 0; i < A.Rows; i++ {
+			// Convert to string, pad with spaces, write.
+			s := fmt.Sprintf(format, A.At(i, j))
+			for n := len(s); n < maxlen; n++ {
+				b.WriteString(" ")
+			}
+			b.WriteString(s)
+
+			if i < A.Rows - 1 {
+				b.WriteString(", ")
+			} else if j < A.Cols - 1 {
+				b.WriteString(",\n ")
+			} else {
+				b.WriteString("]")
+			}
+
+			// Copy to output.
+			_, err := io.Copy(w, &b)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
 
 // Transpose without copying.
 func (A Contiguous) T() ContiguousRowMajor { return ContiguousRowMajor(A) }

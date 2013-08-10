@@ -2,11 +2,8 @@ package lapack
 
 import "github.com/jackvalmadre/lin-go/mat"
 
-// #include "../f2c.h"
-import "C"
-
 // Describes a real LU factorization.
 type RealLU struct {
 	A    mat.ColMajor
-	Ipiv []C.integer
+	Ipiv IntList
 }
