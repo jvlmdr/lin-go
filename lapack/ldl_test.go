@@ -8,13 +8,15 @@ import (
 )
 
 func TestLDLSolve(t *testing.T) {
-	A := mat.MakeCopy(mat.Randn(8, 4))
-	A = mat.MakeCopy(mat.Times(A.T(), A))
+	// Random symmetric matrix.
+	A := mat.MakeCopy(mat.Randn(4, 4))
+	A = mat.MakeCopy(mat.Scale(0.5, mat.Plus(A, A.T())))
 	ldl, err := LDL(mat.MakeCopy(A))
 	if err != nil {
 		t.Fatal(err)
 	}
 
+	// Random vector.
 	want := vec.MakeCopy(vec.Randn(4))
 	got := vec.MakeCopy(mat.TimesVec(A, want))
 
@@ -25,7 +27,7 @@ func TestLDLSolve(t *testing.T) {
 }
 
 func ExampleLDLSolve() {
-	A := mat.MakeCopy(mat.Randn(2, 2))
+	A := mat.Make(2, 2)
 	A.Set(0, 0, 1)
 	A.Set(0, 1, 2)
 	A.Set(1, 0, 2)
@@ -37,10 +39,12 @@ func ExampleLDLSolve() {
 
 	ldl, err := LDL(A)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
 	if err := ldl.Solve(mat.FromSlice(x)); err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
 	fmt.Println(vec.Sprintf("%.6g", x))
 	// Output:

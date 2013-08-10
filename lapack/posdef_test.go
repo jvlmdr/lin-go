@@ -7,35 +7,35 @@ import (
 	"testing"
 )
 
-func TestSolveSymm(t *testing.T) {
-	// Random symmetric matrix.
-	A := mat.MakeCopy(mat.Randn(4, 4))
-	A = mat.MakeCopy(mat.Scale(0.5, mat.Plus(A, A.T())))
+func TestSolvePosDef(t *testing.T) {
+	// Random symmetric positive definite matrix.
+	A := mat.MakeCopy(mat.Randn(8, 4))
+	A = mat.MakeCopy(mat.Times(A.T(), A))
 	// Random vector.
 	x := vec.MakeCopy(vec.Randn(4))
 
 	b := vec.MakeCopy(mat.TimesVec(A, x))
-	got, err := SolveSymm(A, b)
+	got, err := SolvePosDef(A, b)
 	if err != nil {
 		t.Fatal(err)
 	}
 	checkVectorsEqual(t, x, got, 1e-9)
 }
 
-func ExampleSolveSymm() {
+func ExampleSolvePosDef() {
 	A := mat.Make(2, 2)
 	A.Set(0, 0, 1)
-	A.Set(0, 1, 2)
-	A.Set(1, 0, 2)
-	A.Set(1, 1, -3)
+	A.Set(0, 1, 1)
+	A.Set(1, 0, 1)
+	A.Set(1, 1, 2)
+	A = mat.MakeCopy(mat.Times(A.T(), A))
 
-	b := vec.Make(2)
-	b.Set(0, 5)
-	b.Set(1, -4)
+	b := vec.Slice([]float64{8, 13})
 
-	x, err := SolveSymm(A, b)
+	x, err := SolvePosDef(A, b)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
 	fmt.Println(vec.Sprintf("%.6g", x))
 	// Output:

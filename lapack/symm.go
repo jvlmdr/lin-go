@@ -19,7 +19,7 @@ func SolveSymm(A mat.ColMajor, b vec.Slice) (vec.Slice, error) {
 // Calls dsysv.
 //
 // Overwrites A and B.
-// Returns X which refernces the elements of B.
+// Returns X which references the elements of B.
 func SolveNSymm(A mat.ColMajor, B mat.ColMajor) (mat.ColMajor, error) {
 	// Check that A is square.
 	if !A.Size().Square() {
