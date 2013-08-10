@@ -6,7 +6,6 @@ import "unsafe"
 // #include "../lapack.h"
 import "C"
 
-// Called by SolveSquareXxx.
 // http://www.netlib.org/lapack/double/dgesv.f
 func dgesv(n, nrhs int, a []float64, lda int, ipiv IntList, b []float64, ldb int) int {
 	var (

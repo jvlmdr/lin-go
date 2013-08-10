@@ -8,7 +8,6 @@ import "unsafe"
 // #include "../lapack.h"
 import "C"
 
-// Called by SolveComplexFullRankXxx.
 func zgels(trans Transpose, m, n, nrhs int, a []complex128, lda int, b []complex128, ldb int, work []complex128, lwork int) int {
 	var (
 		trans_ = C.char(trans)

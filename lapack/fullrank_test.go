@@ -65,11 +65,11 @@ func TestFullRankOverdetermined(t *testing.T) {
 	)
 	A := mat.MakeCopy(mat.Randn(m, n))
 	B := mat.MakeCopy(mat.Randn(m, p))
-	got := SolveFullRankMatrix(A, B)
+	got := SolveNFullRank(A, B)
 
 	AA := mat.MakeCopy(mat.Times(mat.T(A), A))
 	AB := mat.MakeCopy(mat.Times(mat.T(A), B))
-	want, _ := SolveSquareMatrix(AA, AB)
+	want, _ := SolveNSquare(AA, AB)
 
 	mat.CheckEqual(t, want, got, 1e-9)
 }
@@ -83,10 +83,10 @@ func TestFullRankUnderdetermined(t *testing.T) {
 	)
 	A := mat.MakeCopy(mat.Randn(m, n))
 	B := mat.MakeCopy(mat.Randn(m, p))
-	got := SolveFullRankMatrix(A, B)
+	got := SolveNFullRank(A, B)
 
 	AA := mat.MakeCopy(mat.Times(A, mat.T(A)))
-	Y, _ := SolveSquareMatrix(AA, B)
+	Y, _ := SolveNSquare(AA, B)
 	want := mat.MakeCopy(mat.Times(mat.T(A), Y))
 
 	mat.CheckEqual(t, want, got, 1e-9)

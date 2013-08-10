@@ -55,7 +55,7 @@ func TestSolveSquareInPlace(t *testing.T) {
 	checkVectorsEqual(t, want, got, 1e-9)
 }
 
-func ExampleSolveComplexSquare() {
+func ExampleSolveSquareCmplx() {
 	A := zmat.MakeCopy(zmat.Randn(4, 4))
 	z := zvec.Make(4)
 	z.Set(0, 1+1i)
@@ -64,7 +64,7 @@ func ExampleSolveComplexSquare() {
 	z.Set(3, 4+4i)
 
 	b := zvec.MakeCopy(zmat.TimesVec(A, z))
-	x, _ := SolveComplexSquare(A, b)
+	x, _ := SolveSquareCmplx(A, b)
 	fmt.Println(zvec.Sprintf("%.6g", x))
 	// Output:
 	// ((1+1i), (2+2i), (3+3i), (4+4i))

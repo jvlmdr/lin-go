@@ -10,7 +10,7 @@ import (
 // Solves A x = b where A is full rank.
 //
 // Calls zgels.
-func SolveComplexFullRank(A zmat.Const, b zvec.Const) zvec.Slice {
+func SolveFullRankCmplx(A zmat.Const, b zvec.Const) zvec.Slice {
 	if zmat.Rows(A) != b.Len() {
 		panic("Number of equations does not match dimension of vector")
 	}
@@ -23,22 +23,22 @@ func SolveComplexFullRank(A zmat.Const, b zvec.Const) zvec.Slice {
 	u := ux.Subvec(0, m)
 	zvec.Copy(u, b)
 
-	return SolveComplexFullRankInPlace(Q, NoTrans, ux)
+	return SolveFullRankInPlaceCmplx(Q, NoTrans, ux)
 }
 
 // Solves A x = b where A is full rank.
 //
 // Calls zgels.
-func SolveComplexFullRankInPlace(A zmat.ColMajor, trans Transpose, b zvec.Slice) zvec.Slice {
+func SolveFullRankInPlaceCmplx(A zmat.ColMajor, trans Transpose, b zvec.Slice) zvec.Slice {
 	B := zmat.Contiguous{b.Len(), 1, []complex128(b)}
-	X := SolveComplexFullRankMatrixInPlace(A, trans, B)
+	X := SolveNFullRankInPlaceCmplx(A, trans, B)
 	return zmat.ContiguousCol(X, 0)
 }
 
 // Solves A X = B where A is full rank.
 //
 // Calls zgels.
-func SolveComplexFullRankMatrix(A zmat.Const, B zmat.Const) zmat.ColMajor {
+func SolveNFullRankCmplx(A zmat.Const, B zmat.Const) zmat.ColMajor {
 	if zmat.Rows(A) != zmat.Rows(B) {
 		panic("Matrices have different number of rows")
 	}
@@ -51,7 +51,7 @@ func SolveComplexFullRankMatrix(A zmat.Const, B zmat.Const) zmat.ColMajor {
 	UX := zmat.MakeContiguous(max(m, n), nrhs)
 	U := UX.Submat(zmat.MakeRect(0, 0, m, nrhs))
 	zmat.Copy(U, B)
-	return SolveComplexFullRankMatrixInPlace(Q, NoTrans, UX)
+	return SolveNFullRankInPlaceCmplx(Q, NoTrans, UX)
 }
 
 // Solves A X = B where A is full rank.
@@ -61,7 +61,7 @@ func SolveComplexFullRankMatrix(A zmat.Const, B zmat.Const) zmat.ColMajor {
 // B must be large enough to hold both the constraints and the solution (not simultaneously).
 // Returns a matrix which references the elements of B.
 // A will be over-written with either the LQ or QR factorization.
-func SolveComplexFullRankMatrixInPlace(A zmat.ColMajor, trans Transpose, B zmat.ColMajor) zmat.ColMajor {
+func SolveNFullRankInPlaceCmplx(A zmat.ColMajor, trans Transpose, B zmat.ColMajor) zmat.ColMajor {
 	size := A.Size()
 	// Transpose dimensions if necessary.
 	if trans != NoTrans {

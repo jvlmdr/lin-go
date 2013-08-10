@@ -19,7 +19,7 @@ do
 	sed -i "s/\"$mat\"/\"$zmat\"/g" $z
 	sed -i "s/vec\./zvec\./g" $z
 	sed -i "s/mat\./zmat\./g" $z
-	sed -i "s/Solve\([(A-Z]\)/SolveComplex\1/g" $z
+	sed -i "s/Solve\([A-Za-z]*\)(/Solve\1Cmplx(/g" $z
 	sed -i "s/RealLU/ComplexLU/g" $z
 	sed -i "s/dge\([a-z]*\)/zge\1/g" $z
 	sed -i "s/DGE\([A-Z]*\)/ZGE\1/g" $z

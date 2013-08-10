@@ -41,7 +41,7 @@ func Solve(A mat.Const, b vec.Const, rcond float64) (vec.Slice, int, []float64) 
 // Returns rank and singular values.
 func SolveInPlace(A mat.ColMajor, b vec.Slice, rcond float64) (vec.Slice, int, []float64) {
 	B := mat.Contiguous{b.Len(), 1, []float64(b)}
-	X, rank, sigma := SolveMatrixInPlace(A, B, rcond)
+	X, rank, sigma := SolveNInPlace(A, B, rcond)
 	x := mat.ContiguousCol(X, 0)
 	return x, rank, sigma
 }
@@ -51,7 +51,7 @@ func SolveInPlace(A mat.ColMajor, b vec.Slice, rcond float64) (vec.Slice, int, [
 // Calls dgelsd.
 //
 // Returns solution, rank and singular values.
-func SolveMatrix(A mat.Const, B mat.Const, rcond float64) (mat.ColMajor, int, []float64) {
+func SolveN(A mat.Const, B mat.Const, rcond float64) (mat.ColMajor, int, []float64) {
 	if mat.Rows(A) != mat.Rows(B) {
 		panic("Matrices have different number of rows")
 	}
@@ -64,7 +64,7 @@ func SolveMatrix(A mat.Const, B mat.Const, rcond float64) (mat.ColMajor, int, []
 	U := UX.Submat(mat.MakeRect(0, 0, m, nrhs))
 	mat.Copy(U, B)
 
-	return SolveMatrixInPlace(Q, UX, rcond)
+	return SolveNInPlace(Q, UX, rcond)
 }
 
 // Solves A X = B where A is not necessarily full rank.
@@ -74,7 +74,7 @@ func SolveMatrix(A mat.Const, B mat.Const, rcond float64) (mat.ColMajor, int, []
 // B must be big enough to hold both constraints and solution (not simultaneously).
 // Returns solution, rank and singular values.
 // Solution references same data as B.
-func SolveMatrixInPlace(A mat.ColMajor, B mat.ColMajor, rcond float64) (mat.ColMajor, int, []float64) {
+func SolveNInPlace(A mat.ColMajor, B mat.ColMajor, rcond float64) (mat.ColMajor, int, []float64) {
 	size := A.Size()
 	// Check that B has enough space to contain input and solution.
 	if mat.Rows(B) < size.Rows {
@@ -132,7 +132,7 @@ func dgelsdAuto(m, n, nrhs int, a []float64, lda int, b []float64, ldb int, s []
 // rcond is used to determine the effective rank of A.
 // Singular values <= rcond * sigma_1 are considered zero.
 // If rcond < 0, machine precision is used.
-func SolveComplex(A zmat.Const, b zvec.Const, rcond float64) (zvec.Slice, int, []float64) {
+func SolveCmplx(A zmat.Const, b zvec.Const, rcond float64) (zvec.Slice, int, []float64) {
 	if zmat.Rows(A) != b.Len() {
 		panic("Number of equations does not match dimension of vector")
 	}
@@ -145,7 +145,7 @@ func SolveComplex(A zmat.Const, b zvec.Const, rcond float64) (zvec.Slice, int, [
 	u := ux.Subvec(0, m)
 	zvec.Copy(u, b)
 
-	return SolveComplexInPlace(Q, ux, rcond)
+	return SolveInPlaceCmplx(Q, ux, rcond)
 }
 
 // Solves A x = b where A is not necessarily full rank.
@@ -154,9 +154,9 @@ func SolveComplex(A zmat.Const, b zvec.Const, rcond float64) (zvec.Slice, int, [
 //
 // The result is written to b, which must be big enough to hold constraints and solution (not simultaneously).
 // Returns rank and singular values.
-func SolveComplexInPlace(A zmat.ColMajor, b zvec.Slice, rcond float64) (zvec.Slice, int, []float64) {
+func SolveInPlaceCmplx(A zmat.ColMajor, b zvec.Slice, rcond float64) (zvec.Slice, int, []float64) {
 	B := zmat.Contiguous{b.Len(), 1, []complex128(b)}
-	X, rank, sigma := SolveComplexMatrixInPlace(A, B, rcond)
+	X, rank, sigma := SolveNInPlaceCmplx(A, B, rcond)
 	x := zmat.ContiguousCol(X, 0)
 	return x, rank, sigma
 }
@@ -166,7 +166,7 @@ func SolveComplexInPlace(A zmat.ColMajor, b zvec.Slice, rcond float64) (zvec.Sli
 // Calls zgelsd.
 //
 // Returns solution, rank and singular values.
-func SolveComplexMatrix(A zmat.Const, B zmat.Const, rcond float64) (zmat.ColMajor, int, []float64) {
+func SolveNCmplx(A zmat.Const, B zmat.Const, rcond float64) (zmat.ColMajor, int, []float64) {
 	if zmat.Rows(A) != zmat.Rows(B) {
 		panic("Matrices have different number of rows")
 	}
@@ -179,7 +179,7 @@ func SolveComplexMatrix(A zmat.Const, B zmat.Const, rcond float64) (zmat.ColMajo
 	U := UX.Submat(zmat.MakeRect(0, 0, m, nrhs))
 	zmat.Copy(U, B)
 
-	return SolveComplexMatrixInPlace(Q, UX, rcond)
+	return SolveNInPlaceCmplx(Q, UX, rcond)
 }
 
 // Solves A X = B where A is not necessarily full rank.
@@ -188,7 +188,7 @@ func SolveComplexMatrix(A zmat.Const, B zmat.Const, rcond float64) (zmat.ColMajo
 //
 // Result is returned in B, which must be big enough to hold constraints and solution (not simultaneously).
 // Returns rank and singular values.
-func SolveComplexMatrixInPlace(A zmat.ColMajor, B zmat.ColMajor, rcond float64) (zmat.ColMajor, int, []float64) {
+func SolveNInPlaceCmplx(A zmat.ColMajor, B zmat.ColMajor, rcond float64) (zmat.ColMajor, int, []float64) {
 	size := A.Size()
 	// Check that B has enough space to contain input and solution.
 	if zmat.Rows(B) < size.Rows {

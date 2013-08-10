@@ -22,7 +22,7 @@ func checkVectorsEqual(t *testing.T, want, got vec.Const, eps float64) {
 	}
 }
 
-func checkComplexVectorsEqual(t *testing.T, want, got zvec.Const, eps float64) {
+func checkCmplxVectorsEqual(t *testing.T, want, got zvec.Const, eps float64) {
 	if want.Len() != got.Len() {
 		t.Fatalf("Vector sizes do not match (want %d, got %d)", want.Len(), got.Len())
 	}

@@ -9,10 +9,10 @@ import (
 // Solves A x = b where A is square.
 //
 // Calls zgesv.
-func SolveComplexSquare(A zmat.Const, b zvec.Const) (zvec.Slice, ComplexLU) {
+func SolveSquareCmplx(A zmat.Const, b zvec.Const) (zvec.Slice, ComplexLU) {
 	Q := zmat.MakeContiguousCopy(A)
 	x := zvec.MakeSliceCopy(b)
-	lu := SolveComplexSquareInPlace(Q, x)
+	lu := SolveSquareInPlaceCmplx(Q, x)
 	return x, lu
 }
 
@@ -21,22 +21,22 @@ func SolveComplexSquare(A zmat.Const, b zvec.Const) (zvec.Slice, ComplexLU) {
 // Calls zgesv.
 //
 // Result is returned in b.
-func SolveComplexSquareInPlace(A zmat.ColMajor, b zvec.Slice) ComplexLU {
+func SolveSquareInPlaceCmplx(A zmat.ColMajor, b zvec.Slice) ComplexLU {
 	if zmat.Rows(A) != b.Len() {
 		panic("Matrix and vector dimensions are incompatible")
 	}
 	B := zmat.Contiguous{b.Len(), 1, []complex128(b)}
-	lu := SolveComplexSquareMatrixInPlace(A, B)
+	lu := SolveNSquareInPlaceCmplx(A, B)
 	return lu
 }
 
 // Solves A X = B where A is square.
 //
 // Calls zgesv.
-func SolveComplexSquareMatrix(A zmat.Const, B zmat.Const) (zmat.Contiguous, ComplexLU) {
+func SolveNSquareCmplx(A zmat.Const, B zmat.Const) (zmat.Contiguous, ComplexLU) {
 	Q := zmat.MakeContiguousCopy(A)
 	X := zmat.MakeContiguousCopy(B)
-	lu := SolveComplexSquareMatrixInPlace(Q, X)
+	lu := SolveNSquareInPlaceCmplx(Q, X)
 	return X, lu
 }
 
@@ -45,7 +45,7 @@ func SolveComplexSquareMatrix(A zmat.Const, B zmat.Const) (zmat.Contiguous, Comp
 // Calls zgesv.
 //
 // Result is returned in B.
-func SolveComplexSquareMatrixInPlace(A zmat.ColMajor, B zmat.ColMajor) ComplexLU {
+func SolveNSquareInPlaceCmplx(A zmat.ColMajor, B zmat.ColMajor) ComplexLU {
 	if !A.Size().Square() {
 		panic("System of equations is not square")
 	}

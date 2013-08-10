@@ -8,7 +8,6 @@ import "unsafe"
 // #include "../lapack.h"
 import "C"
 
-// Called by SolveFullRankXxx.
 func dgels(trans Transpose, m, n, nrhs int, a []float64, lda int, b []float64, ldb int, work []float64, lwork int) int {
 	var (
 		trans_ = C.char(trans)
