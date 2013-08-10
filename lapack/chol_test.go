@@ -7,11 +7,11 @@ import (
 	"testing"
 )
 
-func TestLDLSolve(t *testing.T) {
-	// Random symmetric matrix.
-	A := mat.MakeCopy(mat.Randn(4, 4))
-	A = mat.MakeCopy(mat.Scale(0.5, mat.Plus(A, A.T())))
-	ldl, err := LDL(mat.MakeCopy(A))
+func TestCholSolve(t *testing.T) {
+	// Random symmetric positive definite matrix.
+	A := mat.MakeCopy(mat.Randn(8, 4))
+	A = mat.MakeCopy(mat.Times(A.T(), A))
+	chol, err := Chol(mat.MakeCopy(A))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -20,29 +20,28 @@ func TestLDLSolve(t *testing.T) {
 	want := vec.MakeCopy(vec.Randn(4))
 	got := vec.MakeCopy(mat.TimesVec(A, want))
 
-	if err := ldl.Solve(mat.FromSlice(got)); err != nil {
+	if err := chol.Solve(mat.FromSlice(got)); err != nil {
 		t.Fatal(err)
 	}
 	checkVectorsEqual(t, want, got, 1e-9)
 }
 
-func ExampleLDLFact_Solve() {
+func ExampleCholFact_Solve() {
 	A := mat.Make(2, 2)
 	A.Set(0, 0, 1)
-	A.Set(0, 1, 2)
-	A.Set(1, 0, 2)
-	A.Set(1, 1, -3)
+	A.Set(0, 1, 1)
+	A.Set(1, 0, 1)
+	A.Set(1, 1, 2)
+	A = mat.MakeCopy(mat.Times(A.T(), A))
 
-	x := vec.Make(2)
-	x.Set(0, 5)
-	x.Set(1, -4)
+	x := vec.Slice([]float64{8, 13})
 
-	ldl, err := LDL(A)
+	chol, err := Chol(A)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	if err := ldl.Solve(mat.FromSlice(x)); err != nil {
+	if err := chol.Solve(mat.FromSlice(x)); err != nil {
 		fmt.Println(err)
 		return
 	}
