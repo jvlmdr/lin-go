@@ -10,7 +10,7 @@ import (
 //	x     = 3,
 //	    y = 6,
 //	x + y = 3.
-func ExampleSolve_overdetermined() {
+func ExampleSolveCond_overdetermined() {
 	A := mat.Make(3, 3)
 	b := vec.Make(3)
 
@@ -26,7 +26,7 @@ func ExampleSolve_overdetermined() {
 	A.Set(2, 1, 1)
 	b.Set(2, 3)
 
-	x, _, _ := Solve(A, b, -1)
+	x, _, _ := SolveCond(A, b, -1)
 	fmt.Println(vec.Sprintf("%.6g", x))
 	// Output:
 	// (1, 4, 0)
@@ -35,7 +35,7 @@ func ExampleSolve_overdetermined() {
 // Find minimum-norm solution to
 //	x     + z = 6,
 //	    y + z = 9.
-func ExampleSolve_underdetermined() {
+func ExampleSolveCond_underdetermined() {
 	A := mat.Make(3, 3)
 	b := vec.Make(3)
 
@@ -49,7 +49,7 @@ func ExampleSolve_underdetermined() {
 	A.Set(1, 2, 1)
 	b.Set(1, 9)
 
-	x, _, _ := Solve(A, b, -1)
+	x, _, _ := SolveCond(A, b, -1)
 	fmt.Println(vec.Sprintf("%.6g", x))
 	// Output:
 	// (1, 4, 5)
