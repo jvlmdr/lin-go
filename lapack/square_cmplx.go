@@ -8,7 +8,7 @@ import (
 
 // Solves A x = b where A is square.
 //
-// Calls ZGESV.
+// Calls zgesv.
 func SolveComplexSquare(A zmat.Const, b zvec.Const) (zvec.Slice, ComplexLU) {
 	Q := zmat.MakeContiguousCopy(A)
 	x := zvec.MakeSliceCopy(b)
@@ -18,7 +18,7 @@ func SolveComplexSquare(A zmat.Const, b zvec.Const) (zvec.Slice, ComplexLU) {
 
 // Solves A x = b where A is square.
 //
-// Calls ZGESV.
+// Calls zgesv.
 //
 // Result is returned in b.
 func SolveComplexSquareInPlace(A zmat.ColMajor, b zvec.Slice) ComplexLU {
@@ -32,7 +32,7 @@ func SolveComplexSquareInPlace(A zmat.ColMajor, b zvec.Slice) ComplexLU {
 
 // Solves A X = B where A is square.
 //
-// Calls ZGESV.
+// Calls zgesv.
 func SolveComplexSquareMatrix(A zmat.Const, B zmat.Const) (zmat.Contiguous, ComplexLU) {
 	Q := zmat.MakeContiguousCopy(A)
 	X := zmat.MakeContiguousCopy(B)
@@ -42,7 +42,7 @@ func SolveComplexSquareMatrix(A zmat.Const, B zmat.Const) (zmat.Contiguous, Comp
 
 // Solves A X = B where A is square.
 //
-// Calls ZGESV.
+// Calls zgesv.
 //
 // Result is returned in B.
 func SolveComplexSquareMatrixInPlace(A zmat.ColMajor, B zmat.ColMajor) ComplexLU {
@@ -56,7 +56,7 @@ func SolveComplexSquareMatrixInPlace(A zmat.ColMajor, B zmat.ColMajor) ComplexLU
 	n := zmat.Rows(A)
 	ipiv := make(IntList, n)
 
-	info := ZGESV(zmat.Rows(A), zmat.Cols(B), A.ColMajorArray(), A.Stride(), ipiv,
+	info := zgesv(zmat.Rows(A), zmat.Cols(B), A.ColMajorArray(), A.Stride(), ipiv,
 		B.ColMajorArray(), B.Stride())
 	if info != 0 {
 		panic(fmt.Sprintf("info was non-zero (%d)", info))

@@ -8,7 +8,7 @@ import (
 
 // Solves A x = b where A is square.
 //
-// Calls DGESV.
+// Calls dgesv.
 func SolveSquare(A mat.Const, b vec.Const) (vec.Slice, RealLU) {
 	Q := mat.MakeContiguousCopy(A)
 	x := vec.MakeSliceCopy(b)
@@ -18,7 +18,7 @@ func SolveSquare(A mat.Const, b vec.Const) (vec.Slice, RealLU) {
 
 // Solves A x = b where A is square.
 //
-// Calls DGESV.
+// Calls dgesv.
 //
 // Result is returned in b.
 func SolveSquareInPlace(A mat.ColMajor, b vec.Slice) RealLU {
@@ -32,7 +32,7 @@ func SolveSquareInPlace(A mat.ColMajor, b vec.Slice) RealLU {
 
 // Solves A X = B where A is square.
 //
-// Calls DGESV.
+// Calls dgesv.
 func SolveSquareMatrix(A mat.Const, B mat.Const) (mat.Contiguous, RealLU) {
 	Q := mat.MakeContiguousCopy(A)
 	X := mat.MakeContiguousCopy(B)
@@ -42,7 +42,7 @@ func SolveSquareMatrix(A mat.Const, B mat.Const) (mat.Contiguous, RealLU) {
 
 // Solves A X = B where A is square.
 //
-// Calls DGESV.
+// Calls dgesv.
 //
 // Result is returned in B.
 func SolveSquareMatrixInPlace(A mat.ColMajor, B mat.ColMajor) RealLU {
@@ -56,7 +56,7 @@ func SolveSquareMatrixInPlace(A mat.ColMajor, B mat.ColMajor) RealLU {
 	n := mat.Rows(A)
 	ipiv := make(IntList, n)
 
-	info := DGESV(mat.Rows(A), mat.Cols(B), A.ColMajorArray(), A.Stride(), ipiv,
+	info := dgesv(mat.Rows(A), mat.Cols(B), A.ColMajorArray(), A.Stride(), ipiv,
 		B.ColMajorArray(), B.Stride())
 	if info != 0 {
 		panic(fmt.Sprintf("info was non-zero (%d)", info))

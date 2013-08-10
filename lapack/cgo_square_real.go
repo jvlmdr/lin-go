@@ -8,7 +8,7 @@ import "C"
 
 // Called by SolveSquareXxx.
 // http://www.netlib.org/lapack/double/dgesv.f
-func DGESV(n, nrhs int, a []float64, lda int, ipiv IntList, b []float64, ldb int) int {
+func dgesv(n, nrhs int, a []float64, lda int, ipiv IntList, b []float64, ldb int) int {
 	var (
 		n_    = C.integer(n)
 		nrhs_ = C.integer(nrhs)

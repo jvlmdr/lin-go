@@ -1,6 +1,6 @@
 package lapack
 
-// DGELS functions which use CGo and are trivially mapped to ZGELS functions.
+// dgels functions which use CGo and are trivially mapped to zgels functions.
 
 import "unsafe"
 
@@ -9,7 +9,7 @@ import "unsafe"
 import "C"
 
 // Called by SolveFullRankXxx.
-func DGELS(trans Transpose, m, n, nrhs int, a []float64, lda int, b []float64, ldb int, work []float64, lwork int) int {
+func dgels(trans Transpose, m, n, nrhs int, a []float64, lda int, b []float64, ldb int, work []float64, lwork int) int {
 	var (
 		trans_ = C.char(trans)
 		m_     = C.integer(m)

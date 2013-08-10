@@ -8,7 +8,7 @@ import "C"
 
 // Called by SolveComplexSquareXxx.
 // http://www.netlib.org/lapack/double/zgesv.f
-func ZGESV(n, nrhs int, a []complex128, lda int, ipiv IntList, b []complex128, ldb int) int {
+func zgesv(n, nrhs int, a []complex128, lda int, ipiv IntList, b []complex128, ldb int) int {
 	var (
 		n_    = C.integer(n)
 		nrhs_ = C.integer(nrhs)

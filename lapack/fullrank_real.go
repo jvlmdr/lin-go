@@ -1,6 +1,6 @@
 package lapack
 
-// DGELS functions which are trivially mapped to ZGELS functions.
+// dgels functions which are trivially mapped to ZGELS functions.
 
 import (
 	"github.com/jackvalmadre/lin-go/mat"
@@ -9,7 +9,7 @@ import (
 
 // Solves A x = b where A is full rank.
 //
-// Calls DGELS.
+// Calls dgels.
 func SolveFullRank(A mat.Const, b vec.Const) vec.Slice {
 	if mat.Rows(A) != b.Len() {
 		panic("Number of equations does not match dimension of vector")
@@ -28,7 +28,7 @@ func SolveFullRank(A mat.Const, b vec.Const) vec.Slice {
 
 // Solves A x = b where A is full rank.
 //
-// Calls DGELS.
+// Calls dgels.
 func SolveFullRankInPlace(A mat.ColMajor, trans Transpose, b vec.Slice) vec.Slice {
 	B := mat.Contiguous{b.Len(), 1, []float64(b)}
 	X := SolveFullRankMatrixInPlace(A, trans, B)
@@ -37,7 +37,7 @@ func SolveFullRankInPlace(A mat.ColMajor, trans Transpose, b vec.Slice) vec.Slic
 
 // Solves A X = B where A is full rank.
 //
-// Calls DGELS.
+// Calls dgels.
 func SolveFullRankMatrix(A mat.Const, B mat.Const) mat.ColMajor {
 	if mat.Rows(A) != mat.Rows(B) {
 		panic("Matrices have different number of rows")
@@ -56,7 +56,7 @@ func SolveFullRankMatrix(A mat.Const, B mat.Const) mat.ColMajor {
 
 // Solves A X = B where A is full rank.
 //
-// Calls DGELS.
+// Calls dgels.
 //
 // B must be large enough to hold both the constraints and the solution (not simultaneously).
 // Returns a matrix which references the elements of B.
@@ -75,19 +75,19 @@ func SolveFullRankMatrixInPlace(A mat.ColMajor, trans Transpose, B mat.ColMajor)
 		panic("Not enough rows to contain solution")
 	}
 
-	DGELSAuto(trans, mat.Rows(A), mat.Cols(A), mat.Cols(B),
+	dgelsAuto(trans, mat.Rows(A), mat.Cols(A), mat.Cols(B),
 		A.ColMajorArray(), A.Stride(), B.ColMajorArray(), B.Stride())
 
 	return mat.ColMajorSubmat(B, mat.MakeRect(0, 0, size.Cols, mat.Cols(B)))
 }
 
 // Automatically allocates workspace.
-func DGELSAuto(trans Transpose, m, n, nrhs int, a []float64, lda int, b []float64, ldb int) (info int) {
+func dgelsAuto(trans Transpose, m, n, nrhs int, a []float64, lda int, b []float64, ldb int) (info int) {
 	var (
 		lwork = -1
 		work  = make([]float64, 1)
 	)
-	info = DGELS(trans, m, n, nrhs, a, lda, b, ldb, work, lwork)
+	info = dgels(trans, m, n, nrhs, a, lda, b, ldb, work, lwork)
 	if info != 0 {
 		return
 	}
@@ -97,5 +97,5 @@ func DGELSAuto(trans Transpose, m, n, nrhs int, a []float64, lda int, b []float6
 	if lwork > 0 {
 		work = make([]float64, lwork)
 	}
-	return DGELS(trans, m, n, nrhs, a, lda, b, ldb, work, lwork)
+	return dgels(trans, m, n, nrhs, a, lda, b, ldb, work, lwork)
 }
