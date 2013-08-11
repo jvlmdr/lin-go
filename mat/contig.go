@@ -9,21 +9,21 @@ import "github.com/jackvalmadre/lin-go/vec"
 type ColMajor interface {
 	Mutable
 	ColMajorArray() []float64
-	Stride() int
+	ColStride() int
 }
 
 // Returns a mutable column as a slice vector.
-func ContiguousCol(A ColMajor, j int) vec.Slice {
-	a := j * A.Stride()
-	b := j*A.Stride() + Rows(A)
+func ContigCol(A ColMajor, j int) vec.Slice {
+	a := j * A.ColStride()
+	b := j*A.ColStride() + Rows(A)
 	return vec.Slice(A.ColMajorArray()[a:b])
 }
 
 // Selects a submatrix within the contiguous matrix.
-func ColMajorSubmat(A ColMajor, r Rect) ContiguousSubmat {
+func ColMajorSubmat(A ColMajor, r Rect) Stride {
 	// Extract from first to last element.
-	a := r.Min.J*A.Stride() + r.Min.I
-	b := (r.Max.J-1)*A.Stride() + r.Max.I
+	a := r.Min.J*A.ColStride() + r.Min.I
+	b := (r.Max.J-1)*A.ColStride() + r.Max.I
 	elements := A.ColMajorArray()
-	return ContiguousSubmat{r.Rows(), r.Cols(), A.Stride(), elements[a:b]}
+	return Stride{r.Rows(), r.Cols(), A.ColStride(), elements[a:b]}
 }

@@ -1,6 +1,6 @@
 package mat
 
-func ExampleBasic() {
+func ExampleMake() {
 	A := Make(2, 3)
 	A.Set(0, 0, 1)
 	A.Set(0, 1, 2)
