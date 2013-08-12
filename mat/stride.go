@@ -34,6 +34,15 @@ func (A Stride) ColStride() int           { return A.Stride }
 // Transpose without copying.
 func (A Stride) T() StrideT { return StrideT(A) }
 
+// Turns a stride matrix into a contiguous matrix.
+// Panics if the stride is not equal to the number of rows.
+func (A Stride) Contig() Contig {
+	if A.Rows != A.Stride {
+		panic("number of rows does not match stride")
+	}
+	return Contig{A.Rows, A.Cols, A.Elems}
+}
+
 // Slices the matrix.
 // May go beyond the bounds of the matrix but cannot exceed its capacity.
 func (A Stride) Slice(r Rect) Stride {
@@ -103,7 +112,7 @@ func (A Stride) maxColCap() int {
 	return (cap(A.Elems)-1)/A.Stride + 1
 }
 
-func (A Stride) AppendCols(B Const) Stride {
+func (A Stride) ColAppend(B Const) Stride {
 	if A.Rows != Rows(B) {
 		panic("different number of rows")
 	}
@@ -127,7 +136,7 @@ func (A Stride) AppendCols(B Const) Stride {
 	return X
 }
 
-func (A Stride) AppendRows(B Const) Stride {
+func (A Stride) RowAppend(B Const) Stride {
 	if A.Cols != Cols(B) {
 		panic("different number of cols")
 	}

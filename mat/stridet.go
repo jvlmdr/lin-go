@@ -10,7 +10,7 @@ func (A StrideT) At(i, j int) float64     { return A.T().At(j, i) }
 func (A StrideT) Set(i, j int, x float64) { A.T().Set(j, i, x) }
 
 func (A StrideT) RowMajorArray() []float64 { return A.T().ColMajorArray() }
-func (A StrideT) RowStride() int              { return A.T().ColStride() }
+func (A StrideT) RowStride() int           { return A.T().ColStride() }
 
 // Transpose without copying.
 func (A StrideT) T() Stride { return Stride(A) }
@@ -40,14 +40,14 @@ func (A StrideT) InCapTo(i, j int) bool {
 	return A.T().InCapTo(j, i)
 }
 
-// See Stride.AppendRows().
-func (A StrideT) AppendRows(B Const) StrideT {
-	return A.T().AppendCols(T(B)).T()
+// See Stride.RowAppend().
+func (A StrideT) RowAppend(B Const) StrideT {
+	return A.T().ColAppend(T(B)).T()
 }
 
-// See Stride.AppendCols().
-func (A StrideT) AppendCols(B Const) StrideT {
-	return A.T().AppendRows(T(B)).T()
+// See Stride.ColAppend().
+func (A StrideT) ColAppend(B Const) StrideT {
+	return A.T().RowAppend(T(B)).T()
 }
 
 // Returns MutableVec(A).

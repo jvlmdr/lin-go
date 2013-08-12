@@ -5,6 +5,10 @@ The core of the package is in the Const and Mutable interfaces. One of the key m
 
 Then there are a number of concrete implementations (Contiguous, SubContiguous, NonContiguous) of Mutable, corresponding to different modes of storage.
 Different modes enable different manipulations.
+	Contig  -- ColAppend           ColSlice          Reshape
+	ContigT --           RowAppend          RowSlice Reshape
+	Stride  -- ColAppend RowAppend ColSlice RowSlice
+	StrideT -- ColAppend RowAppend ColSlice RowSlice
 
 There are a number of thin wrappers for doing simple operations.
 For example, converting between a matrix and a vector using Vec(), Mat(), Unvec(), simple arithmetic operations such as Plus() and Minus(), and matrix shape operations such as Row(), Col(), Submatrix() and Reshape().
