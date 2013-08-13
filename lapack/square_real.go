@@ -10,7 +10,7 @@ import (
 //
 // Calls dgesv.
 func SolveSquare(A mat.Const, b vec.Const) (vec.Slice, RealLU) {
-	Q := mat.MakeContiguousCopy(A)
+	Q := mat.MakeContigCopy(A)
 	x := vec.MakeSliceCopy(b)
 	lu := SolveSquareInPlace(Q, x)
 	return x, lu
@@ -25,7 +25,7 @@ func SolveSquareInPlace(A mat.ColMajor, b vec.Slice) RealLU {
 	if mat.Rows(A) != b.Len() {
 		panic("Matrix and vector dimensions are incompatible")
 	}
-	B := mat.Contiguous{b.Len(), 1, []float64(b)}
+	B := mat.Contig{b.Len(), 1, []float64(b)}
 	lu := SolveNSquareInPlace(A, B)
 	return lu
 }
@@ -33,9 +33,9 @@ func SolveSquareInPlace(A mat.ColMajor, b vec.Slice) RealLU {
 // Solves A X = B where A is square.
 //
 // Calls dgesv.
-func SolveNSquare(A mat.Const, B mat.Const) (mat.Contiguous, RealLU) {
-	Q := mat.MakeContiguousCopy(A)
-	X := mat.MakeContiguousCopy(B)
+func SolveNSquare(A mat.Const, B mat.Const) (mat.Contig, RealLU) {
+	Q := mat.MakeContigCopy(A)
+	X := mat.MakeContigCopy(B)
 	lu := SolveNSquareInPlace(Q, X)
 	return X, lu
 }
@@ -56,8 +56,8 @@ func SolveNSquareInPlace(A mat.ColMajor, B mat.ColMajor) RealLU {
 	n := mat.Rows(A)
 	ipiv := make(IntList, n)
 
-	info := dgesv(mat.Rows(A), mat.Cols(B), A.ColMajorArray(), A.Stride(), ipiv,
-		B.ColMajorArray(), B.Stride())
+	info := dgesv(mat.Rows(A), mat.Cols(B), A.ColMajorArray(), A.ColStride(), ipiv,
+		B.ColMajorArray(), B.ColStride())
 	if info != 0 {
 		panic(fmt.Sprintf("info was non-zero (%d)", info))
 	}

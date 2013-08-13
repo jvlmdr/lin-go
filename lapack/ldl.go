@@ -19,7 +19,7 @@ func LDL(A mat.ColMajor) (LDLFact, error) {
 	ipiv := make(IntList, mat.Rows(A))
 
 	a := A.ColMajorArray()
-	info := dsytrfAuto(uplo, mat.Rows(A), a, A.Stride(), ipiv)
+	info := dsytrfAuto(uplo, mat.Rows(A), a, A.ColStride(), ipiv)
 	if info != 0 {
 		return LDLFact{}, ErrNonZeroInfo
 	}
@@ -53,7 +53,7 @@ func (f LDLFact) Solve(B mat.ColMajor) error {
 
 	a := f.A.ColMajorArray()
 	b := B.ColMajorArray()
-	info := dsytrs(f.UpLo, mat.Rows(f.A), mat.Cols(B), a, f.A.Stride(), f.Ipiv, b, B.Stride())
+	info := dsytrs(f.UpLo, mat.Rows(f.A), mat.Cols(B), a, f.A.ColStride(), f.Ipiv, b, B.ColStride())
 	if info != 0 {
 		return ErrNonZeroInfo
 	}

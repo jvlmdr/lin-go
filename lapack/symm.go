@@ -7,7 +7,7 @@ import (
 
 // Vector version of SolveNSymm.
 func SolveSymm(A mat.ColMajor, b vec.Slice) (vec.Slice, error) {
-	B := mat.FromSlice(b)
+	B := mat.ContigMat(b)
 	if _, err := SolveNSymm(A, B); err != nil {
 		return vec.Slice{}, err
 	}
@@ -36,7 +36,7 @@ func SolveNSymm(A mat.ColMajor, B mat.ColMajor) (mat.ColMajor, error) {
 
 	a := A.ColMajorArray()
 	b := B.ColMajorArray()
-	info := dsysvAuto(uplo, mat.Rows(A), mat.Cols(B), a, A.Stride(), ipiv, b, B.Stride())
+	info := dsysvAuto(uplo, mat.Rows(A), mat.Cols(B), a, A.ColStride(), ipiv, b, B.ColStride())
 	if info != 0 {
 		return nil, ErrNonZeroInfo
 	}

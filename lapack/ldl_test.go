@@ -20,7 +20,7 @@ func TestLDLSolve(t *testing.T) {
 	want := vec.MakeCopy(vec.Randn(4))
 	got := vec.MakeCopy(mat.TimesVec(A, want))
 
-	if err := ldl.Solve(mat.FromSlice(got)); err != nil {
+	if err := ldl.Solve(mat.ContigMat(got)); err != nil {
 		t.Fatal(err)
 	}
 	checkVectorsEqual(t, want, got, 1e-9)
@@ -42,7 +42,7 @@ func ExampleLDLFact_Solve() {
 		fmt.Println(err)
 		return
 	}
-	if err := ldl.Solve(mat.FromSlice(x)); err != nil {
+	if err := ldl.Solve(mat.ContigMat(x)); err != nil {
 		fmt.Println(err)
 		return
 	}

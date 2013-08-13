@@ -20,7 +20,7 @@ func TestCholSolve(t *testing.T) {
 	want := vec.MakeCopy(vec.Randn(4))
 	got := vec.MakeCopy(mat.TimesVec(A, want))
 
-	if err := chol.Solve(mat.FromSlice(got)); err != nil {
+	if err := chol.Solve(mat.ContigMat(got)); err != nil {
 		t.Fatal(err)
 	}
 	checkVectorsEqual(t, want, got, 1e-9)
@@ -41,7 +41,7 @@ func ExampleCholFact_Solve() {
 		fmt.Println(err)
 		return
 	}
-	if err := chol.Solve(mat.FromSlice(x)); err != nil {
+	if err := chol.Solve(mat.ContigMat(x)); err != nil {
 		fmt.Println(err)
 		return
 	}

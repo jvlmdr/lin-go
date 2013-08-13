@@ -24,7 +24,7 @@ func SolveCond(A mat.Const, b vec.Const, rcond float64) (vec.Slice, int, []float
 
 	// Translate A x = b into Q x = u.
 	m, n := mat.RowsCols(A)
-	Q := mat.MakeContiguousCopy(A)
+	Q := mat.MakeContigCopy(A)
 	// Allocate enough space for constraints or solution.
 	ux := vec.MakeSlice(max(m, n))
 	u := ux.Subvec(0, m)
@@ -40,9 +40,10 @@ func SolveCond(A mat.Const, b vec.Const, rcond float64) (vec.Slice, int, []float
 // The result is written to b, which must be big enough to hold constraints and solution (not simultaneously).
 // Returns rank and singular values.
 func SolveCondInPlace(A mat.ColMajor, b vec.Slice, rcond float64) (vec.Slice, int, []float64) {
-	B := mat.Contiguous{b.Len(), 1, []float64(b)}
-	X, rank, sigma := SolveNCondInPlace(A, B, rcond)
-	x := mat.ContiguousCol(X, 0)
+	B := mat.Contig{b.Len(), 1, []float64(b)}
+	//X, rank, sigma := SolveNCondInPlace(A, B, rcond)
+	_, rank, sigma := SolveNCondInPlace(A, B, rcond)
+	x := b // mat.ContigCol(X, 0)
 	return x, rank, sigma
 }
 
@@ -59,8 +60,8 @@ func SolveNCond(A mat.Const, B mat.Const, rcond float64) (mat.ColMajor, int, []f
 	m, n := mat.RowsCols(A)
 	nrhs := mat.Cols(B)
 	// Translate into Q X = U.
-	Q := mat.MakeContiguousCopy(A)
-	UX := mat.MakeContiguous(max(m, n), nrhs)
+	Q := mat.MakeContigCopy(A)
+	UX := mat.MakeContig(max(m, n), nrhs)
 	U := UX.Submat(mat.MakeRect(0, 0, m, nrhs))
 	mat.Copy(U, B)
 
@@ -87,12 +88,12 @@ func SolveNCondInPlace(A mat.ColMajor, B mat.ColMajor, rcond float64) (mat.ColMa
 	sigma := make([]float64, min(size.Rows, size.Cols))
 
 	rank, info := dgelsdAuto(mat.Rows(A), mat.Cols(A), mat.Cols(B),
-		A.ColMajorArray(), A.Stride(), B.ColMajorArray(), B.Stride(), sigma, rcond)
+		A.ColMajorArray(), A.ColStride(), B.ColMajorArray(), B.ColStride(), sigma, rcond)
 	if info != 0 {
 		panic(fmt.Sprintf("info was non-zero (%d)", info))
 	}
 
-	X := mat.ColMajorSubmat(B, mat.MakeRect(0, 0, size.Cols, mat.Cols(B)))
+	X := B // mat.ColMajorSubmat(B, mat.MakeRect(0, 0, size.Cols, mat.Cols(B)))
 	return X, rank, sigma
 }
 
@@ -139,7 +140,7 @@ func SolveCondCmplx(A zmat.Const, b zvec.Const, rcond float64) (zvec.Slice, int,
 
 	// Translate A x = b into Q x = u.
 	m, n := zmat.RowsCols(A)
-	Q := zmat.MakeContiguousCopy(A)
+	Q := zmat.MakeContigCopy(A)
 	// Allocate enough space for constraints or solution.
 	ux := zvec.MakeSlice(max(m, n))
 	u := ux.Subvec(0, m)
@@ -155,9 +156,10 @@ func SolveCondCmplx(A zmat.Const, b zvec.Const, rcond float64) (zvec.Slice, int,
 // The result is written to b, which must be big enough to hold constraints and solution (not simultaneously).
 // Returns rank and singular values.
 func SolveCondInPlaceCmplx(A zmat.ColMajor, b zvec.Slice, rcond float64) (zvec.Slice, int, []float64) {
-	B := zmat.Contiguous{b.Len(), 1, []complex128(b)}
-	X, rank, sigma := SolveNCondInPlaceCmplx(A, B, rcond)
-	x := zmat.ContiguousCol(X, 0)
+	B := zmat.Contig{b.Len(), 1, []complex128(b)}
+	//X, rank, sigma := SolveNCondInPlaceCmplx(A, B, rcond)
+	_, rank, sigma := SolveNCondInPlaceCmplx(A, B, rcond)
+	x := b // zmat.ContigCol(X, 0)
 	return x, rank, sigma
 }
 
@@ -174,8 +176,8 @@ func SolveNCondCmplx(A zmat.Const, B zmat.Const, rcond float64) (zmat.ColMajor, 
 	m, n := zmat.RowsCols(A)
 	nrhs := zmat.Cols(B)
 	// Translate into Q X = U.
-	Q := zmat.MakeContiguousCopy(A)
-	UX := zmat.MakeContiguous(max(m, n), nrhs)
+	Q := zmat.MakeContigCopy(A)
+	UX := zmat.MakeContig(max(m, n), nrhs)
 	U := UX.Submat(zmat.MakeRect(0, 0, m, nrhs))
 	zmat.Copy(U, B)
 
@@ -201,12 +203,12 @@ func SolveNCondInPlaceCmplx(A zmat.ColMajor, B zmat.ColMajor, rcond float64) (zm
 	sigma := make([]float64, min(size.Rows, size.Cols))
 
 	rank, info := zgelsdAuto(zmat.Rows(A), zmat.Cols(A), zmat.Cols(B),
-		A.ColMajorArray(), A.Stride(), B.ColMajorArray(), B.Stride(), sigma, rcond)
+		A.ColMajorArray(), A.ColStride(), B.ColMajorArray(), B.ColStride(), sigma, rcond)
 	if info != 0 {
 		panic(fmt.Sprintf("info was non-zero (%d)", info))
 	}
 
-	X := zmat.ColMajorSubmat(B, zmat.MakeRect(0, 0, size.Cols, zmat.Cols(B)))
+	X := B // zmat.ColMajorSubmat(B, zmat.MakeRect(0, 0, size.Cols, zmat.Cols(B)))
 	return X, rank, sigma
 }
 

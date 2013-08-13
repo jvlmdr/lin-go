@@ -17,7 +17,7 @@ func SolveFullRankCmplx(A zmat.Const, b zvec.Const) zvec.Slice {
 
 	// Translate A x = b into Q x = u.
 	m, n := zmat.RowsCols(A)
-	Q := zmat.MakeContiguousCopy(A)
+	Q := zmat.MakeContigCopy(A)
 	// Allocate enough space for input and solution.
 	ux := zvec.MakeSlice(max(m, n))
 	u := ux.Subvec(0, m)
@@ -30,9 +30,10 @@ func SolveFullRankCmplx(A zmat.Const, b zvec.Const) zvec.Slice {
 //
 // Calls zgels.
 func SolveFullRankInPlaceCmplx(A zmat.ColMajor, trans Transpose, b zvec.Slice) zvec.Slice {
-	B := zmat.Contiguous{b.Len(), 1, []complex128(b)}
-	X := SolveNFullRankInPlaceCmplx(A, trans, B)
-	return zmat.ContiguousCol(X, 0)
+	B := zmat.Contig{b.Len(), 1, []complex128(b)}
+	SolveNFullRankInPlaceCmplx(A, trans, B)
+	//X := SolveNFullRankInPlaceCmplx(A, trans, B)
+	return b // zmat.ContiguousCol(X, 0)
 }
 
 // Solves A X = B where A is full rank.
@@ -46,9 +47,9 @@ func SolveNFullRankCmplx(A zmat.Const, B zmat.Const) zmat.ColMajor {
 	// Translate into Q X = U.
 	m, n := zmat.RowsCols(A)
 	nrhs := zmat.Cols(B)
-	Q := zmat.MakeContiguousCopy(A)
+	Q := zmat.MakeContigCopy(A)
 	// Allocate enough space for constraints and solution.
-	UX := zmat.MakeContiguous(max(m, n), nrhs)
+	UX := zmat.MakeContig(max(m, n), nrhs)
 	U := UX.Submat(zmat.MakeRect(0, 0, m, nrhs))
 	zmat.Copy(U, B)
 	return SolveNFullRankInPlaceCmplx(Q, NoTrans, UX)
@@ -76,9 +77,9 @@ func SolveNFullRankInPlaceCmplx(A zmat.ColMajor, trans Transpose, B zmat.ColMajo
 	}
 
 	zgelsAuto(trans, zmat.Rows(A), zmat.Cols(A), zmat.Cols(B),
-		A.ColMajorArray(), A.Stride(), B.ColMajorArray(), B.Stride())
+		A.ColMajorArray(), A.ColStride(), B.ColMajorArray(), B.ColStride())
 
-	return zmat.ColMajorSubmat(B, zmat.MakeRect(0, 0, size.Cols, zmat.Cols(B)))
+	return B //zmat.ColMajorSubmat(B, zmat.MakeRect(0, 0, size.Cols, zmat.Cols(B)))
 }
 
 // Automatically allocates workspace.

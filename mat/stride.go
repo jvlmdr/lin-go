@@ -71,7 +71,7 @@ func (A Stride) SliceTo(i, j int) Stride {
 
 // Slices a submatrix within the bounds of the matrix.
 func (A Stride) Submat(r Rect) Stride {
-	if r.Max.I >= A.Rows || r.Max.J >= A.Cols {
+	if r.Max.I > A.Rows || r.Max.J > A.Cols {
 		panic("rectangle is outside range of matrix")
 	}
 	return A.Slice(r)

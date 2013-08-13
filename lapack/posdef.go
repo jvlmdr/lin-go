@@ -7,7 +7,7 @@ import (
 
 // Vector version of SolveNPosDef.
 func SolvePosDef(A mat.ColMajor, b vec.Slice) (vec.Slice, error) {
-	B := mat.FromSlice(b)
+	B := mat.ContigMat(b)
 	if _, err := SolveNPosDef(A, B); err != nil {
 		return vec.Slice{}, err
 	}
@@ -34,7 +34,7 @@ func SolveNPosDef(A mat.ColMajor, B mat.ColMajor) (mat.ColMajor, error) {
 
 	a := A.ColMajorArray()
 	b := B.ColMajorArray()
-	info := dposv(uplo, mat.Rows(A), mat.Cols(B), a, A.Stride(), b, B.Stride())
+	info := dposv(uplo, mat.Rows(A), mat.Cols(B), a, A.ColStride(), b, B.ColStride())
 	if info != 0 {
 		return nil, ErrNonZeroInfo
 	}

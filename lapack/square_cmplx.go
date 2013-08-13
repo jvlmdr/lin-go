@@ -10,7 +10,7 @@ import (
 //
 // Calls zgesv.
 func SolveSquareCmplx(A zmat.Const, b zvec.Const) (zvec.Slice, ComplexLU) {
-	Q := zmat.MakeContiguousCopy(A)
+	Q := zmat.MakeContigCopy(A)
 	x := zvec.MakeSliceCopy(b)
 	lu := SolveSquareInPlaceCmplx(Q, x)
 	return x, lu
@@ -25,7 +25,7 @@ func SolveSquareInPlaceCmplx(A zmat.ColMajor, b zvec.Slice) ComplexLU {
 	if zmat.Rows(A) != b.Len() {
 		panic("Matrix and vector dimensions are incompatible")
 	}
-	B := zmat.Contiguous{b.Len(), 1, []complex128(b)}
+	B := zmat.Contig{b.Len(), 1, []complex128(b)}
 	lu := SolveNSquareInPlaceCmplx(A, B)
 	return lu
 }
@@ -33,9 +33,9 @@ func SolveSquareInPlaceCmplx(A zmat.ColMajor, b zvec.Slice) ComplexLU {
 // Solves A X = B where A is square.
 //
 // Calls zgesv.
-func SolveNSquareCmplx(A zmat.Const, B zmat.Const) (zmat.Contiguous, ComplexLU) {
-	Q := zmat.MakeContiguousCopy(A)
-	X := zmat.MakeContiguousCopy(B)
+func SolveNSquareCmplx(A zmat.Const, B zmat.Const) (zmat.Contig, ComplexLU) {
+	Q := zmat.MakeContigCopy(A)
+	X := zmat.MakeContigCopy(B)
 	lu := SolveNSquareInPlaceCmplx(Q, X)
 	return X, lu
 }
@@ -56,8 +56,8 @@ func SolveNSquareInPlaceCmplx(A zmat.ColMajor, B zmat.ColMajor) ComplexLU {
 	n := zmat.Rows(A)
 	ipiv := make(IntList, n)
 
-	info := zgesv(zmat.Rows(A), zmat.Cols(B), A.ColMajorArray(), A.Stride(), ipiv,
-		B.ColMajorArray(), B.Stride())
+	info := zgesv(zmat.Rows(A), zmat.Cols(B), A.ColMajorArray(), A.ColStride(), ipiv,
+		B.ColMajorArray(), B.ColStride())
 	if info != 0 {
 		panic(fmt.Sprintf("info was non-zero (%d)", info))
 	}

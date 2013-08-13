@@ -16,7 +16,7 @@ func Chol(A mat.ColMajor) (CholFact, error) {
 	const uplo = LowerTriangle
 
 	a := A.ColMajorArray()
-	info := dpotrf(uplo, mat.Rows(A), a, A.Stride())
+	info := dpotrf(uplo, mat.Rows(A), a, A.ColStride())
 	if info != 0 {
 		return CholFact{}, ErrNonZeroInfo
 	}
@@ -32,7 +32,7 @@ func (f CholFact) Solve(B mat.ColMajor) error {
 
 	a := f.A.ColMajorArray()
 	b := B.ColMajorArray()
-	info := dpotrs(f.UpLo, mat.Rows(f.A), mat.Cols(B), a, f.A.Stride(), b, B.Stride())
+	info := dpotrs(f.UpLo, mat.Rows(f.A), mat.Cols(B), a, f.A.ColStride(), b, B.ColStride())
 	if info != 0 {
 		return ErrNonZeroInfo
 	}

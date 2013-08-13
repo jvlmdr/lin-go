@@ -17,7 +17,7 @@ func SolveFullRank(A mat.Const, b vec.Const) vec.Slice {
 
 	// Translate A x = b into Q x = u.
 	m, n := mat.RowsCols(A)
-	Q := mat.MakeContiguousCopy(A)
+	Q := mat.MakeContigCopy(A)
 	// Allocate enough space for input and solution.
 	ux := vec.MakeSlice(max(m, n))
 	u := ux.Subvec(0, m)
@@ -30,9 +30,10 @@ func SolveFullRank(A mat.Const, b vec.Const) vec.Slice {
 //
 // Calls dgels.
 func SolveFullRankInPlace(A mat.ColMajor, trans Transpose, b vec.Slice) vec.Slice {
-	B := mat.Contiguous{b.Len(), 1, []float64(b)}
-	X := SolveNFullRankInPlace(A, trans, B)
-	return mat.ContiguousCol(X, 0)
+	B := mat.Contig{b.Len(), 1, []float64(b)}
+	SolveNFullRankInPlace(A, trans, B)
+	//X := SolveNFullRankInPlace(A, trans, B)
+	return b[0:mat.Cols(A)]
 }
 
 // Solves A X = B where A is full rank.
@@ -46,9 +47,9 @@ func SolveNFullRank(A mat.Const, B mat.Const) mat.ColMajor {
 	// Translate into Q X = U.
 	m, n := mat.RowsCols(A)
 	nrhs := mat.Cols(B)
-	Q := mat.MakeContiguousCopy(A)
+	Q := mat.MakeContigCopy(A)
 	// Allocate enough space for constraints and solution.
-	UX := mat.MakeContiguous(max(m, n), nrhs)
+	UX := mat.MakeContig(max(m, n), nrhs)
 	U := UX.Submat(mat.MakeRect(0, 0, m, nrhs))
 	mat.Copy(U, B)
 	return SolveNFullRankInPlace(Q, NoTrans, UX)
@@ -76,9 +77,9 @@ func SolveNFullRankInPlace(A mat.ColMajor, trans Transpose, B mat.ColMajor) mat.
 	}
 
 	dgelsAuto(trans, mat.Rows(A), mat.Cols(A), mat.Cols(B),
-		A.ColMajorArray(), A.Stride(), B.ColMajorArray(), B.Stride())
+		A.ColMajorArray(), A.ColStride(), B.ColMajorArray(), B.ColStride())
 
-	return mat.ColMajorSubmat(B, mat.MakeRect(0, 0, size.Cols, mat.Cols(B)))
+	return mat.Stride{mat.Cols(A), mat.Cols(B), B.ColStride(), B.ColMajorArray()}
 }
 
 // Automatically allocates workspace.
