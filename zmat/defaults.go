@@ -1,11 +1,11 @@
 package zmat
 
 // Constructs default matrix.
-func Make(rows, cols int) Contiguous {
-	return MakeContiguous(rows, cols)
+func Make(rows, cols int) Contig {
+	return MakeContig(rows, cols)
 }
 
 // Constructs default matrix.
-func MakeCopy(B Const) Contiguous {
-	return MakeContiguousCopy(B)
+func MakeCopy(B Const) Contig {
+	return MakeContigCopy(B)
 }
