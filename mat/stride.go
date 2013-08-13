@@ -11,6 +11,7 @@ type Stride struct {
 	// Distance between first elements in adjacent columns.
 	Stride int
 	// The (i, j)-th element is at Elems[j*Stride+i].
+	// The length of Elems is between Rows * Cols and Stride * Cols inclusive.
 	Elems []float64
 }
 
@@ -33,6 +34,9 @@ func (A Stride) ColStride() int           { return A.Stride }
 
 // Transpose without copying.
 func (A Stride) T() StrideT { return StrideT(A) }
+
+func (A Stride) ConstT() Const     { return A.T() }
+func (A Stride) MutableT() Mutable { return A.T() }
 
 // Turns a stride matrix into a contiguous matrix.
 // Panics if the stride is not equal to the number of rows.
@@ -64,6 +68,17 @@ func (A Stride) SliceTo(i, j int) Stride {
 	b := (j-1)*A.Stride + (i - 1) + 1
 	return Stride{i, j, A.Stride, A.Elems[:b]}
 }
+
+// Slices a submatrix within the bounds of the matrix.
+func (A Stride) Submat(r Rect) Stride {
+	if r.Max.I >= A.Rows || r.Max.J >= A.Cols {
+		panic("rectangle is outside range of matrix")
+	}
+	return A.Slice(r)
+}
+
+func (A Stride) ConstSubmat(r Rect) Const     { return A.Submat(r) }
+func (A Stride) MutableSubmat(r Rect) Mutable { return A.Submat(r) }
 
 // Can the matrix be sliced without re-allocating?
 //
@@ -97,8 +112,9 @@ func (A Stride) ColCap() int {
 
 // The row capacity using the current number of columns.
 func (A Stride) RowCap() int {
-	// Start of last column.
+	// Find start of last column.
 	b := (A.Cols - 1) * A.Stride
+	// Limited by stride.
 	return min(A.Stride, cap(A.Elems)-b)
 }
 
@@ -160,11 +176,10 @@ func (A Stride) RowAppend(B Const) Stride {
 	return X
 }
 
-// Returns MutableVec(A).
-func (A Stride) Vec() vec.Mutable { return MutableVec(A) }
-
 // Returns a mutable column as a slice vector.
-func (A Stride) Col(j int) vec.Slice { return ContigCol(A, j) }
+func (A Stride) Col(j int) vec.Slice {
+	return A.Elems[j*A.Stride : j*A.Stride+A.Rows]
+}
 
-// Returns MutableRow(A).
-func (A Stride) Row(i int) vec.Mutable { return MutableRow(A, i) }
+func (A Stride) ConstCol(j int) vec.Const     { return A.Col(j) }
+func (A Stride) MutableCol(j int) vec.Mutable { return A.Col(j) }

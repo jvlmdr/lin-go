@@ -15,10 +15,21 @@ func (A StrideT) RowStride() int           { return A.T().ColStride() }
 // Transpose without copying.
 func (A StrideT) T() Stride { return Stride(A) }
 
+func (A StrideT) ConstT() Const     { return A.T() }
+func (A StrideT) MutableT() Mutable { return A.T() }
+
 // See Stride.Slice().
 func (A StrideT) Slice(r Rect) StrideT {
 	return A.T().Slice(r.T()).T()
 }
+
+// See Stride.Submat().
+func (A StrideT) Submat(r Rect) StrideT {
+	return A.T().Submat(r.T()).T()
+}
+
+func (A StrideT) ConstSubmat(r Rect) Const     { return A.Submat(r) }
+func (A StrideT) MutableSubmat(r Rect) Mutable { return A.Submat(r) }
 
 // See Stride.SliceFrom().
 func (A StrideT) SliceFrom(i, j int) StrideT {
@@ -50,11 +61,8 @@ func (A StrideT) ColAppend(B Const) StrideT {
 	return A.T().RowAppend(T(B)).T()
 }
 
-// Returns MutableVec(A).
-func (A StrideT) Vec() vec.Mutable { return MutableVec(A) }
-
-// Returns MutableColumn(A).
-func (A StrideT) Col(j int) vec.Mutable { return MutableCol(A, j) }
-
 // Returns a mutable row as a slice vector.
 func (A StrideT) Row(i int) vec.Slice { return A.T().Col(i) }
+
+func (A StrideT) ConstRow(i int) vec.Const     { return A.Row(i) }
+func (A StrideT) MutableRow(i int) vec.Mutable { return A.Row(i) }

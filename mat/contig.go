@@ -43,16 +43,19 @@ func (A Contig) Size() Size              { return Size{A.Rows, A.Cols} }
 func (A Contig) At(i, j int) float64     { return A.Elems[j*A.Rows+i] }
 func (A Contig) Set(i, j int, x float64) { A.Elems[j*A.Rows+i] = x }
 
+// The column capacity using the current number of rows.
+func (A Contig) ColCap() int {
+	return cap(A.Elems) / A.Rows
+}
+
 func (A Contig) ColMajorArray() []float64 { return A.Elems }
 func (A Contig) ColStride() int           { return A.Rows }
 
 // Transpose without copying.
 func (A Contig) T() ContigT { return ContigT(A) }
 
-// The column capacity using the current number of rows.
-func (A Contig) ColCap() int {
-	return cap(A.Elems) / A.Rows
-}
+func (A Contig) ConstT() Const     { return A.T() }
+func (A Contig) MutableT() Mutable { return A.T() }
 
 // Modifies the number of rows and columns of a contiguous matrix.
 // The number of elements must remain constant.
@@ -65,25 +68,20 @@ func (A Contig) Reshape(s Size) Contig {
 	return Contig{s.Rows, s.Cols, A.Elems}
 }
 
-// Slices the columns.
-//
-// The returned matrix references the same data.
-func (A Contig) ColSlice(j0, j1 int) Contig {
-	return Contig{A.Rows, j1 - j0, A.Elems[j0*A.Rows : j1*A.Rows]}
-}
+func (A Contig) ConstReshape(s Size) Const     { return A.Reshape(s) }
+func (A Contig) MutableReshape(s Size) Mutable { return A.Reshape(s) }
 
 // Turns a contiguous matrix into a stride matrix.
 func (A Contig) Stride() Stride {
 	return Stride{A.Rows, A.Cols, A.Rows, A.Elems}
 }
 
-//	// Selects a submatrix within the contiguous matrix.
-//	func (A Contig) Slice(r Rect) Stride {
-//		// Extract from first to last element.
-//		a := r.Min.I + r.Min.J*A.Rows
-//		b := (r.Max.I - 1) + (r.Max.J-1)*A.Rows + 1
-//		return Stride{r.Rows(), r.Cols(), A.Rows, A.Elems[a:b]}
-//	}
+// Slices the columns.
+//
+// The returned matrix references the same data.
+func (A Contig) ColSlice(j0, j1 int) Contig {
+	return Contig{A.Rows, j1 - j0, A.Elems[j0*A.Rows : j1*A.Rows]}
+}
 
 // Appends a matrix horizontally. The number of rows must match.
 //
@@ -100,5 +98,22 @@ func (A Contig) ColAppend(B Const) Contig {
 // Returns a vectorization which accesses the array directly.
 func (A Contig) Vec() vec.Slice { return vec.Slice(A.Elems) }
 
+func (A Contig) ConstVec() vec.Const     { return A.Vec() }
+func (A Contig) MutableVec() vec.Mutable { return A.Vec() }
+
 // Returns a mutable column as a slice vector.
-func (A Contig) Col(j int) vec.Slice { return ContigCol(A, j) }
+func (A Contig) Col(j int) vec.Slice {
+	return A.Elems[j*A.Rows : (j+1)*A.Rows]
+}
+
+func (A Contig) ConstCol(j int) vec.Const     { return A.Col(j) }
+func (A Contig) MutableCol(j int) vec.Mutable { return A.Col(j) }
+
+// Slices a rectangle of the matrix, which will not necessarily be contiguous.
+func (A Contig) Slice(r Rect) Stride { return A.Stride().Slice(r) }
+
+// Slices a rectangle within the matrix, which will not necessarily be contiguous.
+func (A Contig) Submat(r Rect) Stride { return A.Stride().Submat(r) }
+
+func (A Contig) ConstSubmat(r Rect) Const     { return A.Submat(r) }
+func (A Contig) MutableSubmat(r Rect) Mutable { return A.Submat(r) }

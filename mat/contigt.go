@@ -25,6 +25,9 @@ func (A ContigT) RowStride() int           { return A.T().ColStride() }
 // Transpose without copying.
 func (A ContigT) T() Contig { return Contig(A) }
 
+func (A ContigT) ConstT() Const     { return A.T() }
+func (A ContigT) MutableT() Mutable { return A.T() }
+
 // Modifies the number of rows and columns of a contiguous matrix.
 // The number of elements must remain constant.
 //
@@ -32,6 +35,9 @@ func (A ContigT) T() Contig { return Contig(A) }
 func (A ContigT) Reshape(s Size) ContigT {
 	return A.T().Reshape(s.T()).T()
 }
+
+func (A ContigT) ConstReshape(s Size) Const     { return A.Reshape(s) }
+func (A ContigT) MutableReshape(s Size) Mutable { return A.Reshape(s) }
 
 // Appends a matrix vertically. The number of columns must match.
 //
@@ -49,3 +55,6 @@ func (A ContigT) RowSlice(i0, i1 int) ContigT {
 
 // Returns a mutable row as a slice vector.
 func (A ContigT) Row(i int) vec.Slice { return A.T().Col(i) }
+
+func (A ContigT) ConstRow(i int) vec.Const     { return A.Row(i) }
+func (A ContigT) MutableRow(i int) vec.Mutable { return A.Row(i) }
