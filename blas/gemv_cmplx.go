@@ -9,35 +9,35 @@ import (
 // Computes (alpha A x), with A optionally transposed.
 //
 // Inputs are unchanged.
-func ComplexMatrixTimesVector(alpha complex128, A zmat.ColMajor, t Transpose, x zvec.Slice) zvec.Slice {
+func MatTimesVecCmplx(alpha complex128, A zmat.Stride, t Transpose, x zvec.Slice) zvec.Slice {
 	size := A.Size()
 	if t != NoTrans {
 		size = size.T()
 	}
 
-	y := zvec.Make(size.Rows)
-	ComplexMatrixTimesVectorPlusVectorInPlace(alpha, A, t, x, 0, y)
+	y := zvec.MakeSlice(size.Rows)
+	MatTimesVecPlusVecCmplxNoCopy(alpha, A, t, x, 0, y)
 	return y
 }
 
 // Computes (alpha A x + beta y), with A optionally transposed.
 //
-// Calls ZGEMV.
+// Calls zgemv.
 //
 // Inputs are unchanged.
-func ComplexMatrixTimesVectorPlusVector(alpha complex128, A zmat.ColMajor, t Transpose, x zvec.Slice, beta complex128, y zvec.Const) zvec.Slice {
-	z := zvec.MakeCopy(y)
-	ComplexMatrixTimesVectorPlusVectorInPlace(alpha, A, t, x, beta, z)
+func MatTimesVecPlusVecCmplx(alpha complex128, A zmat.Stride, t Transpose, x zvec.Slice, beta complex128, y zvec.Const) zvec.Slice {
+	z := zvec.MakeSliceCopy(y)
+	MatTimesVecPlusVecCmplxNoCopy(alpha, A, t, x, beta, z)
 	return z
 }
 
 // Computes (alpha A x + beta y), with A optionally transposed.
 //
-// Calls ZGEMV.
+// Calls zgemv.
 //
 // The result is returned in y.
 // A and x are unchanged.
-func ComplexMatrixTimesVectorPlusVectorInPlace(alpha complex128, A zmat.ColMajor, t Transpose, x zvec.Slice, beta complex128, y zvec.Slice) {
+func MatTimesVecPlusVecCmplxNoCopy(alpha complex128, A zmat.Stride, t Transpose, x zvec.Slice, beta complex128, y zvec.Slice) {
 	size := A.Size()
 	if t != NoTrans {
 		size = size.T()
@@ -50,6 +50,6 @@ func ComplexMatrixTimesVectorPlusVectorInPlace(alpha complex128, A zmat.ColMajor
 		panic(fmt.Sprintf("A and y have incompatible dimension (%v and %v)", size, y.Len()))
 	}
 
-	ZGEMV(t, zmat.Rows(A), zmat.Cols(A), alpha, A.ColMajorArray(), A.Stride(),
+	zgemv(t, zmat.Rows(A), zmat.Cols(A), alpha, A.Elems, A.Stride,
 		[]complex128(x), 1, beta, []complex128(y), 1)
 }

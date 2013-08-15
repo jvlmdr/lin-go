@@ -19,7 +19,7 @@ do
 	sed -i "s/\"$mat\"/\"$zmat\"/g" $z
 	sed -i "s/vec\./zvec\./g" $z
 	sed -i "s/mat\./zmat\./g" $z
-	sed -i "s/MatrixTimes\([(A-Z]\)/ComplexMatrixTimes\1/g" $z
+	sed -E -i "s/MatTimes((Mat|Vec)(Plus(Mat|Vec))?)?/MatTimes\1Cmplx/g" $z
 	sed -i "s/dge\([a-z]*\)/zge\1/g" $z
 	sed -i "s/DGE\([A-Z]*\)/ZGE\1/g" $z
 	sed -i "s/doublereal/doublecomplex/g" $z

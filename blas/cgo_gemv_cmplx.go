@@ -7,7 +7,7 @@ import "unsafe"
 import "C"
 
 // http://www.netlib.org/blas/zgemv.f
-func ZGEMV(trans Transpose, m, n int, alpha complex128, A []complex128, lda int, x []complex128, incx int, beta complex128, y []complex128, incy int) {
+func zgemv(trans Transpose, m, n int, alpha complex128, A []complex128, lda int, x []complex128, incx int, beta complex128, y []complex128, incy int) {
 	var (
 		trans_ = C.char(trans)
 		m_     = C.integer(m)

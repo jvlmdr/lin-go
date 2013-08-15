@@ -8,7 +8,7 @@ import (
 // Computes (alpha A B), with A and B optionally transposed.
 //
 // Inputs are unchanged.
-func MatrixTimesMatrix(alpha float64, A mat.ColMajor, tA Transpose, B mat.ColMajor, tB Transpose) mat.Contiguous {
+func MatTimesMat(alpha float64, A mat.Stride, tA Transpose, B mat.Stride, tB Transpose) mat.Stride {
 	// Get sizes of A and B after transposing.
 	sizeA := A.Size()
 	if tA != NoTrans {
@@ -19,29 +19,29 @@ func MatrixTimesMatrix(alpha float64, A mat.ColMajor, tA Transpose, B mat.ColMaj
 		sizeB = sizeB.T()
 	}
 
-	C := mat.Make(sizeA.Rows, sizeB.Cols)
-	MatrixTimesMatrixPlusMatrixInPlace(alpha, A, tA, B, tB, 0, C)
+	C := mat.MakeStride(sizeA.Rows, sizeB.Cols)
+	MatTimesMatPlusMatNoCopy(alpha, A, tA, B, tB, 0, C)
 	return C
 }
 
 // Computes (alpha A B + C), with A and B optionally transposed.
 //
-// Calls DGEMM.
+// Calls dgemm.
 //
 // Inputs are unchanged.
-func MatrixTimesMatrixPlusMatrix(alpha float64, A mat.ColMajor, tA Transpose, B mat.ColMajor, tB Transpose, C mat.Const) mat.Contiguous {
-	D := mat.MakeCopy(C)
-	MatrixTimesMatrixPlusMatrixInPlace(alpha, A, tA, B, tB, 1, D)
+func MatTimesMatPlusMat(alpha float64, A mat.Stride, tA Transpose, B mat.Stride, tB Transpose, C mat.Const) mat.Stride {
+	D := mat.MakeStrideCopy(C)
+	MatTimesMatPlusMatNoCopy(alpha, A, tA, B, tB, 1, D)
 	return D
 }
 
 // Computes (alpha A B + beta C), with A and B optionally transposed.
 //
-// Calls DGEMM.
+// Calls dgemm.
 //
 // The result is returned in C.
 // A and B are unchanged.
-func MatrixTimesMatrixPlusMatrixInPlace(alpha float64, A mat.ColMajor, tA Transpose, B mat.ColMajor, tB Transpose, beta float64, C mat.ColMajor) {
+func MatTimesMatPlusMatNoCopy(alpha float64, A mat.Stride, tA Transpose, B mat.Stride, tB Transpose, beta float64, C mat.Stride) {
 	// Get sizes of A and B after transposing.
 	sizeA := A.Size()
 	if tA != NoTrans {
@@ -62,7 +62,6 @@ func MatrixTimesMatrixPlusMatrixInPlace(alpha float64, A mat.ColMajor, tA Transp
 		panic(fmt.Sprintf("B and C have incompatible dimensions (%v and %v)", sizeB, C.Size()))
 	}
 
-	DGEMM(tA, tB, sizeA.Rows, sizeB.Cols, sizeA.Cols,
-		alpha, A.ColMajorArray(), A.Stride(), B.ColMajorArray(), B.Stride(),
-		beta, C.ColMajorArray(), C.Stride())
+	dgemm(tA, tB, sizeA.Rows, sizeB.Cols, sizeA.Cols, alpha, A.Elems, A.Stride,
+		B.Elems, B.Stride, beta, C.Elems, C.Stride)
 }

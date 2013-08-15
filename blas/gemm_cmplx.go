@@ -8,7 +8,7 @@ import (
 // Computes (alpha A B), with A and B optionally transposed.
 //
 // Inputs are unchanged.
-func ComplexMatrixTimesMatrix(alpha complex128, A zmat.ColMajor, tA Transpose, B zmat.ColMajor, tB Transpose) zmat.Contiguous {
+func MatTimesMatCmplx(alpha complex128, A zmat.Stride, tA Transpose, B zmat.Stride, tB Transpose) zmat.Stride {
 	// Get sizes of A and B after transposing.
 	sizeA := A.Size()
 	if tA != NoTrans {
@@ -19,29 +19,29 @@ func ComplexMatrixTimesMatrix(alpha complex128, A zmat.ColMajor, tA Transpose, B
 		sizeB = sizeB.T()
 	}
 
-	C := zmat.Make(sizeA.Rows, sizeB.Cols)
-	ComplexMatrixTimesMatrixPlusMatrixInPlace(alpha, A, tA, B, tB, 0, C)
+	C := zmat.MakeStride(sizeA.Rows, sizeB.Cols)
+	MatTimesMatPlusMatCmplxNoCopy(alpha, A, tA, B, tB, 0, C)
 	return C
 }
 
 // Computes (alpha A B + C), with A and B optionally transposed.
 //
-// Calls ZGEMM.
+// Calls zgemm.
 //
 // Inputs are unchanged.
-func ComplexMatrixTimesMatrixPlusMatrix(alpha complex128, A zmat.ColMajor, tA Transpose, B zmat.ColMajor, tB Transpose, C zmat.Const) zmat.Contiguous {
-	D := zmat.MakeCopy(C)
-	ComplexMatrixTimesMatrixPlusMatrixInPlace(alpha, A, tA, B, tB, 1, D)
+func MatTimesMatPlusMatCmplx(alpha complex128, A zmat.Stride, tA Transpose, B zmat.Stride, tB Transpose, C zmat.Const) zmat.Stride {
+	D := zmat.MakeStrideCopy(C)
+	MatTimesMatPlusMatCmplxNoCopy(alpha, A, tA, B, tB, 1, D)
 	return D
 }
 
 // Computes (alpha A B + beta C), with A and B optionally transposed.
 //
-// Calls ZGEMM.
+// Calls zgemm.
 //
 // The result is returned in C.
 // A and B are unchanged.
-func ComplexMatrixTimesMatrixPlusMatrixInPlace(alpha complex128, A zmat.ColMajor, tA Transpose, B zmat.ColMajor, tB Transpose, beta complex128, C zmat.ColMajor) {
+func MatTimesMatPlusMatCmplxNoCopy(alpha complex128, A zmat.Stride, tA Transpose, B zmat.Stride, tB Transpose, beta complex128, C zmat.Stride) {
 	// Get sizes of A and B after transposing.
 	sizeA := A.Size()
 	if tA != NoTrans {
@@ -62,7 +62,6 @@ func ComplexMatrixTimesMatrixPlusMatrixInPlace(alpha complex128, A zmat.ColMajor
 		panic(fmt.Sprintf("B and C have incompatible dimensions (%v and %v)", sizeB, C.Size()))
 	}
 
-	ZGEMM(tA, tB, sizeA.Rows, sizeB.Cols, sizeA.Cols,
-		alpha, A.ColMajorArray(), A.Stride(), B.ColMajorArray(), B.Stride(),
-		beta, C.ColMajorArray(), C.Stride())
+	zgemm(tA, tB, sizeA.Rows, sizeB.Cols, sizeA.Cols, alpha, A.Elems, A.Stride,
+		B.Elems, B.Stride, beta, C.Elems, C.Stride)
 }

@@ -9,35 +9,35 @@ import (
 // Computes (alpha A x), with A optionally transposed.
 //
 // Inputs are unchanged.
-func MatrixTimesVector(alpha float64, A mat.ColMajor, t Transpose, x vec.Slice) vec.Slice {
+func MatTimesVec(alpha float64, A mat.Stride, t Transpose, x vec.Slice) vec.Slice {
 	size := A.Size()
 	if t != NoTrans {
 		size = size.T()
 	}
 
-	y := vec.Make(size.Rows)
-	MatrixTimesVectorPlusVectorInPlace(alpha, A, t, x, 0, y)
+	y := vec.MakeSlice(size.Rows)
+	MatTimesVecPlusVecNoCopy(alpha, A, t, x, 0, y)
 	return y
 }
 
 // Computes (alpha A x + beta y), with A optionally transposed.
 //
-// Calls DGEMV.
+// Calls dgemv.
 //
 // Inputs are unchanged.
-func MatrixTimesVectorPlusVector(alpha float64, A mat.ColMajor, t Transpose, x vec.Slice, beta float64, y vec.Const) vec.Slice {
-	z := vec.MakeCopy(y)
-	MatrixTimesVectorPlusVectorInPlace(alpha, A, t, x, beta, z)
+func MatTimesVecPlusVec(alpha float64, A mat.Stride, t Transpose, x vec.Slice, beta float64, y vec.Const) vec.Slice {
+	z := vec.MakeSliceCopy(y)
+	MatTimesVecPlusVecNoCopy(alpha, A, t, x, beta, z)
 	return z
 }
 
 // Computes (alpha A x + beta y), with A optionally transposed.
 //
-// Calls DGEMV.
+// Calls dgemv.
 //
 // The result is returned in y.
 // A and x are unchanged.
-func MatrixTimesVectorPlusVectorInPlace(alpha float64, A mat.ColMajor, t Transpose, x vec.Slice, beta float64, y vec.Slice) {
+func MatTimesVecPlusVecNoCopy(alpha float64, A mat.Stride, t Transpose, x vec.Slice, beta float64, y vec.Slice) {
 	size := A.Size()
 	if t != NoTrans {
 		size = size.T()
@@ -50,6 +50,6 @@ func MatrixTimesVectorPlusVectorInPlace(alpha float64, A mat.ColMajor, t Transpo
 		panic(fmt.Sprintf("A and y have incompatible dimension (%v and %v)", size, y.Len()))
 	}
 
-	DGEMV(t, mat.Rows(A), mat.Cols(A), alpha, A.ColMajorArray(), A.Stride(),
+	dgemv(t, mat.Rows(A), mat.Cols(A), alpha, A.Elems, A.Stride,
 		[]float64(x), 1, beta, []float64(y), 1)
 }

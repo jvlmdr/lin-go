@@ -7,7 +7,7 @@ import "unsafe"
 import "C"
 
 // http://www.netlib.org/blas/dgemm.f
-func DGEMM(transa, transb Transpose, m, n, k int, alpha float64, a []float64, lda int, b []float64, ldb int, beta float64, c []float64, ldc int) {
+func dgemm(transa, transb Transpose, m, n, k int, alpha float64, a []float64, lda int, b []float64, ldb int, beta float64, c []float64, ldc int) {
 	var (
 		transa_ = C.char(transa)
 		transb_ = C.char(transb)
