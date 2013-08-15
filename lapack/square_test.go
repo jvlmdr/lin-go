@@ -10,8 +10,8 @@ import (
 )
 
 func ExampleSolveSquare() {
-	A := mat.MakeCopy(mat.Randn(4, 4))
-	z := vec.Make(4)
+	A := mat.MakeStrideCopy(mat.Randn(4, 4))
+	z := vec.MakeSlice(4)
 	z.Set(0, 1)
 	z.Set(1, 2)
 	z.Set(2, 3)
@@ -24,39 +24,17 @@ func ExampleSolveSquare() {
 	// (1, 2, 3, 4)
 }
 
-func ExampleSolveSquareInPlace() {
-	A := mat.MakeCopy(mat.Randn(4, 4))
-	z := vec.Make(4)
-	z.Set(0, 1)
-	z.Set(1, 2)
-	z.Set(2, 3)
-	z.Set(3, 4)
-
-	x := vec.MakeSliceCopy(mat.TimesVec(A, z))
-	SolveSquareInPlace(A, x)
-	fmt.Println(vec.Sprintf("%.6g", x))
-	// Output:
-	// (1, 2, 3, 4)
-}
-
 func TestSolveSquare(t *testing.T) {
-	A := mat.MakeCopy(mat.Randn(4, 4))
-	want := vec.MakeCopy(vec.Randn(4))
+	const n = 100
+	A := mat.MakeStrideCopy(mat.Randn(n, n))
+	want := vec.MakeCopy(vec.Randn(n))
 	b := vec.MakeCopy(mat.TimesVec(A, want))
 	got, _ := SolveSquare(A, b)
 	checkVectorsEqual(t, want, got, 1e-9)
 }
 
-func TestSolveSquareInPlace(t *testing.T) {
-	A := mat.MakeCopy(mat.Randn(4, 4))
-	want := vec.MakeCopy(vec.Randn(4))
-	got := vec.MakeSliceCopy(mat.TimesVec(A, want))
-	SolveSquareInPlace(A, got)
-	checkVectorsEqual(t, want, got, 1e-9)
-}
-
 func ExampleSolveSquareCmplx() {
-	A := zmat.MakeCopy(zmat.Randn(4, 4))
+	A := zmat.MakeStrideCopy(zmat.Randn(4, 4))
 	z := zvec.Make(4)
 	z.Set(0, 1+1i)
 	z.Set(1, 2+2i)

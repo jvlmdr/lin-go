@@ -25,12 +25,21 @@ func MakeStrideCap(rows, cols, rowcap, colcap int) Stride {
 	return Stride{rows, cols, rowcap, elems}
 }
 
+func MakeStrideCopy(A Const) Stride {
+	s := A.Size()
+	B := MakeStride(s.Rows, s.Cols)
+	Copy(B, A)
+	return B
+}
+
+// Creates a column matrix from x.
+func StrideMat(x []float64) Stride {
+	return Stride{len(x), 1, len(x), x}
+}
+
 func (A Stride) Size() Size              { return Size{A.Rows, A.Cols} }
 func (A Stride) At(i, j int) float64     { return A.Elems[j*A.Stride+i] }
 func (A Stride) Set(i, j int, x float64) { A.Elems[j*A.Stride+i] = x }
-
-func (A Stride) ColMajorArray() []float64 { return A.Elems }
-func (A Stride) ColStride() int           { return A.Stride }
 
 // Transpose without copying.
 func (A Stride) T() StrideT { return StrideT(A) }

@@ -27,7 +27,11 @@ func ExampleSolveFullRank_overdetermined() {
 	A.Set(2, 1, 1)
 	b.Set(2, 3)
 
-	x := SolveFullRank(A, b)
+	x, err := SolveFullRank(A, b)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	fmt.Println(vec.Sprintf("%.6g", x))
 	// Output:
 	// (1, 4)
@@ -50,7 +54,11 @@ func ExampleSolveFullRank_underdetermined() {
 	A.Set(1, 2, 1)
 	b.Set(1, 9)
 
-	x := SolveFullRank(A, b)
+	x, err := SolveFullRank(A, b)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	fmt.Println(vec.Sprintf("%.6g", x))
 	// Output:
 	// (1, 4, 5)
@@ -63,13 +71,17 @@ func TestFullRankOverdetermined(t *testing.T) {
 		n = 5
 		p = 3
 	)
-	A := mat.MakeCopy(mat.Randn(m, n))
-	B := mat.MakeCopy(mat.Randn(m, p))
-	got := SolveNFullRank(A, B)
 
-	AA := mat.MakeCopy(mat.Times(mat.T(A), A))
-	AB := mat.MakeCopy(mat.Times(mat.T(A), B))
-	want, _ := SolveNSquare(AA, AB)
+	A := mat.MakeCopy(mat.Randn(m, n))
+	X := mat.MakeStrideCopy(mat.Randn(n, p))
+	B := mat.MakeStrideCopy(mat.Times(A, X))
+	want := X
+
+	X, err := SolveFullRankMat(A, B)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := X
 
 	mat.CheckEqual(t, want, got, 1e-9)
 }
@@ -81,12 +93,21 @@ func TestFullRankUnderdetermined(t *testing.T) {
 		n = 8
 		p = 3
 	)
-	A := mat.MakeCopy(mat.Randn(m, n))
-	B := mat.MakeCopy(mat.Randn(m, p))
-	got := SolveNFullRank(A, B)
 
-	AA := mat.MakeCopy(mat.Times(A, mat.T(A)))
-	Y, _ := SolveNSquare(AA, B)
+	A := mat.MakeCopy(mat.Randn(m, n))
+	B := mat.MakeStrideCopy(mat.Randn(m, p))
+	got, err := SolveFullRankMat(A, B)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Compute pseudo-inverse explicitly.
+	// A' (A A')^{-1} B
+	AA := mat.MakeStrideCopy(mat.Times(A, mat.T(A)))
+	Y, err := SolveSquareMat(AA, B)
+	if err != nil {
+		t.Fatal(err)
+	}
 	want := mat.MakeCopy(mat.Times(mat.T(A), Y))
 
 	mat.CheckEqual(t, want, got, 1e-9)

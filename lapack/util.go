@@ -14,12 +14,13 @@ func max(a, b int) int {
 	return a
 }
 
-func forceToReal(x interface{}) float64 {
-	if y, ok := x.(float64); ok {
-		return y
+func re(x interface{}) float64 {
+	switch x := x.(type) {
+	default:
+	case float64:
+		return x
+	case complex128:
+		return real(x)
 	}
-	if y, ok := x.(complex128); ok {
-		return real(y)
-	}
-	panic("Neither float64 not complex128")
+	panic("neither float64 not complex128")
 }

@@ -1,66 +1,51 @@
 package lapack
 
 import (
-	"fmt"
 	"github.com/jackvalmadre/lin-go/zmat"
 	"github.com/jackvalmadre/lin-go/zvec"
+
+	"fmt"
 )
 
-// Solves A x = b where A is square.
-//
-// Calls zgesv.
-func SolveSquareCmplx(A zmat.Const, b zvec.Const) (zvec.Slice, ComplexLU) {
-	Q := zmat.MakeContigCopy(A)
-	x := zvec.MakeSliceCopy(b)
-	lu := SolveSquareInPlaceCmplx(Q, x)
-	return x, lu
+// Vector version of SolveSquareMatCmplx().
+// Like SolveSquareCmplxNoCopy() except A and b are left intact.
+func SolveSquareCmplx(A zmat.Const, b zvec.Const) (zvec.Slice, error) {
+	return SolveSquareCmplxNoCopy(zmat.MakeStrideCopy(A), zvec.MakeSliceCopy(b))
 }
 
-// Solves A x = b where A is square.
-//
-// Calls zgesv.
-//
-// Result is returned in b.
-func SolveSquareInPlaceCmplx(A zmat.ColMajor, b zvec.Slice) ComplexLU {
-	if zmat.Rows(A) != b.Len() {
-		panic("Matrix and vector dimensions are incompatible")
+// Like SolveSquareMatCmplxNoCopy() except A and B are left intact.
+func SolveSquareMatCmplx(A zmat.Const, B zmat.Const) (zmat.Stride, error) {
+	return SolveSquareMatCmplxNoCopy(zmat.MakeStrideCopy(A), zmat.MakeStrideCopy(B))
+}
+
+// Vector version of SolveSquareMatCmplxNoCopy().
+func SolveSquareCmplxNoCopy(A zmat.Stride, b zvec.Slice) (zvec.Slice, error) {
+	B := zmat.StrideMat(b)
+	X, err := SolveSquareMatCmplx(A, B)
+	if err != nil {
+		return nil, err
 	}
-	B := zmat.Contig{b.Len(), 1, []complex128(b)}
-	lu := SolveNSquareInPlaceCmplx(A, B)
-	return lu
+	return X.Col(0), nil
 }
 
-// Solves A X = B where A is square.
-//
-// Calls zgesv.
-func SolveNSquareCmplx(A zmat.Const, B zmat.Const) (zmat.Contig, ComplexLU) {
-	Q := zmat.MakeContigCopy(A)
-	X := zmat.MakeContigCopy(B)
-	lu := SolveNSquareInPlaceCmplx(Q, X)
-	return X, lu
-}
-
-// Solves A X = B where A is square.
+// Solves A X = B where A is square and full-rank.
 //
 // Calls zgesv.
 //
-// Result is returned in B.
-func SolveNSquareInPlaceCmplx(A zmat.ColMajor, B zmat.ColMajor) ComplexLU {
+// Overwrites A and b.
+// Result references elements of b.
+func SolveSquareMatCmplxNoCopy(A zmat.Stride, B zmat.Stride) (zmat.Stride, error) {
 	if !A.Size().Square() {
-		panic("System of equations is not square")
+		panic(fmt.Sprintf("matrix is not square: %v", A.Size()))
 	}
 	if zmat.Rows(A) != zmat.Rows(B) {
-		panic("Matrix dimensions are incompatible")
+		panic(fmt.Sprintf("dimensions incompatible: %v and %v", A.Size(), B.Size()))
 	}
 
-	n := zmat.Rows(A)
-	ipiv := make(IntList, n)
-
-	info := zgesv(zmat.Rows(A), zmat.Cols(B), A.ColMajorArray(), A.ColStride(), ipiv,
-		B.ColMajorArray(), B.ColStride())
+	ipiv := make(IntList, A.Rows)
+	info := zgesv(A.Rows, B.Cols, A.Elems, A.Stride, ipiv, B.Elems, B.Stride)
 	if info != 0 {
-		panic(fmt.Sprintf("info was non-zero (%d)", info))
+		return zmat.Stride{}, ErrNonZeroInfo
 	}
-
-	return ComplexLU{A, ipiv}
+	return B, nil
 }

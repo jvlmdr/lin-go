@@ -1,66 +1,51 @@
 package lapack
 
 import (
-	"fmt"
 	"github.com/jackvalmadre/lin-go/mat"
 	"github.com/jackvalmadre/lin-go/vec"
+
+	"fmt"
 )
 
-// Solves A x = b where A is square.
-//
-// Calls dgesv.
-func SolveSquare(A mat.Const, b vec.Const) (vec.Slice, RealLU) {
-	Q := mat.MakeContigCopy(A)
-	x := vec.MakeSliceCopy(b)
-	lu := SolveSquareInPlace(Q, x)
-	return x, lu
+// Vector version of SolveSquareMat().
+// Like SolveSquareNoCopy() except A and b are left intact.
+func SolveSquare(A mat.Const, b vec.Const) (vec.Slice, error) {
+	return SolveSquareNoCopy(mat.MakeStrideCopy(A), vec.MakeSliceCopy(b))
 }
 
-// Solves A x = b where A is square.
-//
-// Calls dgesv.
-//
-// Result is returned in b.
-func SolveSquareInPlace(A mat.ColMajor, b vec.Slice) RealLU {
-	if mat.Rows(A) != b.Len() {
-		panic("Matrix and vector dimensions are incompatible")
+// Like SolveSquareMatNoCopy() except A and B are left intact.
+func SolveSquareMat(A mat.Const, B mat.Const) (mat.Stride, error) {
+	return SolveSquareMatNoCopy(mat.MakeStrideCopy(A), mat.MakeStrideCopy(B))
+}
+
+// Vector version of SolveSquareMatNoCopy().
+func SolveSquareNoCopy(A mat.Stride, b vec.Slice) (vec.Slice, error) {
+	B := mat.StrideMat(b)
+	X, err := SolveSquareMat(A, B)
+	if err != nil {
+		return nil, err
 	}
-	B := mat.Contig{b.Len(), 1, []float64(b)}
-	lu := SolveNSquareInPlace(A, B)
-	return lu
+	return X.Col(0), nil
 }
 
-// Solves A X = B where A is square.
-//
-// Calls dgesv.
-func SolveNSquare(A mat.Const, B mat.Const) (mat.Contig, RealLU) {
-	Q := mat.MakeContigCopy(A)
-	X := mat.MakeContigCopy(B)
-	lu := SolveNSquareInPlace(Q, X)
-	return X, lu
-}
-
-// Solves A X = B where A is square.
+// Solves A X = B where A is square and full-rank.
 //
 // Calls dgesv.
 //
-// Result is returned in B.
-func SolveNSquareInPlace(A mat.ColMajor, B mat.ColMajor) RealLU {
+// Overwrites A and b.
+// Result references elements of b.
+func SolveSquareMatNoCopy(A mat.Stride, B mat.Stride) (mat.Stride, error) {
 	if !A.Size().Square() {
-		panic("System of equations is not square")
+		panic(fmt.Sprintf("matrix is not square: %v", A.Size()))
 	}
 	if mat.Rows(A) != mat.Rows(B) {
-		panic("Matrix dimensions are incompatible")
+		panic(fmt.Sprintf("dimensions incompatible: %v and %v", A.Size(), B.Size()))
 	}
 
-	n := mat.Rows(A)
-	ipiv := make(IntList, n)
-
-	info := dgesv(mat.Rows(A), mat.Cols(B), A.ColMajorArray(), A.ColStride(), ipiv,
-		B.ColMajorArray(), B.ColStride())
+	ipiv := make(IntList, A.Rows)
+	info := dgesv(A.Rows, B.Cols, A.Elems, A.Stride, ipiv, B.Elems, B.Stride)
 	if info != 0 {
-		panic(fmt.Sprintf("info was non-zero (%d)", info))
+		return mat.Stride{}, ErrNonZeroInfo
 	}
-
-	return RealLU{A, ipiv}
+	return B, nil
 }

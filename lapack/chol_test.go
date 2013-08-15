@@ -11,16 +11,17 @@ func TestCholSolve(t *testing.T) {
 	// Random symmetric positive definite matrix.
 	A := mat.MakeCopy(mat.Randn(8, 4))
 	A = mat.MakeCopy(mat.Times(A.T(), A))
-	chol, err := Chol(mat.MakeCopy(A))
+	chol, err := Chol(A)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Random vector.
 	want := vec.MakeCopy(vec.Randn(4))
-	got := vec.MakeCopy(mat.TimesVec(A, want))
+	b := vec.MakeCopy(mat.TimesVec(A, want))
 
-	if err := chol.Solve(mat.ContigMat(got)); err != nil {
+	got, err := chol.Solve(b)
+	if err != nil {
 		t.Fatal(err)
 	}
 	checkVectorsEqual(t, want, got, 1e-9)
@@ -34,14 +35,15 @@ func ExampleCholFact_Solve() {
 	A.Set(1, 1, 2)
 	A = mat.MakeCopy(mat.Times(A.T(), A))
 
-	x := vec.Slice([]float64{8, 13})
+	var b vec.Slice = []float64{8, 13}
 
 	chol, err := Chol(A)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	if err := chol.Solve(mat.ContigMat(x)); err != nil {
+	x, err := chol.Solve(b)
+	if err != nil {
 		fmt.Println(err)
 		return
 	}

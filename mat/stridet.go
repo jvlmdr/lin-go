@@ -9,9 +9,6 @@ func (A StrideT) Size() Size              { return A.T().Size().T() }
 func (A StrideT) At(i, j int) float64     { return A.T().At(j, i) }
 func (A StrideT) Set(i, j int, x float64) { A.T().Set(j, i, x) }
 
-func (A StrideT) RowMajorArray() []float64 { return A.T().ColMajorArray() }
-func (A StrideT) RowStride() int           { return A.T().ColStride() }
-
 // Transpose without copying.
 func (A StrideT) T() Stride { return Stride(A) }
 

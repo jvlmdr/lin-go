@@ -26,7 +26,11 @@ func ExampleSolveCond_overdetermined() {
 	A.Set(2, 1, 1)
 	b.Set(2, 3)
 
-	x, _, _ := SolveCond(A, b, -1)
+	x, _, _, err := SolveCond(A, b, -1)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	fmt.Println(vec.Sprintf("%.6g", x))
 	// Output:
 	// (1, 4, 0)
@@ -49,7 +53,11 @@ func ExampleSolveCond_underdetermined() {
 	A.Set(1, 2, 1)
 	b.Set(1, 9)
 
-	x, _, _ := SolveCond(A, b, -1)
+	x, _, _, err := SolveCond(A, b, -1)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	fmt.Println(vec.Sprintf("%.6g", x))
 	// Output:
 	// (1, 4, 5)

@@ -25,12 +25,21 @@ func MakeStrideCap(rows, cols, rowcap, colcap int) Stride {
 	return Stride{rows, cols, rowcap, elems}
 }
 
+func MakeStrideCopy(A Const) Stride {
+	s := A.Size()
+	B := MakeStride(s.Rows, s.Cols)
+	Copy(B, A)
+	return B
+}
+
+// Creates a column matrix from x.
+func StrideMat(x []complex128) Stride {
+	return Stride{len(x), 1, len(x), x}
+}
+
 func (A Stride) Size() Size                 { return Size{A.Rows, A.Cols} }
 func (A Stride) At(i, j int) complex128     { return A.Elems[j*A.Stride+i] }
 func (A Stride) Set(i, j int, x complex128) { A.Elems[j*A.Stride+i] = x }
-
-func (A Stride) ColMajorArray() []complex128 { return A.Elems }
-func (A Stride) ColStride() int              { return A.Stride }
 
 // Transpose without copying.
 func (A Stride) T() StrideT { return StrideT(A) }
@@ -71,7 +80,7 @@ func (A Stride) SliceTo(i, j int) Stride {
 
 // Slices a submatrix within the bounds of the matrix.
 func (A Stride) Submat(r Rect) Stride {
-	if r.Max.I >= A.Rows || r.Max.J >= A.Cols {
+	if r.Max.I > A.Rows || r.Max.J > A.Cols {
 		panic("rectangle is outside range of matrix")
 	}
 	return A.Slice(r)

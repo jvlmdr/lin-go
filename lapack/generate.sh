@@ -14,16 +14,18 @@ do
 	echo $d -\> $z
 	cp $d $z
 	go fmt $z >/dev/null
-	sed 's/float64/complex128/g' $z                > tmp && mv tmp $z
-	sed "s/\"$vec\"/\"$zvec\"/g" $z                > tmp && mv tmp $z
-	sed "s/\"$mat\"/\"$zmat\"/g" $z                > tmp && mv tmp $z
-	sed "s/vec\./zvec\./g" $z                      > tmp && mv tmp $z
-	sed "s/mat\./zmat\./g" $z                      > tmp && mv tmp $z
-	sed "s/Solve\([A-Za-z]*\)(/Solve\1Cmplx(/g" $z > tmp && mv tmp $z
-	sed "s/RealLU/ComplexLU/g" $z                  > tmp && mv tmp $z
-	sed "s/dge\([a-z]*\)/zge\1/g" $z               > tmp && mv tmp $z
-	sed "s/DGE\([A-Z]*\)/ZGE\1/g" $z               > tmp && mv tmp $z
-	sed "s/doublereal/doublecomplex/g" $z          > tmp && mv tmp $z
+	sed 's/float64/complex128/g' $z > tmp && mv tmp $z
+	sed "s/\"$vec\"/\"$zvec\"/g" $z > tmp && mv tmp $z
+	sed "s/\"$mat\"/\"$zmat\"/g" $z > tmp && mv tmp $z
+	sed "s/vec\./zvec\./g" $z > tmp && mv tmp $z
+	sed "s/mat\./zmat\./g" $z > tmp && mv tmp $z
+	sed -E "s/Solve(FullRank|Square|Cond|Symm|PosDef)(Mat)?(NoCopy)?\(/Solve\1\2Cmplx\3(/g" $z \
+		> tmp && mv tmp $z
+	sed -E "s/(LU|LDL)(NoCopy)?\(/\1Cmplx\2(/g" $z > tmp && mv tmp $z
+	sed -E "s/(LU|LDL)Fact/\1FactCmplx/g" $z > tmp && mv tmp $z
+	sed -E "s/d(ge|po|sy)([a-z]*)/z\1\2/g" $z > tmp && mv tmp $z
+	sed -E "s/D(GE|PO|SY)([A-Z]*)/Z\1\2/g" $z > tmp && mv tmp $z
+	sed "s/doublereal/doublecomplex/g" $z > tmp && mv tmp $z
 	go fmt $z >/dev/null
 	chmod a-w $z
 done

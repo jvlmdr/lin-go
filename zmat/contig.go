@@ -48,9 +48,6 @@ func (A Contig) ColCap() int {
 	return cap(A.Elems) / A.Rows
 }
 
-func (A Contig) ColMajorArray() []complex128 { return A.Elems }
-func (A Contig) ColStride() int              { return A.Rows }
-
 // Transpose without copying.
 func (A Contig) T() ContigT { return ContigT(A) }
 

@@ -19,9 +19,6 @@ func (A ContigT) Size() Size                 { return A.T().Size().T() }
 func (A ContigT) At(i, j int) complex128     { return A.T().At(j, i) }
 func (A ContigT) Set(i, j int, x complex128) { A.T().Set(j, i, x) }
 
-func (A ContigT) RowMajorArray() []complex128 { return A.T().ColMajorArray() }
-func (A ContigT) RowStride() int              { return A.T().ColStride() }
-
 // Transpose without copying.
 func (A ContigT) T() Contig { return Contig(A) }
 

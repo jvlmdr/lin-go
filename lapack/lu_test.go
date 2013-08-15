@@ -8,11 +8,11 @@ import (
 	"testing"
 )
 
-func TestLDLFact_Solve(t *testing.T) {
+func TestLUFact_Solve(t *testing.T) {
 	// Random symmetric matrix.
-	A := mat.MakeCopy(mat.Randn(4, 4))
-	A = mat.MakeCopy(mat.Scale(0.5, mat.Plus(A, A.T())))
-	ldl, err := LDL(A)
+	A := mat.MakeStrideCopy(mat.Randn(4, 4))
+	A = mat.MakeStrideCopy(mat.Scale(0.5, mat.Plus(A, A.T())))
+	lu, err := LU(A)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -21,15 +21,15 @@ func TestLDLFact_Solve(t *testing.T) {
 	want := vec.MakeCopy(vec.Randn(4))
 	b := vec.MakeCopy(mat.TimesVec(A, want))
 
-	got, err := ldl.Solve(b)
+	got, err := lu.Solve(false, b)
 	if err != nil {
 		t.Fatal(err)
 	}
 	checkVectorsEqual(t, want, got, 1e-9)
 }
 
-func ExampleLDLFact_Solve() {
-	A := mat.Make(2, 2)
+func ExampleLUFact_Solve() {
+	A := mat.MakeStride(2, 2)
 	A.Set(0, 0, 1)
 	A.Set(0, 1, 2)
 	A.Set(1, 0, 2)
@@ -39,12 +39,12 @@ func ExampleLDLFact_Solve() {
 	b.Set(0, 5)
 	b.Set(1, -4)
 
-	ldl, err := LDL(A)
+	lu, err := LU(A)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	x, err := ldl.Solve(b)
+	x, err := lu.Solve(false, b)
 	if err != nil {
 		fmt.Println(err)
 		return

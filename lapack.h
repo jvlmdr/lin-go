@@ -14,6 +14,16 @@
 /* Subroutine */ int dgesv_(integer *n, integer *nrhs, doublereal *a, integer
 	*lda, integer *ipiv, doublereal *b, integer *ldb, integer *info);
 
+/* Subroutine */ int dgetrf_(integer *m, integer *n, doublereal *a, integer *
+	lda, integer *ipiv, integer *info);
+
+/* Subroutine */ int dgetri_(integer *n, doublereal *a, integer *lda, integer
+	*ipiv, doublereal *work, integer *lwork, integer *info);
+
+/* Subroutine */ int dgetrs_(char *trans, integer *n, integer *nrhs,
+	doublereal *a, integer *lda, integer *ipiv, doublereal *b, integer *
+	ldb, integer *info);
+
 /* Subroutine */ int dposv_(char *uplo, integer *n, integer *nrhs, doublereal
 	*a, integer *lda, doublereal *b, integer *ldb, integer *info);
 
@@ -49,3 +59,28 @@
 /* Subroutine */ int zgesv_(integer *n, integer *nrhs, doublecomplex *a,
 	integer *lda, integer *ipiv, doublecomplex *b, integer *ldb, integer *
 	info);
+
+/* Subroutine */ int zgetrf_(integer *m, integer *n, doublecomplex *a,
+	integer *lda, integer *ipiv, integer *info);
+
+/* Subroutine */ int zgetri_(integer *n, doublecomplex *a, integer *lda,
+	integer *ipiv, doublecomplex *work, integer *lwork, integer *info);
+
+/* Subroutine */ int zgetrs_(char *trans, integer *n, integer *nrhs,
+	doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *b,
+	integer *ldb, integer *info);
+
+/* Subroutine */ int zsysv_(char *uplo, integer *n, integer *nrhs,
+	doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *b,
+	integer *ldb, doublecomplex *work, integer *lwork, integer *info);
+
+/* Subroutine */ int zsytrf_(char *uplo, integer *n, doublecomplex *a,
+	integer *lda, integer *ipiv, doublecomplex *work, integer *lwork,
+	integer *info);
+
+/* Subroutine */ int zsytri_(char *uplo, integer *n, doublecomplex *a,
+	integer *lda, integer *ipiv, doublecomplex *work, integer *info);
+
+/* Subroutine */ int zsytrs_(char *uplo, integer *n, integer *nrhs,
+	doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *b,
+	integer *ldb, integer *info);
