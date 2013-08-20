@@ -10,6 +10,13 @@ func Copy(dst Mutable, src Const) {
 	if dst.Len() != src.Len() {
 		panic(fmt.Sprintf("Vectors are different sizes (%d and %d)", dst.Len(), src.Len()))
 	}
+	// Avoid function calls in inner loop.
+	if dst, ok := dst.(Slice); ok {
+		if src, ok := src.(Slice); ok {
+			copy(dst, src)
+			return
+		}
+	}
 	for i := 0; i < src.Len(); i++ {
 		dst.Set(i, src.At(i))
 	}
