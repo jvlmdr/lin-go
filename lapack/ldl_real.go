@@ -36,7 +36,7 @@ func LDLNoCopy(A mat.Stride) (LDLFact, error) {
 
 	info := dsytrfAuto(uplo, A.Rows, A.Elems, A.Stride, ipiv)
 	if info != 0 {
-		return LDLFact{}, ErrNonZeroInfo
+		return LDLFact{}, ErrNonZeroInfo(info)
 	}
 	ldl := LDLFact{uplo, A, ipiv}
 	return ldl, nil
@@ -90,7 +90,7 @@ func (ldl LDLFact) SolveMatNoCopy(B mat.Stride) (mat.Stride, error) {
 
 	info := dsytrs(ldl.UpLo, ldl.A.Rows, B.Cols, ldl.A.Elems, ldl.A.Stride, ldl.Ipiv, B.Elems, B.Stride)
 	if info != 0 {
-		return mat.Stride{}, ErrNonZeroInfo
+		return mat.Stride{}, ErrNonZeroInfo(info)
 	}
 	return B, nil
 }

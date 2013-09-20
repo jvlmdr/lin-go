@@ -56,7 +56,7 @@ func SolvePosDefMatNoCopy(A mat.Stride, B mat.Stride) (mat.Stride, error) {
 	const uplo = LowerTriangle
 	info := dposv(uplo, A.Rows, B.Cols, A.Elems, A.Stride, B.Elems, B.Stride)
 	if info != 0 {
-		return mat.Stride{}, ErrNonZeroInfo
+		return mat.Stride{}, ErrNonZeroInfo(info)
 	}
 	return B, nil
 }

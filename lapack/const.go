@@ -1,7 +1,7 @@
 package lapack
 
-import "errors"
+import "fmt"
 
-var (
-	ErrNonZeroInfo = errors.New("lapack info was non-zero")
-)
+func ErrNonZeroInfo(info int) error {
+	return fmt.Errorf("lapack info non-zero: %d", info)
+}

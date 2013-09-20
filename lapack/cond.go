@@ -63,7 +63,7 @@ func SolveCondMatNoCopy(A mat.Stride, B mat.Stride, rcond float64) (mat.Stride, 
 
 	rank, info := dgelsdAuto(A.Rows, A.Cols, B.Cols, A.Elems, A.Stride, B.Elems, B.Stride, sigma, rcond)
 	if info != 0 {
-		return mat.Stride{}, 0, nil, ErrNonZeroInfo
+		return mat.Stride{}, 0, nil, ErrNonZeroInfo(info)
 	}
 
 	X := B.SliceTo(A.Cols, B.Cols)
@@ -143,7 +143,7 @@ func SolveCondMatCmplxNoCopy(A zmat.Stride, B zmat.Stride, rcond float64) (zmat.
 
 	rank, info := zgelsdAuto(A.Rows, A.Cols, B.Cols, A.Elems, A.Stride, B.Elems, B.Stride, sigma, rcond)
 	if info != 0 {
-		return zmat.Stride{}, 0, nil, ErrNonZeroInfo
+		return zmat.Stride{}, 0, nil, ErrNonZeroInfo(info)
 	}
 
 	X := B.SliceTo(A.Cols, B.Cols)

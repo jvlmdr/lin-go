@@ -36,7 +36,7 @@ func LDLCmplxNoCopy(A zmat.Stride) (LDLFactCmplx, error) {
 
 	info := zsytrfAuto(uplo, A.Rows, A.Elems, A.Stride, ipiv)
 	if info != 0 {
-		return LDLFactCmplx{}, ErrNonZeroInfo
+		return LDLFactCmplx{}, ErrNonZeroInfo(info)
 	}
 	ldl := LDLFactCmplx{uplo, A, ipiv}
 	return ldl, nil
@@ -90,7 +90,7 @@ func (ldl LDLFactCmplx) SolveMatNoCopy(B zmat.Stride) (zmat.Stride, error) {
 
 	info := zsytrs(ldl.UpLo, ldl.A.Rows, B.Cols, ldl.A.Elems, ldl.A.Stride, ldl.Ipiv, B.Elems, B.Stride)
 	if info != 0 {
-		return zmat.Stride{}, ErrNonZeroInfo
+		return zmat.Stride{}, ErrNonZeroInfo(info)
 	}
 	return B, nil
 }

@@ -45,7 +45,7 @@ func SolveSquareMatNoCopy(A mat.Stride, B mat.Stride) (mat.Stride, error) {
 	ipiv := make(IntList, A.Rows)
 	info := dgesv(A.Rows, B.Cols, A.Elems, A.Stride, ipiv, B.Elems, B.Stride)
 	if info != 0 {
-		return mat.Stride{}, ErrNonZeroInfo
+		return mat.Stride{}, ErrNonZeroInfo(info)
 	}
 	return B, nil
 }

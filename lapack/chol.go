@@ -30,7 +30,7 @@ func CholNoCopy(A mat.Stride) (CholFact, error) {
 	const uplo = LowerTriangle
 	info := dpotrf(uplo, A.Rows, A.Elems, A.Stride)
 	if info != 0 {
-		return CholFact{}, ErrNonZeroInfo
+		return CholFact{}, ErrNonZeroInfo(info)
 	}
 	ldl := CholFact{A, uplo}
 	return ldl, nil
@@ -65,7 +65,7 @@ func (chol CholFact) SolveMatNoCopy(B mat.Stride) (mat.Stride, error) {
 
 	info := dpotrs(chol.UpLo, chol.A.Rows, B.Cols, chol.A.Elems, chol.A.Stride, B.Elems, B.Stride)
 	if info != 0 {
-		return mat.Stride{}, ErrNonZeroInfo
+		return mat.Stride{}, ErrNonZeroInfo(info)
 	}
 	return B, nil
 }

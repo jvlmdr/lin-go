@@ -28,7 +28,7 @@ func LUNoCopy(A mat.Stride) (LUFact, error) {
 
 	info := dgetrf(A.Rows, A.Cols, A.Elems, A.Stride, ipiv)
 	if info != 0 {
-		return LUFact{}, ErrNonZeroInfo
+		return LUFact{}, ErrNonZeroInfo(info)
 	}
 	lu := LUFact{A, ipiv}
 	return lu, nil

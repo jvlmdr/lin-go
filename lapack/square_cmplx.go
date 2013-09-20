@@ -45,7 +45,7 @@ func SolveSquareMatCmplxNoCopy(A zmat.Stride, B zmat.Stride) (zmat.Stride, error
 	ipiv := make(IntList, A.Rows)
 	info := zgesv(A.Rows, B.Cols, A.Elems, A.Stride, ipiv, B.Elems, B.Stride)
 	if info != 0 {
-		return zmat.Stride{}, ErrNonZeroInfo
+		return zmat.Stride{}, ErrNonZeroInfo(info)
 	}
 	return B, nil
 }

@@ -28,7 +28,7 @@ func LUCmplxNoCopy(A zmat.Stride) (LUFactCmplx, error) {
 
 	info := zgetrf(A.Rows, A.Cols, A.Elems, A.Stride, ipiv)
 	if info != 0 {
-		return LUFactCmplx{}, ErrNonZeroInfo
+		return LUFactCmplx{}, ErrNonZeroInfo(info)
 	}
 	lu := LUFactCmplx{A, ipiv}
 	return lu, nil

@@ -76,7 +76,7 @@ func SolveFullRankMatNoCopy(A mat.Stride, T bool, B mat.Stride) (mat.Stride, err
 
 	info := dgelsAuto(trans, s.Rows, s.Cols, B.Cols, A.Elems, A.Stride, B.Elems, B.Stride)
 	if info != 0 {
-		return mat.Stride{}, ErrNonZeroInfo
+		return mat.Stride{}, ErrNonZeroInfo(info)
 	}
 
 	X := B.SliceTo(A.Size().Cols, mat.Cols(B))
@@ -161,7 +161,7 @@ func SolveFullRankMatCmplxNoCopy(A zmat.Stride, H bool, B zmat.Stride) (zmat.Str
 
 	info := zgelsAuto(trans, s.Rows, s.Cols, B.Cols, A.Elems, A.Stride, B.Elems, B.Stride)
 	if info != 0 {
-		return zmat.Stride{}, ErrNonZeroInfo
+		return zmat.Stride{}, ErrNonZeroInfo(info)
 	}
 
 	X := B.SliceTo(A.Size().Cols, zmat.Cols(B))

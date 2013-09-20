@@ -48,7 +48,7 @@ func (lu LUFact) SolveMatNoCopy(T bool, B mat.Stride) (mat.Stride, error) {
 
 	info := dgetrs(trans, s.Rows, B.Cols, lu.A.Elems, lu.A.Stride, lu.Ipiv, B.Elems, B.Stride)
 	if info != 0 {
-		return mat.Stride{}, ErrNonZeroInfo
+		return mat.Stride{}, ErrNonZeroInfo(info)
 	}
 	return B, nil
 }
@@ -93,7 +93,7 @@ func (lu LUFactCmplx) SolveMatNoCopy(trans Transpose, B zmat.Stride) (zmat.Strid
 
 	info := zgetrs(trans, s.Rows, B.Cols, lu.A.Elems, lu.A.Stride, lu.Ipiv, B.Elems, B.Stride)
 	if info != 0 {
-		return zmat.Stride{}, ErrNonZeroInfo
+		return zmat.Stride{}, ErrNonZeroInfo(info)
 	}
 	return B, nil
 }
