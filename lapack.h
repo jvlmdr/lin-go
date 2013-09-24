@@ -67,6 +67,10 @@
 	doublereal *s, doublereal *rcond, integer *rank, doublecomplex *work,
 	integer *lwork, doublereal *rwork, integer *iwork, integer *info);
 
+/* Subroutine */ int zgeqrf_(integer *m, integer *n, doublecomplex *a,
+	integer *lda, doublecomplex *tau, doublecomplex *work, integer *lwork,
+	integer *info);
+
 /* Subroutine */ int zgesv_(integer *n, integer *nrhs, doublecomplex *a,
 	integer *lda, integer *ipiv, doublecomplex *b, integer *ldb, integer *
 	info);
@@ -95,3 +99,12 @@
 /* Subroutine */ int zsytrs_(char *uplo, integer *n, integer *nrhs,
 	doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *b,
 	integer *ldb, integer *info);
+
+/* Subroutine */ int ztrtrs_(char *uplo, char *trans, char *diag, integer *n,
+	integer *nrhs, doublecomplex *a, integer *lda, doublecomplex *b,
+	integer *ldb, integer *info);
+
+/* Subroutine */ int zunmqr_(char *side, char *trans, integer *m, integer *n,
+	integer *k, doublecomplex *a, integer *lda, doublecomplex *tau,
+	doublecomplex *c__, integer *ldc, doublecomplex *work, integer *lwork,
+	integer *info);
