@@ -16,3 +16,17 @@ const (
 	UpperTriangle = UpLo(C.char('U'))
 	LowerTriangle = UpLo(C.char('L'))
 )
+
+type Side C.char
+
+const (
+	Left  = Side(C.char('L'))
+	Right = Side(C.char('R'))
+)
+
+type Diag C.char
+
+const (
+	NonUnitTri = Diag(C.char('N'))
+	UnitTri    = Diag(C.char('U'))
+)

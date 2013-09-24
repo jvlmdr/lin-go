@@ -83,7 +83,7 @@ func TestFullRankOverdetermined(t *testing.T) {
 	}
 	got := X
 
-	mat.CheckEqual(t, want, got, 1e-9)
+	checkEqualMat(t, want, got, 1e-9)
 }
 
 // Compare against pseudo-inverse solution.
@@ -110,5 +110,5 @@ func TestFullRankUnderdetermined(t *testing.T) {
 	}
 	want := mat.MakeCopy(mat.Times(mat.T(A), Y))
 
-	mat.CheckEqual(t, want, got, 1e-9)
+	checkEqualMat(t, want, got, 1e-9)
 }

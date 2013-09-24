@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func CheckEqual(t *testing.T, want, got Const, eps float64) {
+func checkEqual(t *testing.T, want, got Const, eps float64) {
 	if !want.Size().Equals(got.Size()) {
 		t.Fatalf("Matrix sizes do not match (want %v, got %v)", want.Size(), got.Size())
 	}

@@ -11,6 +11,9 @@
 	s, doublereal *rcond, integer *rank, doublereal *work, integer *lwork,
 	 integer *iwork, integer *info);
 
+/* Subroutine */ int dgeqrf_(integer *m, integer *n, doublereal *a, integer *
+	lda, doublereal *tau, doublereal *work, integer *lwork, integer *info);
+
 /* Subroutine */ int dgesv_(integer *n, integer *nrhs, doublereal *a, integer
 	*lda, integer *ipiv, doublereal *b, integer *ldb, integer *info);
 
@@ -23,6 +26,10 @@
 /* Subroutine */ int dgetrs_(char *trans, integer *n, integer *nrhs,
 	doublereal *a, integer *lda, integer *ipiv, doublereal *b, integer *
 	ldb, integer *info);
+
+/* Subroutine */ int dormqr_(char *side, char *trans, integer *m, integer *n,
+	integer *k, doublereal *a, integer *lda, doublereal *tau, doublereal *
+	c__, integer *ldc, doublereal *work, integer *lwork, integer *info);
 
 /* Subroutine */ int dposv_(char *uplo, integer *n, integer *nrhs, doublereal
 	*a, integer *lda, doublereal *b, integer *ldb, integer *info);
@@ -43,6 +50,10 @@
 
 /* Subroutine */ int dsytrs_(char *uplo, integer *n, integer *nrhs,
 	doublereal *a, integer *lda, integer *ipiv, doublereal *b, integer *
+	ldb, integer *info);
+
+/* Subroutine */ int dtrtrs_(char *uplo, char *trans, char *diag, integer *n,
+	integer *nrhs, doublereal *a, integer *lda, doublereal *b, integer *
 	ldb, integer *info);
 
 // Complex

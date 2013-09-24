@@ -30,7 +30,7 @@ func TestSolveSquare(t *testing.T) {
 	want := vec.MakeCopy(vec.Randn(n))
 	b := vec.MakeCopy(mat.TimesVec(A, want))
 	got, _ := SolveSquare(A, b)
-	checkVectorsEqual(t, want, got, 1e-9)
+	checkEqualVec(t, want, got, 1e-9)
 }
 
 func ExampleSolveSquareCmplx() {

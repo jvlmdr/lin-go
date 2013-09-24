@@ -24,7 +24,7 @@ func TestCholSolve(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	checkVectorsEqual(t, want, got, 1e-9)
+	checkEqualVec(t, want, got, 1e-9)
 }
 
 func ExampleCholFact_Solve() {

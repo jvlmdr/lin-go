@@ -19,7 +19,7 @@ func TestSolveSymm(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	checkVectorsEqual(t, x, got, 1e-9)
+	checkEqualVec(t, x, got, 1e-9)
 }
 
 func ExampleSolveSymm() {
