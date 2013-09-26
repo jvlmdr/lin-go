@@ -7,6 +7,8 @@ import (
 	"github.com/jackvalmadre/lin-go/zvec"
 
 	"fmt"
+	"math/cmplx"
+	"math/rand"
 	"testing"
 )
 
@@ -17,7 +19,7 @@ func TestQRFact_Solve_overdetermined(t *testing.T) {
 		n = 4
 	)
 
-	// Random symmetric matrix.
+	// Random matrix.
 	A := mat.MakeStrideCopy(mat.Randn(m, n))
 	// Random vector.
 	want := vec.MakeCopy(vec.Randn(n))
@@ -45,7 +47,7 @@ func TestQRFact_Solve_underdetermined(t *testing.T) {
 		n = 4
 	)
 
-	// Random symmetric matrix.
+	// Random matrix.
 	A := mat.MakeStrideCopy(mat.Randn(m, n))
 	// Random vector.
 	in := vec.MakeCopy(vec.Randn(m))
@@ -126,18 +128,65 @@ func ExampleQRFact_Solve_underdetermined() {
 ////////////////////////////////////////////////////////////////////////////////
 
 // Minimum-residual solution to over-constrained system by QR decomposition.
+func TestQRFactCmplx_Solve_overdeterminedExact(t *testing.T) {
+	const (
+		m = 8
+		n = 4
+	)
+
+	// Random matrix.
+	A := zmat.MakeStrideCopy(zmat.Randn(m, n))
+	// Random vector.
+	want := zvec.MakeCopy(zvec.Randn(n))
+	// Product.
+	b := zvec.MakeCopy(zmat.TimesVec(A, want))
+
+	// Factorize.
+	qr, err := QRCmplx(A)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Solve.
+	got, err := qr.Solve(false, b)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	checkEqualVecCmplx(t, want, got, 1e-9)
+}
+
+// Minimum-residual solution to over-constrained system by QR decomposition.
 func TestQRFactCmplx_Solve_overdetermined(t *testing.T) {
 	const (
 		m = 8
 		n = 4
 	)
 
-	// Random symmetric matrix.
+	// Random direction for nullspace.
+	v := zvec.MakeCopy(zvec.Randn(m))
+	// Random matrix.
 	A := zmat.MakeStrideCopy(zmat.Randn(m, n))
-	// Random vector.
+
+	// Modify A such that its nullspace contains v.
+	// Ensure that each column of A has zero dot-product with v.
+	for j := 0; j < n; j++ {
+		// Pick a random index.
+		k := rand.Intn(m)
+		// Compute the dot product without this index.
+		var dot complex128 = 0
+		for i := 0; i < m; i++ {
+			if i == k {
+				continue
+			}
+			dot += cmplx.Conj(v.At(i)) * A.At(i, j)
+		}
+		A.Set(k, j, -dot/cmplx.Conj(v.At(k)))
+	}
+
+	// Random solution.
 	want := zvec.MakeCopy(zvec.Randn(n))
-	// Product.
-	b := zvec.MakeCopy(zmat.TimesVec(A, want))
+	// Product plus component in nullspace.
+	b := zvec.MakeCopy(zvec.Plus(zmat.TimesVec(A, want), v))
 
 	// Factorize.
 	qr, err := QRCmplx(A)

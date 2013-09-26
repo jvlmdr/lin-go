@@ -48,6 +48,14 @@ func dgeqrfAuto(m, n int, a []float64, lda int, tau []float64) int {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// Solves a linear system using QR decomposition.
+// A should be mxn with m > n.
+//
+// If T is false, finds x which minimizes ||A x - b|| = ||Q R x - b||.
+// Computes R^-1 (Q' b).
+//
+// If T is true, finds minimum norm x which satisfies b = A' x = R' Q' x.
+// Computes Q (R^-T b).
 func (qr QRFact) Solve(T bool, b vec.Const) (vec.Slice, error) {
 	return qr.SolveNoCopy(T, vec.MakeSliceCopy(b))
 }
