@@ -41,6 +41,10 @@
 	doublereal *a, integer *lda, doublereal *b, integer *ldb, integer *
 	info);
 
+/* Subroutine */ int dsyev_(char *jobz, char *uplo, integer *n, doublereal *a,
+	integer *lda, doublereal *w, doublereal *work, integer *lwork,
+	integer *info);
+
 /* Subroutine */ int dsysv_(char *uplo, integer *n, integer *nrhs, doublereal
 	*a, integer *lda, integer *ipiv, doublereal *b, integer *ldb,
 	doublereal *work, integer *lwork, integer *info);

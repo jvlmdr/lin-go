@@ -30,3 +30,10 @@ const (
 	NonUnitTri = Diag(C.char('N'))
 	UnitTri    = Diag(C.char('U'))
 )
+
+type Jobz C.char
+
+const (
+	Values  = Jobz(C.char('N'))
+	Vectors = Jobz(C.char('V'))
+)
