@@ -1,99 +1,52 @@
 package lapack
 
-import (
-	"github.com/jackvalmadre/lin-go/mat"
-	"github.com/jackvalmadre/lin-go/vec"
-	"github.com/jackvalmadre/lin-go/zmat"
-	"github.com/jackvalmadre/lin-go/zvec"
-
-	"fmt"
-)
-
-// Vector version of SolveMat().
-// Like SolveCopy() except b is left intact.
-func (lu LUFact) Solve(T bool, b vec.Const) (vec.Slice, error) {
-	return lu.SolveNoCopy(T, vec.MakeSliceCopy(b))
+// Describes an LU factorization with pivoting.
+type LUFact struct {
+	A   *Mat
+	Piv []int
 }
 
-// Like SolveMatNoCopy() except B is left intact.
-func (lu LUFact) SolveMat(T bool, B mat.Const) (mat.Stride, error) {
-	return lu.SolveMatNoCopy(T, mat.MakeStrideCopy(B))
+// Computes an LU factorization.
+// Calls DGETRF.
+// Equivalent to SolveSquare (calls DGESV).
+//
+// Note that A does not need to be square to compute the decomposition.
+// However, it does need to be square to call Solve().
+func LU(a Const) (*LUFact, error) {
+	if err := errNonPosDims(a); err != nil {
+		return nil, err
+	}
+	return lu(cloneMat(a))
 }
 
-// Vector version of SolveMatNoCopy().
-func (lu LUFact) SolveNoCopy(T bool, b vec.Slice) (vec.Slice, error) {
-	B := mat.StrideMat(b)
-	X, err := lu.SolveMatNoCopy(T, B)
+// a will be modified.
+func lu(a *Mat) (*LUFact, error) {
+	m, n := a.Dims()
+	piv, err := dgetrf(m, n, a.Elems, m)
 	if err != nil {
-		return vec.Slice{}, err
+		return nil, err
 	}
-	return X.Col(0), nil
+	return &LUFact{a, piv}, nil
 }
 
-// Solves A X = B (or A**T X = B) where A is square given its LU factorization.
-func (lu LUFact) SolveMatNoCopy(T bool, B mat.Stride) (mat.Stride, error) {
-	if !lu.A.Size().Square() {
-		panic(fmt.Sprintf("matrix is not square: %v", lu.A.Size()))
+// Solves A x = b (or A' x = b) where A is square and full-rank
+// given its LU factorization.
+func (lu *LUFact) Solve(t bool, b []float64) ([]float64, error) {
+	if err := errNonSquare(lu.A); err != nil {
+		return nil, err
 	}
-
-	s := lu.A.Size()
-	trans := NoTrans
-	if T {
-		s = s.T()
-		trans = Trans
+	if err := errIncompatT(lu.A, t, b); err != nil {
+		return nil, err
 	}
-	if s.Rows != B.Rows {
-		panic(fmt.Sprintf("dimensions incompatible: %v and %v", s, B.Size()))
-	}
-
-	info := dgetrs(trans, s.Rows, B.Cols, lu.A.Elems, lu.A.Stride, lu.Ipiv, B.Elems, B.Stride)
-	if info != 0 {
-		return mat.Stride{}, ErrNonZeroInfo(info)
-	}
-	return B, nil
+	return lu.solve(t, cloneSlice(b))
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-// Vector version of SolveMat().
-// Like SolveCopy() except b is left intact.
-func (lu LUFactCmplx) Solve(trans Transpose, b zvec.Const) (zvec.Slice, error) {
-	return lu.SolveNoCopy(trans, zvec.MakeSliceCopy(b))
-}
-
-// Like SolveMatNoCopy() except B is left intact.
-func (lu LUFactCmplx) SolveMat(trans Transpose, B zmat.Const) (zmat.Stride, error) {
-	return lu.SolveMatNoCopy(trans, zmat.MakeStrideCopy(B))
-}
-
-// Vector version of SolveMatNoCopy().
-func (lu LUFactCmplx) SolveNoCopy(trans Transpose, b zvec.Slice) (zvec.Slice, error) {
-	B := zmat.StrideMat(b)
-	X, err := lu.SolveMatNoCopy(trans, B)
+// b will be modified.
+func (lu *LUFact) solve(t bool, b []float64) ([]float64, error) {
+	n, _ := lu.A.Dims()
+	err := dgetrs(t, n, 1, lu.A.Elems, n, lu.Piv, b, n)
 	if err != nil {
-		return zvec.Slice{}, err
+		return nil, err
 	}
-	return X.Col(0), nil
-}
-
-// Solves A X = B where A is square given its LU factorization.
-// Can also solve A**T X = B or A**H X = B.
-func (lu LUFactCmplx) SolveMatNoCopy(trans Transpose, B zmat.Stride) (zmat.Stride, error) {
-	if !lu.A.Size().Square() {
-		panic(fmt.Sprintf("matrix is not square: %v", lu.A.Size()))
-	}
-
-	s := lu.A.Size()
-	if trans != NoTrans {
-		s = s.T()
-	}
-	if s.Rows != B.Rows {
-		panic(fmt.Sprintf("dimensions incompatible: %v and %v", s, B.Size()))
-	}
-
-	info := zgetrs(trans, s.Rows, B.Cols, lu.A.Elems, lu.A.Stride, lu.Ipiv, B.Elems, B.Stride)
-	if info != 0 {
-		return zmat.Stride{}, ErrNonZeroInfo(info)
-	}
-	return B, nil
+	return b, nil
 }

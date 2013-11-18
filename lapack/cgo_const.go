@@ -1,39 +1,56 @@
 package lapack
 
+import "fmt"
+
 import "C"
 
-type Transpose C.char
+func transChar(t bool) C.char {
+	if t {
+		return C.char('T')
+	}
+	return C.char('N')
+}
 
-const (
-	NoTrans   = Transpose(C.char('N'))
-	Trans     = Transpose(C.char('T'))
-	ConjTrans = Transpose(C.char('C'))
-)
+func uploChar(tri Triangle) C.char {
+	switch tri {
+	case UpperTri:
+		return C.char('U')
+	case LowerTri:
+		return C.char('L')
+	default:
+		panic(fmt.Sprintf("invalid uplo value: %v", rune(tri)))
+	}
+}
 
-type UpLo C.char
+func sideChar(side matSide) C.char {
+	switch side {
+	case left:
+		return C.char('L')
+	case right:
+		return C.char('R')
+	default:
+		panic(fmt.Sprintf("invalid side value: %v", rune(side)))
+	}
+}
 
-const (
-	UpperTriangle = UpLo(C.char('U'))
-	LowerTriangle = UpLo(C.char('L'))
-)
+func diagChar(diag diagType) C.char {
+	switch diag {
+	case nonUnitDiag:
+		return C.char('N')
+	case unitDiag:
+		return C.char('U')
+	default:
+		panic(fmt.Sprintf("invalid diag value: %v", rune(diag)))
+	}
+}
 
-type Side C.char
-
-const (
-	Left  = Side(C.char('L'))
-	Right = Side(C.char('R'))
-)
-
-type Diag C.char
-
-const (
-	NonUnitTri = Diag(C.char('N'))
-	UnitTri    = Diag(C.char('U'))
-)
-
-type Jobz C.char
-
-const (
-	Values  = Jobz(C.char('N'))
-	Vectors = Jobz(C.char('V'))
-)
+func jobzChar(jobz jobzMode) C.char {
+	switch jobz {
+	case values:
+		return C.char('N')
+	case vectors:
+		return C.char('V')
+	default:
+		panic(fmt.Sprintf("invalid jobz value: %v", rune(jobz)))
+	}
+}
