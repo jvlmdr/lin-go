@@ -2,7 +2,7 @@ package mat
 
 // Describes a read-only matrix.
 type Const interface {
-	Size() Size
+	Dims() (int, int)
 	At(i, j int) float64
 }
 
