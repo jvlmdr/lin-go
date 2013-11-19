@@ -1,7 +1,7 @@
 package mat
 
 func Copy(dst Mutable, src Const) {
-	if err := errDiffDims(src, dst); err != nil {
+	if err := errIfDimsNotEq(src, dst); err != nil {
 		panic(err)
 	}
 

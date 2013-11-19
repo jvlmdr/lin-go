@@ -5,17 +5,23 @@ import (
 	"fmt"
 )
 
-const (
-	ErrNotSameSize = "Matrices are not the same size"
-)
-
-func errDiffDims(a, b Const) error {
-	m, n := a.Dims()
-	p, q := b.Dims()
-	if m != p || n != q {
-		return fmt.Errorf("different dims: %dx%d, %dx%d", m, n, p, q)
+func errIfDimsNotEq(a, b Const) error {
+	if !eqDims(a, b) {
+		return errDimsNotEq(a, b)
 	}
 	return nil
+}
+
+func eqDims(a, b Const) bool {
+	m, n := a.Dims()
+	p, q := b.Dims()
+	return m == p && n == q
+}
+
+func errDimsNotEq(a, b Const) error {
+	m, n := a.Dims()
+	p, q := b.Dims()
+	return fmt.Errorf("different dims: %dx%d, %dx%d", m, n, p, q)
 }
 
 func errMulDimsMat(a, b Const) error {

@@ -4,7 +4,7 @@ package mat
 //
 // Panics if matrices have different dimensions.
 func Plus(a, b Const) Mutable {
-	if err := errDiffDims(a, b); err != nil {
+	if err := errIfDimsNotEq(a, b); err != nil {
 		panic(err)
 	}
 
@@ -22,7 +22,7 @@ func Plus(a, b Const) Mutable {
 //
 // Panics if matrices have different dimensions.
 func Minus(a, b Const) Mutable {
-	if err := errDiffDims(a, b); err != nil {
+	if err := errIfDimsNotEq(a, b); err != nil {
 		panic(err)
 	}
 
