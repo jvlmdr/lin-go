@@ -25,7 +25,7 @@ func TestSub(t *testing.T) {
 		{4, 5, 6},
 		{7, 8, 9},
 	})
-	r := Rectangle{Elem{1, 0}, Elem{3, 2}}
+	r := Rect{Pos{1, 0}, Pos{3, 2}}
 	got := Sub(a, r)
 	want := NewRows([][]float64{
 		{4, 5},
@@ -40,7 +40,7 @@ func TestCopy_ref(t *testing.T) {
 		{4, 5, 6},
 		{7, 8, 9},
 	})
-	r := Rectangle{Elem{1, 0}, Elem{3, 2}}
+	r := Rect{Pos{1, 0}, Pos{3, 2}}
 	a := NewRows([][]float64{
 		{-1, -2},
 		{-3, -4},

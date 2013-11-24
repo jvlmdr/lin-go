@@ -47,7 +47,7 @@ func errRagged(first, other int) error {
 	return fmt.Errorf("ragged list of arrays: found %d and %d", first, other)
 }
 
-func errRectOutsideMat(r Rectangle, m, n int) error {
+func errRectOutsideMat(r Rect, m, n int) error {
 	rect := fmt.Sprintf("(%d, %d)-(%d, %d)", r.Min.I, r.Min.J, r.Max.I, r.Max.J)
 	size := fmt.Sprintf("%dx%d", m, n)
 	detail := rect + " not in " + size
