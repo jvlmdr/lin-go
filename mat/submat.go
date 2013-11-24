@@ -50,7 +50,7 @@ func (r Rectangle) In(q Rectangle) bool {
 }
 
 // Creates a copy of a submatrix within a matrix.
-func Sub(a Const, r Rectangle) Mutable {
+func Sub(a Const, r Rectangle) *Mat {
 	// Check bounds.
 	p, q := a.Dims()
 	bnds := Rectangle{Elem{0, 0}, Elem{p, q}}

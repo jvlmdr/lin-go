@@ -3,7 +3,7 @@ package mat
 // Adds two matrices.
 //
 // Panics if matrices have different dimensions.
-func Plus(a, b Const) Mutable {
+func Plus(a, b Const) *Mat {
 	if err := errIfDimsNotEq(a, b); err != nil {
 		panic(err)
 	}
@@ -21,7 +21,7 @@ func Plus(a, b Const) Mutable {
 // Subtracts one matrix from another.
 //
 // Panics if matrices have different dimensions.
-func Minus(a, b Const) Mutable {
+func Minus(a, b Const) *Mat {
 	if err := errIfDimsNotEq(a, b); err != nil {
 		panic(err)
 	}
@@ -37,7 +37,7 @@ func Minus(a, b Const) Mutable {
 }
 
 // Scales a matrix by a constant.
-func Scale(k float64, a Const) Mutable {
+func Scale(k float64, a Const) *Mat {
 	m, n := a.Dims()
 	b := New(m, n)
 	for i := 0; i < m; i++ {
@@ -51,7 +51,7 @@ func Scale(k float64, a Const) Mutable {
 // Multiplies two matrices.
 //
 // Panics if the dimensions are incompatible.
-func Mul(a, b Const) Mutable {
+func Mul(a, b Const) *Mat {
 	if err := errMulDimsMat(a, b); err != nil {
 		panic(err)
 	}

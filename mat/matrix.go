@@ -1,10 +1,6 @@
 package mat
 
-func New(m, n int) Mutable {
-	return newMat(m, n)
-}
-
-type mat struct {
+type Mat struct {
 	// Dimensions.
 	Rows, Cols int
 	// Elements in column-major order.
@@ -13,25 +9,25 @@ type mat struct {
 }
 
 // Allocates a matrix of all zeros.
-func newMat(m, n int) *mat {
+func New(m, n int) *Mat {
 	elems := make([]float64, m*n)
-	return &mat{m, n, elems}
+	return &Mat{m, n, elems}
 }
 
-func (a *mat) Dims() (m, n int) {
+func (a *Mat) Dims() (m, n int) {
 	return a.Rows, a.Cols
 }
 
-func (a *mat) At(i, j int) float64 {
+func (a *Mat) At(i, j int) float64 {
 	return a.Elems[a.index(i, j)]
 }
 
-func (a *mat) Set(i, j int, v float64) {
+func (a *Mat) Set(i, j int, v float64) {
 	a.Elems[a.index(i, j)] = v
 }
 
 // Returns the column-major index of element (i, j).
-func (a *mat) index(i, j int) int {
+func (a *Mat) index(i, j int) int {
 	return i + j*a.Rows
 }
 
@@ -40,7 +36,7 @@ func (a *mat) index(i, j int) int {
 //		{1, 2, 3},
 //		{4, 5, 6},
 //	})
-func NewRows(rows [][]float64) Mutable {
+func NewRows(rows [][]float64) *Mat {
 	n, err := eqLen(rows)
 	if err != nil {
 		panic(err)
@@ -58,7 +54,7 @@ func NewRows(rows [][]float64) Mutable {
 
 // Creates a matrix from the list of columns.
 //	NewCols([][]float64{{1, 4}, {2, 5}, {3, 6}})
-func NewCols(cols [][]float64) Mutable {
+func NewCols(cols [][]float64) *Mat {
 	m, err := eqLen(cols)
 	if err != nil {
 		panic(err)

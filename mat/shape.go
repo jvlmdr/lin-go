@@ -1,7 +1,7 @@
 package mat
 
 // Creates a transposed copy of the matrix.
-func T(a Const) Mutable {
+func T(a Const) *Mat {
 	m, n := a.Dims()
 	at := New(n, m)
 	for i := 0; i < m; i++ {
@@ -23,7 +23,7 @@ func Diag(a Const) []float64 {
 }
 
 // Constructs a square, diagonal matrix.
-func NewDiag(d []float64) Mutable {
+func NewDiag(d []float64) *Mat {
 	n := len(d)
 	a := New(n, n)
 	for i, v := range d {
@@ -33,7 +33,7 @@ func NewDiag(d []float64) Mutable {
 }
 
 // Instantiates an identity matrix.
-func I(n int) Mutable {
+func I(n int) *Mat {
 	a := New(n, n)
 	for i := 0; i < n; i++ {
 		a.Set(i, i, 1)
@@ -44,7 +44,7 @@ func I(n int) Mutable {
 // Returns the horizontal concatenation of the matrices.
 //
 // Panics if matrices have different numbers of rows.
-func Augment(srcs ...Const) Mutable {
+func Augment(srcs ...Const) *Mat {
 	rows, cols := augmentDims(srcs...)
 	dst := New(rows, cols)
 	var off int
@@ -79,7 +79,7 @@ func augmentDims(srcs ...Const) (rows, cols int) {
 // Returns the vertical concatenation of the matrices.
 //
 // Panics if matrices have different numbers of columns.
-func Stack(srcs ...Const) Mutable {
+func Stack(srcs ...Const) *Mat {
 	rows, cols := stackDims(srcs...)
 	dst := New(rows, cols)
 	var off int
