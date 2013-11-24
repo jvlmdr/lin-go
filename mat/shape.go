@@ -1,6 +1,6 @@
 package mat
 
-// Copies the matrix into a transposed matrix.
+// Creates a transposed copy of the matrix.
 func T(a Const) Mutable {
 	m, n := a.Dims()
 	at := New(n, m)
@@ -12,7 +12,7 @@ func T(a Const) Mutable {
 	return at
 }
 
-// Extracts the diagonal of a matrix.
+// Extracts the diagonal of the matrix.
 func Diag(a Const) []float64 {
 	m, n := a.Dims()
 	d := make([]float64, min(m, n))
@@ -41,7 +41,7 @@ func I(n int) Mutable {
 	return a
 }
 
-// Returns the horizontal concatenation [a_{0}, a_{1}, ..., a_{n-1}].
+// Returns the horizontal concatenation of the matrices.
 //
 // Panics if matrices have different numbers of rows.
 func Augment(srcs ...Const) Mutable {
@@ -76,7 +76,7 @@ func augmentDims(srcs ...Const) (rows, cols int) {
 	return
 }
 
-// Returns the vertical concatenation [a_{0}; a_{1}; ...; a_{n-1}].
+// Returns the vertical concatenation of the matrices.
 //
 // Panics if matrices have different numbers of columns.
 func Stack(srcs ...Const) Mutable {
