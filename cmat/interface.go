@@ -1,5 +1,10 @@
 package cmat
 
+// Describes a matrix with a size.
+type dimser interface {
+	Dims() (int, int)
+}
+
 // Describes a read-only matrix.
 type Const interface {
 	Dims() (int, int)

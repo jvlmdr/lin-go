@@ -5,32 +5,32 @@ import (
 	"fmt"
 )
 
-func errIfDimsNotEq(a, b Const) error {
+func errIfDimsNotEq(a, b dimser) error {
 	if !eqDims(a, b) {
 		return errDimsNotEq(a, b)
 	}
 	return nil
 }
 
-func eqDims(a, b Const) bool {
+func eqDims(a, b dimser) bool {
 	m, n := a.Dims()
 	p, q := b.Dims()
 	return m == p && n == q
 }
 
-func errDimsNotEq(a, b Const) error {
+func errDimsNotEq(a, b dimser) error {
 	m, n := a.Dims()
 	p, q := b.Dims()
 	return fmt.Errorf("different dims: %dx%d, %dx%d", m, n, p, q)
 }
 
-func errMulDimsMat(a, b Const) error {
+func errMulDimsMat(a, b dimser) error {
 	m, n := a.Dims()
 	p, q := b.Dims()
 	return errMulDims(m, n, p, q)
 }
 
-func errMulDimsVec(a Const, b []complex128) error {
+func errMulDimsVec(a dimser, b []complex128) error {
 	m, n := a.Dims()
 	p := len(b)
 	return errMulDims(m, n, p, 1)
