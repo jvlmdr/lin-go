@@ -21,30 +21,19 @@ func NewMat(rows, cols int) *Mat {
 	return &Mat{rows, cols, elems}
 }
 
-func (A *Mat) Dims() (rows, cols int) {
-	return A.Rows, A.Cols
+func (a *Mat) Dims() (rows, cols int) {
+	return a.Rows, a.Cols
 }
 
-func (A *Mat) At(i, j int) float64 {
-	return A.Elems[A.index(i, j)]
+func (a *Mat) At(i, j int) float64 {
+	return a.Elems[a.index(i, j)]
 }
 
-func (A *Mat) Set(i, j int, v float64) {
-	A.Elems[A.index(i, j)] = v
+func (a *Mat) Set(i, j int, v float64) {
+	a.Elems[a.index(i, j)] = v
 }
 
 // Returns the column-major index of element (i, j).
-func (A *Mat) index(i, j int) int {
-	return i + j*A.Rows
-}
-
-func transpose(src Const) *Mat {
-	m, n := src.Dims()
-	dst := NewMat(n, m)
-	for i := 0; i < m; i++ {
-		for j := 0; j < n; j++ {
-			dst.Set(j, i, src.At(i, j))
-		}
-	}
-	return dst
+func (a *Mat) index(i, j int) int {
+	return i + j*a.Rows
 }

@@ -1,5 +1,7 @@
 package lapack
 
+import "runtime"
+
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -25,6 +27,8 @@ func dsysv(n, nrhs int, a []float64, lda int, b []float64, ldb int) error {
 
 // Needs to be supplied ipiv and work.
 func dsysvHelper(n, nrhs int, a []float64, lda int, ipiv []C.integer, b []float64, ldb int, work []float64, lwork int) error {
+	defer runtime.GC()
+
 	var (
 		uplo_  = C.char(DefaultTri)
 		n_     = C.integer(n)

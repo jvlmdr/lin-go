@@ -2,8 +2,8 @@
 Basic bindings for doing linear algebra with LAPACK.
 
 Uses the following routines to solve linear systems:
-	SolveFullRank    dgels     QR/LQ    full-rank matrix (min norm or min residual)
 	SolveEps         dgelsd    SVD      general matrix (threshold singular values)
+	SolveFullRank    dgels     QR/LQ    full-rank matrix (min norm or min residual)
 	SolveSquare      dgesv     LU       full-rank, square matrix
 	SolveSymm        dsysv     LDL      full-rank, square, symmetric matrix
 	SolvePosDef      dposv     Chol     full-rank, square, symmetric, positive-definite matrix

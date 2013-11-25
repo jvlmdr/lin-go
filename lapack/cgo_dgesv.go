@@ -1,5 +1,7 @@
 package lapack
 
+import "runtime"
+
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -13,6 +15,8 @@ func dgesv(n, nrhs int, a []float64, lda int, b []float64, ldb int) error {
 }
 
 func dgesvHelper(n, nrhs int, a []float64, lda int, ipiv []C.integer, b []float64, ldb int) error {
+	defer runtime.GC()
+
 	var (
 		n_    = C.integer(n)
 		nrhs_ = C.integer(nrhs)

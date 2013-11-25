@@ -57,7 +57,7 @@ func (qr *QRFact) solve(t bool, b []float64) ([]float64, error) {
 		var err error
 
 		// b <- Q' b
-		err = dormqr(left, true, n, 1, m, qr.A.Elems, m, qr.Tau, b, len(b))
+		err = dormqr(left, true, m, 1, n, qr.A.Elems, m, qr.Tau, b, len(b))
 		if err != nil {
 			return nil, err
 		}
@@ -81,7 +81,7 @@ func (qr *QRFact) solve(t bool, b []float64) ([]float64, error) {
 			return nil, err
 		}
 		// b <- Q b
-		err = dormqr(left, false, n, 1, m, qr.A.Elems, m, qr.Tau, b, len(b))
+		err = dormqr(left, false, m, 1, n, qr.A.Elems, m, qr.Tau, b, len(b))
 		if err != nil {
 			return nil, err
 		}

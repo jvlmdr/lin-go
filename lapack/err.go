@@ -28,6 +28,12 @@ func errNonSquare(a Const) error {
 	return nil
 }
 
+func eqDims(a, b Const) bool {
+	m, n := a.Dims()
+	p, q := b.Dims()
+	return m == p && n == q
+}
+
 func errIncompat(a Const, b []float64) error {
 	return errIncompatT(a, false, b)
 }

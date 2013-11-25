@@ -1,5 +1,7 @@
 package lapack
 
+import "runtime"
+
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -12,6 +14,8 @@ func dsytrs(uplo Triangle, n, nrhs int, a []float64, lda int, ipiv []int, b []fl
 }
 
 func dsytrsHelper(uplo Triangle, n, nrhs int, a []float64, lda int, ipiv []C.integer, b []float64, ldb int) error {
+	defer runtime.GC()
+
 	var (
 		uplo_ = uploChar(uplo)
 		n_    = C.integer(n)

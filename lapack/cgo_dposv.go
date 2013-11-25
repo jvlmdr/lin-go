@@ -1,5 +1,7 @@
 package lapack
 
+import "runtime"
+
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -8,6 +10,8 @@ import "C"
 //
 // http://www.netlib.org/lapack/double/dposv.f
 func dposv(n, nrhs int, a []float64, lda int, b []float64, ldb int) error {
+	defer runtime.GC()
+
 	var (
 		uplo_ = C.char(DefaultTri)
 		n_    = C.integer(n)

@@ -3,47 +3,37 @@ package lapack
 import (
 	"fmt"
 	"github.com/jackvalmadre/lin-go/mat"
-	"github.com/jackvalmadre/lin-go/vec"
-	"github.com/jackvalmadre/lin-go/zmat"
-	"github.com/jackvalmadre/lin-go/zvec"
 	"testing"
 )
 
-func ExampleSolveSquare() {
-	A := mat.MakeStrideCopy(mat.Randn(4, 4))
-	z := vec.MakeSlice(4)
-	z.Set(0, 1)
-	z.Set(1, 2)
-	z.Set(2, 3)
-	z.Set(3, 4)
-
-	b := vec.MakeCopy(mat.TimesVec(A, z))
-	x, _ := SolveSquare(A, b)
-	fmt.Println(vec.Sprintf("%.6g", x))
-	// Output:
-	// (1, 2, 3, 4)
-}
-
 func TestSolveSquare(t *testing.T) {
-	const n = 100
-	A := mat.MakeStrideCopy(mat.Randn(n, n))
-	want := vec.MakeCopy(vec.Randn(n))
-	b := vec.MakeCopy(mat.TimesVec(A, want))
-	got, _ := SolveSquare(A, b)
-	checkEqualVec(t, want, got, 1e-9)
+	n := 100
+	a := randMat(n, n)
+	want := randVec(n)
+	b := mat.MulVec(a, want)
+
+	got, err := SolveSquare(a, b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	testSliceEq(t, want, got)
 }
 
-func ExampleSolveSquareCmplx() {
-	A := zmat.MakeStrideCopy(zmat.Randn(4, 4))
-	z := zvec.Make(4)
-	z.Set(0, 1+1i)
-	z.Set(1, 2+2i)
-	z.Set(2, 3+3i)
-	z.Set(3, 4+4i)
+func ExampleSolveSquare() {
+	a := mat.NewRows([][]float64{
+		{-1, 2},
+		{3, 1},
+	})
+	// x = [1; 2]
+	// b = A x = [3; 5]
+	b := []float64{3, 5}
 
-	b := zvec.MakeCopy(zmat.TimesVec(A, z))
-	x, _ := SolveSquareCmplx(A, b)
-	fmt.Println(zvec.Sprintf("%.6g", x))
+	x, err := SolveSquare(a, b)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("%.6g", x)
 	// Output:
-	// ((1+1i), (2+2i), (3+3i), (4+4i))
+	// [1 2]
 }

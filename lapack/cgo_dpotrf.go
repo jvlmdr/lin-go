@@ -1,5 +1,7 @@
 package lapack
 
+import "runtime"
+
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -8,6 +10,8 @@ import "C"
 //
 // http://www.netlib.org/lapack/double/dpotrf.f
 func dpotrf(uplo Triangle, n int, a []float64, lda int) error {
+	defer runtime.GC()
+
 	var (
 		uplo_ = uploChar(uplo)
 		n_    = C.integer(n)

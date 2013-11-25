@@ -1,45 +1,70 @@
 package lapack
 
 import (
-	"github.com/jackvalmadre/lin-go/mat"
-	"github.com/jackvalmadre/lin-go/vec"
-
 	"fmt"
+	"github.com/jackvalmadre/lin-go/mat"
 	"testing"
 )
 
 func TestLUFact_Solve(t *testing.T) {
-	// Random matrix.
-	A := mat.MakeStrideCopy(mat.Randn(4, 4))
-	lu, err := LU(A)
+	n := 100
+	// Random square matrix.
+	a := randMat(n, n)
+	// Random vector.
+	want := randVec(n)
+	b := mat.MulVec(a, want)
+
+	lu, err := LU(a)
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	// Random vector.
-	want := vec.MakeCopy(vec.Randn(4))
-	b := vec.MakeCopy(mat.TimesVec(A, want))
-
-	// Solve system.
 	got, err := lu.Solve(false, b)
 	if err != nil {
 		t.Fatal(err)
 	}
-	checkEqualVec(t, want, got, 1e-9)
+	testSliceEq(t, want, got)
+}
+
+func TestLUFact_Solve_t(t *testing.T) {
+	n := 100
+	// Random square matrix.
+	a := randMat(n, n)
+	// Random vector.
+	want := randVec(n)
+
+	// Factorize.
+	lu, err := LU(a)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Solve un-transposed system.
+	b := mat.MulVec(a, want)
+	got, err := lu.Solve(false, b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	testSliceEq(t, want, got)
+
+	// Then solve transposed system.
+	b = mat.MulVec(mat.T(a), want)
+	got, err = lu.Solve(true, b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	testSliceEq(t, want, got)
 }
 
 func ExampleLUFact_Solve() {
-	A := mat.MakeStride(2, 2)
-	A.Set(0, 0, -1)
-	A.Set(0, 1, 2)
-	A.Set(1, 0, 3)
-	A.Set(1, 1, 1)
+	a := mat.NewRows([][]float64{
+		{-1, 2},
+		{3, 1},
+	})
+	// x = [1; 2]
+	// b = A x = [3; 5]
+	b := []float64{3, 5}
 
-	b := vec.Make(2)
-	b.Set(0, 3)
-	b.Set(1, 5)
-
-	lu, err := LU(A)
+	lu, err := LU(a)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -49,7 +74,7 @@ func ExampleLUFact_Solve() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(vec.Sprintf("%.6g", x))
+	fmt.Printf("%.6g", x)
 	// Output:
-	// (1, 2)
+	// [1 2]
 }

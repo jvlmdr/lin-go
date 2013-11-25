@@ -1,5 +1,7 @@
 package lapack
 
+import "runtime"
+
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -21,6 +23,8 @@ func dgeqrf(m, n int, a []float64, lda int, tau []float64) error {
 }
 
 func dgeqrfHelper(m, n int, a []float64, lda int, tau, work []float64, lwork int) error {
+	defer runtime.GC()
+
 	var (
 		m_     = C.integer(m)
 		n_     = C.integer(n)

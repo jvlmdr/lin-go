@@ -3,41 +3,42 @@ package lapack
 import (
 	"fmt"
 	"github.com/jackvalmadre/lin-go/mat"
-	"github.com/jackvalmadre/lin-go/vec"
 	"testing"
 )
 
 func TestSolveSymm(t *testing.T) {
-	// Random symmetric matrix.
-	A := mat.MakeCopy(mat.Randn(4, 4))
-	A = mat.MakeCopy(mat.Scale(0.5, mat.Plus(A, A.T())))
-	// Random vector.
-	x := vec.MakeCopy(vec.Randn(4))
+	n := 100
+	// Random symmetric positive definite matrix.
+	a := randMat(2*n, n)
+	a = mat.Mul(mat.T(a), a)
 
-	b := vec.MakeCopy(mat.TimesVec(A, x))
-	got, err := SolveSymm(A, b)
+	// Random vector.
+	want := randVec(n)
+	b := mat.MulVec(a, want)
+
+	// Factorize matrix.
+	got, err := SolveSymm(a, b)
 	if err != nil {
 		t.Fatal(err)
 	}
-	checkEqualVec(t, x, got, 1e-9)
+	testSliceEq(t, want, got)
 }
 
 func ExampleSolveSymm() {
-	A := mat.Make(2, 2)
-	A.Set(0, 0, 1)
-	A.Set(0, 1, 2)
-	A.Set(1, 0, 2)
-	A.Set(1, 1, -3)
+	a := mat.NewRows([][]float64{
+		{1, 2},
+		{2, -3},
+	})
+	// x = [1; 2]
+	// b = A x = [5; -4]
+	b := []float64{5, -4}
 
-	b := vec.Make(2)
-	b.Set(0, 5)
-	b.Set(1, -4)
-
-	x, err := SolveSymm(A, b)
+	x, err := SolveSymm(a, b)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
-	fmt.Println(vec.Sprintf("%.6g", x))
+	fmt.Printf("%.6g", x)
 	// Output:
-	// (1, 2)
+	// [1 2]
 }

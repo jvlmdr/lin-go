@@ -12,7 +12,7 @@ func SolveFullRank(a Const, b []float64) ([]float64, error) {
 		return nil, err
 	}
 	m, n := a.Dims()
-	return solveSquare(cloneMat(a), cloneSliceCap(b, max(m, n)))
+	return solveFullRank(cloneMat(a), cloneSliceCap(b, max(m, n)))
 }
 
 // a and b will be modified.

@@ -1,5 +1,7 @@
 package lapack
 
+import "runtime"
+
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -27,6 +29,8 @@ func dsytrf(uplo Triangle, n int, a []float64, lda int) (ipiv []int, err error) 
 }
 
 func dsytrfHelper(uplo Triangle, n int, a []float64, lda int, ipiv []C.integer, work []float64, lwork int) error {
+	defer runtime.GC()
+
 	var (
 		uplo_  = C.char(uplo)
 		n_     = C.integer(n)

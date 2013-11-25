@@ -1,9 +1,16 @@
 package lapack
 
+var DefaultEps = 1e-12
+
+// Solves A x = b using SolveEps with DefaultEps.
+func Solve(a Const, b []float64) ([]float64, error) {
+	return SolveEps(a, b, DefaultEps)
+}
+
 // Solves A x = b.
 // The user must specify epsilon (inverse maximum condition number)
 // at which the line is drawn between equality constraints and residuals.
-// Calls dgelsd (eps is the "rcond" parameter).
+// Calls DGELSD (eps is the "rcond" parameter).
 func SolveEps(a Const, b []float64, eps float64) ([]float64, error) {
 	if err := errNonPosDims(a); err != nil {
 		return nil, err

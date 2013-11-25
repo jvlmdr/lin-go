@@ -1,7 +1,7 @@
 package lapack
 
 // Solves A x = b where A is symmetric.
-// Calls dsysv.
+// Calls DSYSV.
 func SolveSymm(a Const, b []float64) ([]float64, error) {
 	if err := errNonPosDims(a); err != nil {
 		return nil, err

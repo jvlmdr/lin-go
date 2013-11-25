@@ -1,5 +1,7 @@
 package lapack
 
+import "runtime"
+
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -26,6 +28,8 @@ func dgesdd(m, n int, a []float64, lda int, s, u []float64, ldu int, vt []float6
 }
 
 func dgesddHelper(m, n int, a []float64, lda int, s, u []float64, ldu int, vt []float64, ldvt int, work []float64, lwork int, iwork []C.integer) error {
+	defer runtime.GC()
+
 	var (
 		jobz_  = C.char('S')
 		m_     = C.integer(m)

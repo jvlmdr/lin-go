@@ -1,229 +1,79 @@
 package lapack
 
 import (
-	"github.com/jackvalmadre/lin-go/mat"
-	"github.com/jackvalmadre/lin-go/vec"
-	"github.com/jackvalmadre/lin-go/zmat"
-	"github.com/jackvalmadre/lin-go/zvec"
-
 	"fmt"
-	"math/cmplx"
-	"math/rand"
+	"github.com/jackvalmadre/lin-go/mat"
 	"testing"
 )
 
 // Minimum-residual solution to over-constrained system by QR decomposition.
 func TestQRFact_Solve_overdetermined(t *testing.T) {
-	const (
-		m = 8
-		n = 4
-	)
-
-	// Random matrix.
-	A := mat.MakeStrideCopy(mat.Randn(m, n))
-	// Random vector.
-	want := vec.MakeCopy(vec.Randn(n))
-	// Product.
-	b := vec.MakeCopy(mat.TimesVec(A, want))
-
-	// Factorize.
-	qr, err := QR(A)
+	m, n := 150, 100
+	a, b, want, err := overDetProb(m, n)
 	if err != nil {
 		t.Fatal(err)
 	}
-	// Solve.
+
+	qr, err := QR(a)
+	if err != nil {
+		t.Fatal(err)
+	}
 	got, err := qr.Solve(false, b)
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	checkEqualVec(t, want, got, 1e-9)
+	testSliceEq(t, want, got)
 }
 
 // Minimum-norm solution to under-constrained system by QR decomposition.
 func TestQRFact_Solve_underdetermined(t *testing.T) {
-	const (
-		m = 8
-		n = 4
-	)
-
-	// Random matrix.
-	A := mat.MakeStrideCopy(mat.Randn(m, n))
-	// Random vector.
-	in := vec.MakeCopy(vec.Randn(m))
-	// Product.
-	b := vec.MakeCopy(mat.TimesVec(A.T(), in))
-
-	// Factorize.
-	qr, err := QR(A)
+	m, n := 100, 150
+	a, b, want, err := underDetProb(m, n)
 	if err != nil {
 		t.Fatal(err)
 	}
-	// Solve.
+
+	// Take QR factorization of transpose.
+	qr, err := QR(mat.T(a))
+	if err != nil {
+		t.Fatal(err)
+	}
 	got, err := qr.Solve(true, b)
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	// Check outputs are equal.
-	checkEqualVec(t, b, mat.TimesVec(A.T(), got), 1e-9)
-	// Check norm is not larger.
-	if vec.Norm(got) > vec.Norm(in) {
-		t.Fatalf("norm of solution was larger (want %g <= %g)", vec.Norm(got), vec.Norm(in))
-	}
+	testSliceEq(t, want, got)
 }
 
-// [4, 2; 1, 1; 2, 0] \ [6; 7; 4] = [1; 2]
-func ExampleQRFact_Solve_overdetermined() {
-	A := mat.MakeStride(3, 2)
-	A.Set(0, 0, 4)
-	A.Set(0, 1, 2)
-	A.Set(1, 0, 1)
-	A.Set(1, 1, 1)
-	A.Set(2, 0, 2)
-	A.Set(2, 1, 0)
-	b := vec.Slice([]float64{6, 7, 4})
+func ExampleQRFact_Solve() {
+	a := mat.NewRows([][]float64{
+		{4, 2},
+		{1, 1},
+		{2, 0},
+	})
+	b_over := []float64{6, 7, 4}
+	b_under := []float64{39, 19}
 
-	qr, err := QR(A)
+	qr, err := QR(a)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	x, err := qr.Solve(false, b)
+
+	x_over, err := qr.Solve(false, b_over)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(vec.Sprintf("%.6g", x))
+	fmt.Printf("%.6g\n", x_over)
+
+	x_under, err := qr.Solve(true, b_under)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("%.6g\n", x_under)
 	// Output:
-	// (1, 2)
-}
-
-// pinv([4, 1, 2; 2, 1, 0]) * [39; 19] = [8; 3; 2]
-func ExampleQRFact_Solve_underdetermined() {
-	A := mat.MakeStride(3, 2)
-	A.Set(0, 0, 4)
-	A.Set(0, 1, 2)
-	A.Set(1, 0, 1)
-	A.Set(1, 1, 1)
-	A.Set(2, 0, 2)
-	A.Set(2, 1, 0)
-	b := vec.Slice([]float64{39, 19})
-
-	qr, err := QR(A)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	x, err := qr.Solve(true, b)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(vec.Sprintf("%.6g", x))
-	// Output:
-	// (8, 3, 2)
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-// Minimum-residual solution to over-constrained system by QR decomposition.
-func TestQRFactCmplx_Solve_overdeterminedExact(t *testing.T) {
-	const (
-		m = 8
-		n = 4
-	)
-
-	// Random matrix.
-	A := zmat.MakeStrideCopy(zmat.Randn(m, n))
-	// Random vector.
-	want := zvec.MakeCopy(zvec.Randn(n))
-	// Product.
-	b := zvec.MakeCopy(zmat.TimesVec(A, want))
-
-	// Factorize.
-	qr, err := QRCmplx(A)
-	if err != nil {
-		t.Fatal(err)
-	}
-	// Solve.
-	got, err := qr.Solve(false, b)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	checkEqualVecCmplx(t, want, got, 1e-9)
-}
-
-// Minimum-residual solution to over-constrained system by QR decomposition.
-func TestQRFactCmplx_Solve_overdetermined(t *testing.T) {
-	const (
-		m = 8
-		n = 4
-	)
-
-	// Random direction for nullspace.
-	v := zvec.MakeCopy(zvec.Randn(m))
-	// Random matrix.
-	A := zmat.MakeStrideCopy(zmat.Randn(m, n))
-
-	// Modify A such that its nullspace contains v.
-	// Ensure that each column of A has zero dot-product with v.
-	for j := 0; j < n; j++ {
-		// Pick a random index.
-		k := rand.Intn(m)
-		// Compute the dot product without this index.
-		var dot complex128 = 0
-		for i := 0; i < m; i++ {
-			if i == k {
-				continue
-			}
-			dot += cmplx.Conj(v.At(i)) * A.At(i, j)
-		}
-		A.Set(k, j, -dot/cmplx.Conj(v.At(k)))
-	}
-
-	// Random solution.
-	want := zvec.MakeCopy(zvec.Randn(n))
-	// Product plus component in nullspace.
-	b := zvec.MakeCopy(zvec.Plus(zmat.TimesVec(A, want), v))
-
-	// Factorize.
-	qr, err := QRCmplx(A)
-	if err != nil {
-		t.Fatal(err)
-	}
-	// Solve.
-	got, err := qr.Solve(false, b)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	checkEqualVecCmplx(t, want, got, 1e-9)
-}
-
-// [4, 2; 1, 1; 2, 0] \ [6; 7; 4] = [1; 2]
-func ExampleQRFactCmplx_Solve_overdeterminedReal() {
-	A := zmat.MakeStride(3, 2)
-	A.Set(0, 0, 4)
-	A.Set(0, 1, 2)
-	A.Set(1, 0, 1)
-	A.Set(1, 1, 1)
-	A.Set(2, 0, 2)
-	A.Set(2, 1, 0)
-	b := zvec.Slice([]complex128{6, 7, 4})
-
-	qr, err := QRCmplx(A)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	x, err := qr.Solve(false, b)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(zvec.Sprintf("%.6g", x))
-	// Output:
-	// ((1+0i), (2+0i))
+	// [1 2]
+	// [8 3 2]
 }

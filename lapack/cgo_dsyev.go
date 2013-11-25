@@ -1,5 +1,7 @@
 package lapack
 
+import "runtime"
+
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -28,6 +30,8 @@ func dsyev(jobz jobzMode, uplo Triangle, n int, a []float64, lda int) ([]float64
 }
 
 func dsyevHelper(jobz jobzMode, uplo Triangle, n int, a []float64, lda int, w, work []float64, lwork int) error {
+	defer runtime.GC()
+
 	var (
 		jobz_  = jobzChar(jobz)
 		uplo_  = uploChar(uplo)

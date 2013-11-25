@@ -1,5 +1,7 @@
 package lapack
 
+import "runtime"
+
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -17,6 +19,8 @@ func dgetrf(m, n int, a []float64, lda int) (ipiv []int, err error) {
 }
 
 func dgetrfHelper(m, n int, a []float64, lda int, ipiv []C.integer) error {
+	defer runtime.GC()
+
 	var (
 		m_    = C.integer(m)
 		n_    = C.integer(n)
