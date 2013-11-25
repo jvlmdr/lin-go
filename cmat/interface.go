@@ -1,8 +1,8 @@
-package zmat
+package cmat
 
 // Describes a read-only matrix.
 type Const interface {
-	Size() Size
+	Dims() (int, int)
 	At(i, j int) complex128
 }
 
