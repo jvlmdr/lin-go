@@ -12,6 +12,76 @@ func T(a Const) *Mat {
 	return at
 }
 
+// Instantiates an identity matrix.
+func I(n int) *Mat {
+	a := New(n, n)
+	for i := 0; i < n; i++ {
+		a.Set(i, i, 1)
+	}
+	return a
+}
+
+// Returns the concatenation of the columns of a matrix.
+func Vec(a Const) []float64 {
+	m, n := a.Dims()
+	x := make([]float64, 0, m*n)
+	for j := 0; j < n; j++ {
+		for i := 0; i < m; i++ {
+			x = append(x, a.At(i, j))
+		}
+	}
+	return x
+}
+
+// Reconstructs a matrix from a vectorized matrix.
+func Unvec(x []float64, m, n int) *Mat {
+	a := New(m, n)
+	var k int
+	for j := 0; j < n; j++ {
+		for i := 0; i < m; i++ {
+			a.Set(i, j, x[k])
+			k++
+		}
+	}
+	return a
+}
+
+// Returns a copy of the elements of a row.
+func Row(a Const, i int) []float64 {
+	_, n := a.Dims()
+	x := make([]float64, n)
+	for j := 0; j < n; j++ {
+		x[j] = a.At(i, j)
+	}
+	return x
+}
+
+// Returns a copy of the elements of a column.
+func Col(a Const, j int) []float64 {
+	m, _ := a.Dims()
+	x := make([]float64, m)
+	for i := 0; i < m; i++ {
+		x[i] = a.At(i, j)
+	}
+	return x
+}
+
+// Copies a row into a matrix.
+func SetRow(a Mutable, i int, x []float64) {
+	_, n := a.Dims()
+	for j := 0; j < n; j++ {
+		a.Set(i, j, x[j])
+	}
+}
+
+// Copies a column into a matrix.
+func SetCol(a Mutable, j int, x []float64) {
+	m, _ := a.Dims()
+	for i := 0; i < m; i++ {
+		a.Set(i, j, x[i])
+	}
+}
+
 // Extracts the diagonal of the matrix.
 func Diag(a Const) []float64 {
 	m, n := a.Dims()
@@ -22,21 +92,19 @@ func Diag(a Const) []float64 {
 	return d
 }
 
+// Modifies the diagonal of the matrix.
+func SetDiag(a Mutable, d []float64) {
+	for i := range d {
+		a.Set(i, i, d[i])
+	}
+}
+
 // Constructs a square, diagonal matrix.
 func NewDiag(d []float64) *Mat {
 	n := len(d)
 	a := New(n, n)
 	for i, v := range d {
 		a.Set(i, i, v)
-	}
-	return a
-}
-
-// Instantiates an identity matrix.
-func I(n int) *Mat {
-	a := New(n, n)
-	for i := 0; i < n; i++ {
-		a.Set(i, i, 1)
 	}
 	return a
 }

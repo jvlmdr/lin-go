@@ -67,6 +67,46 @@ func TestI(t *testing.T) {
 	testMatEq(t, want, got)
 }
 
+func TestVec(t *testing.T) {
+	a := NewRows([][]float64{
+		{1, 2, 3},
+		{4, 5, 6},
+	})
+	got := Vec(a)
+	want := []float64{1, 4, 2, 5, 3, 6}
+	testSliceEq(t, want, got)
+}
+
+func TestUnvec(t *testing.T) {
+	x := []float64{1, 2, 3, 4, 5, 6}
+	got := Unvec(x, 2, 3)
+	want := NewRows([][]float64{
+		{1, 3, 5},
+		{2, 4, 6},
+	})
+	testMatEq(t, want, got)
+}
+
+func TestRow(t *testing.T) {
+	a := NewRows([][]float64{
+		{1, 2, 3},
+		{4, 5, 6},
+	})
+	got := Row(a, 1)
+	want := []float64{4, 5, 6}
+	testSliceEq(t, want, got)
+}
+
+func TestCol(t *testing.T) {
+	a := NewRows([][]float64{
+		{1, 2, 3},
+		{4, 5, 6},
+	})
+	got := Col(a, 1)
+	want := []float64{2, 5}
+	testSliceEq(t, want, got)
+}
+
 func TestAugment(t *testing.T) {
 	a := NewRows([][]float64{
 		{1, 2, 3},
