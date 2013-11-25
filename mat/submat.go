@@ -71,7 +71,7 @@ func Sub(a Const, r Rect) *Mat {
 
 // Mutable reference to a submatrix within a matrix.
 // Idiomatic use:
-//	r := mat.Rect(imin, jmin, imax, jmax)
+//	r := mat.Rect{mat.Pos{imin, jmin}, mat.Pos{imax, jmax}}
 //	mat.Copy(mat.Ref{x, r}, y)
 type Ref struct {
 	Mat Mutable
