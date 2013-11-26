@@ -12,5 +12,4 @@ do
 	sed 's/float64/complex128/g' $f         > tmp && mv tmp $f
 	sed 's/^package mat$/package cmat/g' $f > tmp && mv tmp $f
 	go fmt $f >/dev/null
-	chmod a-w $f
 done
