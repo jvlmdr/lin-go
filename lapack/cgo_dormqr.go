@@ -1,7 +1,5 @@
 package lapack
 
-import "runtime"
-
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -18,13 +16,11 @@ func dormqr(side matSide, trans bool, m, n, k int, a []float64, lda int, tau []f
 	}
 
 	lwork := int(work[0])
-	work = make([]float64, lwork)
+	work = make([]float64, max(1, lwork))
 	return dormqrHelper(side, trans, m, n, k, a, lda, tau, c, ldc, work, lwork)
 }
 
 func dormqrHelper(side matSide, trans bool, m, n, k int, a []float64, lda int, tau []float64, c []float64, ldc int, work []float64, lwork int) error {
-	defer runtime.GC()
-
 	var (
 		side_  = sideChar(side)
 		trans_ = transChar(trans)

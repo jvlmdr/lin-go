@@ -1,7 +1,5 @@
 package lapack
 
-import "runtime"
-
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -18,13 +16,11 @@ func dgels(m, n, nrhs int, a []float64, lda int, b []float64, ldb int) error {
 	}
 
 	lwork := int(work[0])
-	work = make([]float64, lwork)
+	work = make([]float64, max(1, lwork))
 	return dgelsHelper(m, n, nrhs, a, lda, b, ldb, work, lwork)
 }
 
 func dgelsHelper(m, n, nrhs int, a []float64, lda int, b []float64, ldb int, work []float64, lwork int) error {
-	defer runtime.GC()
-
 	var (
 		trans_ = transChar(false)
 		m_     = C.integer(m)

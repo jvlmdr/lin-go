@@ -14,9 +14,9 @@ func svd(a *Mat) (u *Mat, s []float64, vt *Mat, err error) {
 	k := min(m, n)
 	u = NewMat(m, k)
 	s = make([]float64, k)
-	vt = NewMat(n, k)
+	vt = NewMat(k, n)
 
-	err = dgesdd(m, n, a.Elems, m, s, u.Elems, m, vt.Elems, n)
+	err = dgesdd(m, n, a.Elems, m, s, u.Elems, m, vt.Elems, k)
 	if err != nil {
 		return nil, nil, nil, err
 	}

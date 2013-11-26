@@ -82,6 +82,17 @@ func SetCol(a Mutable, j int, x []float64) {
 	}
 }
 
+// Matrix trace.
+func Tr(a Const) float64 {
+	m, n := a.Dims()
+	n = min(m, n)
+	var tr float64
+	for i := 0; i < n; i++ {
+		tr += a.At(i, i)
+	}
+	return tr
+}
+
 // Extracts the diagonal of the matrix.
 func Diag(a Const) []float64 {
 	m, n := a.Dims()

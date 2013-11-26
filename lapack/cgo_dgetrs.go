@@ -1,7 +1,5 @@
 package lapack
 
-import "runtime"
-
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -14,8 +12,6 @@ func dgetrs(trans bool, n, nrhs int, a []float64, lda int, ipiv []int, b []float
 }
 
 func dgetrsHelper(trans bool, n, nrhs int, a []float64, lda int, ipiv []C.integer, b []float64, ldb int) error {
-	defer runtime.GC()
-
 	var (
 		trans_ = transChar(trans)
 		n_     = C.integer(n)

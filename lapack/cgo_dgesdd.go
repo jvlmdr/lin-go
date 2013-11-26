@@ -1,7 +1,5 @@
 package lapack
 
-import "runtime"
-
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -11,25 +9,23 @@ import "C"
 // http://www.netlib.org/lapack/double/dgesdd.f
 func dgesdd(m, n int, a []float64, lda int, s, u []float64, ldu int, vt []float64, ldvt int) error {
 	var err error
+
+	liwork := 3 * min(m, n)
+	iwork := make([]C.integer, liwork)
+
 	// Query workspace size.
 	work := make([]float64, 1)
-	iwork := make([]C.integer, 1)
 	err = dgesddHelper(m, n, a, lda, s, u, ldu, vt, ldvt, work, -1, iwork)
 	if err != nil {
 		return err
 	}
 
 	lwork := int(work[0])
-	liwork := int(iwork[0])
-	work = make([]float64, lwork)
-	iwork = make([]C.integer, liwork)
-
+	work = make([]float64, max(1, lwork))
 	return dgesddHelper(m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, iwork)
 }
 
 func dgesddHelper(m, n int, a []float64, lda int, s, u []float64, ldu int, vt []float64, ldvt int, work []float64, lwork int, iwork []C.integer) error {
-	defer runtime.GC()
-
 	var (
 		jobz_  = C.char('S')
 		m_     = C.integer(m)

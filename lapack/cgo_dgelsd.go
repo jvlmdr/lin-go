@@ -1,7 +1,5 @@
 package lapack
 
-import "runtime"
-
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -26,19 +24,14 @@ func dgelsd(m, n, nrhs int, a []float64, lda int, b []float64, ldb int, rcond fl
 		return err
 	}
 
-	lwork := max(1, int(work[0]))
-	liwork := max(1, int(iwork[0]))
-	work = make([]float64, lwork)
-	iwork = make([]C.integer, liwork)
+	lwork := int(work[0])
+	liwork := int(iwork[0])
+	work = make([]float64, max(1, lwork))
+	iwork = make([]C.integer, max(1, liwork))
 	return dgelsdHelper(m, n, nrhs, a, lda, b, ldb, s, rcond, work, lwork, iwork)
 }
 
 func dgelsdHelper(m, n, nrhs int, a []float64, lda int, b []float64, ldb int, s []float64, rcond float64, work []float64, lwork int, iwork []C.integer) error {
-	// Prevents:
-	//	unexpected fault address 0x3000000000
-	// No idea why.
-	defer runtime.GC()
-
 	var (
 		m_     = C.integer(m)
 		n_     = C.integer(n)

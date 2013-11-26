@@ -1,7 +1,5 @@
 package lapack
 
-import "runtime"
-
 // #include "f2c.h"
 // #include "clapack.h"
 import "C"
@@ -10,8 +8,6 @@ import "C"
 //
 // http://www.netlib.org/lapack/double/dtrtrs.f
 func dtrtrs(tri Triangle, t bool, diag diagType, n, nrhs int, a []float64, lda int, b []float64, ldb int) error {
-	defer runtime.GC()
-
 	var (
 		uplo_  = uploChar(tri)
 		trans_ = transChar(t)

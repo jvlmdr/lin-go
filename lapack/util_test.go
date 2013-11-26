@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-const eps = 1e-12
+const eps = 1e-9
 
 func randMat(m, n int) *mat.Mat {
 	// Random symmetric positive definite matrix.
