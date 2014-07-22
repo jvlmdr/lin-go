@@ -17,6 +17,9 @@ func LDL(a Const) (*LDLFact, error) {
 	if err := errNonSquare(a); err != nil {
 		return nil, err
 	}
+	if err := errNonSymm(a); err != nil {
+		return nil, err
+	}
 	return ldl(cloneMat(a), DefaultTri)
 }
 

@@ -17,6 +17,9 @@ func Chol(a Const) (*CholFact, error) {
 	if err := errNonSquare(a); err != nil {
 		return nil, err
 	}
+	if err := errNonSymm(a); err != nil {
+		return nil, err
+	}
 	return chol(cloneMat(a), DefaultTri)
 }
 

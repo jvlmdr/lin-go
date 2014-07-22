@@ -12,6 +12,9 @@ func SolvePosDef(a Const, b []float64) ([]float64, error) {
 	if err := errIncompat(a, b); err != nil {
 		return nil, err
 	}
+	if err := errNonSymm(a); err != nil {
+		return nil, err
+	}
 	return solvePosDef(cloneMat(a), cloneSlice(b))
 }
 

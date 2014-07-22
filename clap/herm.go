@@ -12,6 +12,9 @@ func SolveHerm(a Const, b []complex128) ([]complex128, error) {
 	if err := errIncompat(a, b); err != nil {
 		return nil, err
 	}
+	if err := errNonHerm(a); err != nil {
+		return nil, err
+	}
 	return solveHerm(cloneMat(a), cloneSlice(b))
 }
 

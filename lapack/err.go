@@ -3,6 +3,7 @@ package lapack
 import (
 	"errors"
 	"fmt"
+	"math"
 )
 
 func errUnknown(info int) error {
@@ -47,6 +48,41 @@ func errIncompatT(a Const, t bool, b []float64) error {
 		return fmt.Errorf("incompatible: %dx%d and %d", rows, cols, len(b))
 	}
 	return nil
+}
+
+var (
+	EpsSymmAbs float64 = 1e-9
+	EpsSymmRel float64 = 1e-9
+)
+
+// Returns an error if the matrix is not symmetric.
+// Assumes that matrix is square.
+func errNonSymm(a Const) error {
+	n, _ := a.Dims()
+	for i := 0; i < n; i++ {
+		for j := i; j < n; j++ {
+			ij, ji := a.At(i, j), a.At(j, i)
+			if !(eqEpsAbs(ij, ji, EpsSymmAbs) || eqEpsRel(ij, ji, EpsSymmRel)) {
+				return fmt.Errorf("not symmetric: at %d, %d: upper %g, lower %g", i, j, ij, ji)
+			}
+		}
+	}
+	return nil
+}
+
+func eqEpsAbs(a, b, eps float64) bool {
+	if a == b {
+		return true
+	}
+	return math.Abs(a-b) <= eps
+}
+
+func eqEpsRel(a, b, eps float64) bool {
+	if a == b {
+		return true
+	}
+	// math.Abs(a - b) / math.Max(math.Abs(a), math.Abs(b)) <= eps
+	return math.Abs(a-b) <= eps*math.Max(math.Abs(a), math.Abs(b))
 }
 
 func errInvalidArg(arg int) error {
