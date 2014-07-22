@@ -51,9 +51,9 @@ func ExampleSolve_overdetermined() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("%.6g\n", x)
+	fmt.Println(formatSlice(x, 'f', 3))
 	// Output:
-	// [(1+0i) (4+0i)]
+	// [(1.000+0.000i) (4.000+0.000i)]
 }
 
 func ExampleSolve_underdetermined() {
@@ -71,7 +71,7 @@ func ExampleSolve_underdetermined() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("%.6g\n", x)
+	fmt.Println(formatSlice(x, 'f', 3))
 	// Output:
-	// [(1+0i) (4+0i) (5+0i)]
+	// [(1.000+0.000i) (4.000+0.000i) (5.000+0.000i)]
 }

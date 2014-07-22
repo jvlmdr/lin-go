@@ -38,7 +38,7 @@ func ExampleSolveHerm() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("%.6g", x)
+	fmt.Println(formatSlice(x, 'f', 3))
 	// Output:
-	// [(1+0i) (2+0i)]
+	// [(1.000+0.000i) (2.000+0.000i)]
 }

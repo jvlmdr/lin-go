@@ -65,15 +65,15 @@ func ExampleQRFact_Solve() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("%.6g\n", x_over)
+	fmt.Println(formatSlice(x_over, 'f', 3))
 
 	x_under, err := qr.Solve(true, b_under)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("%.6g\n", x_under)
+	fmt.Println(formatSlice(x_under, 'f', 3))
 	// Output:
-	// [(1+0i) (2+0i)]
-	// [(8+0i) (3+0i) (2+0i)]
+	// [(1.000+0.000i) (2.000+0.000i)]
+	// [(8.000+0.000i) (3.000+0.000i) (2.000+0.000i)]
 }
