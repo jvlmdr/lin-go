@@ -12,6 +12,9 @@ func EigSymm(a Const) (*Mat, []float64, error) {
 	if err := errNonSquare(a); err != nil {
 		return nil, nil, err
 	}
+	if err := errNonSymm(a); err != nil {
+		return nil, nil, err
+	}
 	return eigSymm(cloneMat(a), DefaultTri)
 }
 
