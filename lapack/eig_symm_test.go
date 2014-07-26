@@ -2,9 +2,10 @@ package lapack
 
 import (
 	"fmt"
-	"github.com/jackvalmadre/lin-go/mat"
 	"sort"
 	"testing"
+
+	"github.com/jvlmdr/lin-go/mat"
 )
 
 func TestEigSymm(t *testing.T) {

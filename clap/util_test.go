@@ -1,10 +1,11 @@
 package clap
 
 import (
-	"github.com/jackvalmadre/lin-go/cmat"
 	"math/cmplx"
 	"math/rand"
 	"testing"
+
+	"github.com/jvlmdr/lin-go/cmat"
 )
 
 const eps = 1e-12

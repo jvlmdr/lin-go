@@ -1,5 +1,5 @@
 /*
-Package vec provides common functionality for working with vectors.
+Package vec provides in-place operations for vectors.
 
 The core of the package is the vec.Const interface, which has Len() and At(i) methods, and the vec.Mutable interface, which adds Set(i, x).
 These interfaces combined with a Copy(Mutable, Const) method and thin wrappers for Plus(), Minus(), etc. provide idiomatic use:

@@ -1,10 +1,11 @@
 package lapack
 
 import (
-	"github.com/jackvalmadre/lin-go/mat"
 	"math"
 	"sort"
 	"testing"
+
+	"github.com/jvlmdr/lin-go/mat"
 )
 
 func TestSVD(t *testing.T) {

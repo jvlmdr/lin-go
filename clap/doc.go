@@ -1,5 +1,5 @@
 /*
-Basic bindings for doing complex linear algebra with LAPACK.
+Package clap links to native library for complex linear algebra.
 
 Uses the following routines to solve linear systems:
 	SolveEps         zgelsd    SVD      general matrix (threshold singular values)

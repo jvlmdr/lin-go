@@ -2,8 +2,9 @@ package lapack
 
 import (
 	"fmt"
-	"github.com/jackvalmadre/lin-go/mat"
 	"testing"
+
+	"github.com/jvlmdr/lin-go/mat"
 )
 
 func TestSolvePosDef(t *testing.T) {

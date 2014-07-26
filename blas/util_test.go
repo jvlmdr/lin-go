@@ -1,12 +1,12 @@
 package blas
 
 import (
-	"github.com/jackvalmadre/lin-go/mat"
-	"github.com/jackvalmadre/lin-go/zmat"
-
 	"math"
 	"math/cmplx"
 	"testing"
+
+	"github.com/jvlmdr/lin-go/mat"
+	"github.com/jvlmdr/lin-go/zmat"
 )
 
 func checkEqualMat(t *testing.T, want, got mat.Const, eps float64) {

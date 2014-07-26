@@ -2,8 +2,9 @@ package blas
 
 import (
 	"fmt"
-	"github.com/jackvalmadre/lin-go/zmat"
-	"github.com/jackvalmadre/lin-go/zvec"
+
+	"github.com/jvlmdr/lin-go/zmat"
+	"github.com/jvlmdr/lin-go/zvec"
 )
 
 // Computes (alpha A x), with A optionally transposed.

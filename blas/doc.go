@@ -1,4 +1,4 @@
 /*
-Basic bindings for doing matrix and vector operations with BLAS.
+Package blas links to native library for real/complex matrix/vector operations.
 */
 package blas

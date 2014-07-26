@@ -4,8 +4,9 @@ package zvec
 // Operations which are not easily converted from real to complex by sed.
 
 import (
-	"github.com/jackvalmadre/lin-go/vec"
 	"math"
+
+	"github.com/jvlmdr/lin-go/vec"
 )
 
 func Mean(x Const) complex128 {

@@ -1,10 +1,11 @@
 package lapack
 
 import (
-	"github.com/jackvalmadre/lin-go/mat"
 	"math"
 	"math/rand"
 	"testing"
+
+	"github.com/jvlmdr/lin-go/mat"
 )
 
 const eps = 1e-9

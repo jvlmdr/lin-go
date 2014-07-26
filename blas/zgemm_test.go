@@ -1,9 +1,10 @@
 package blas
 
 import (
-	"github.com/jackvalmadre/lin-go/zmat"
 	"math/rand"
 	"testing"
+
+	"github.com/jvlmdr/lin-go/zmat"
 )
 
 func TestMatTimesMatCmplx(t *testing.T) {

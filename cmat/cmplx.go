@@ -1,8 +1,9 @@
 package cmat
 
 import (
-	"github.com/jackvalmadre/lin-go/mat"
 	"math/cmplx"
+
+	"github.com/jvlmdr/lin-go/mat"
 )
 
 // Creates a complex matrix from a real matrix.

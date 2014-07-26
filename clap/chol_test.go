@@ -2,8 +2,9 @@ package clap
 
 import (
 	"fmt"
-	"github.com/jackvalmadre/lin-go/cmat"
 	"testing"
+
+	"github.com/jvlmdr/lin-go/cmat"
 )
 
 func TestCholFact_Solve(t *testing.T) {

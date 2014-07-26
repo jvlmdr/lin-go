@@ -2,8 +2,9 @@ package blas
 
 import (
 	"fmt"
-	"github.com/jackvalmadre/lin-go/mat"
-	"github.com/jackvalmadre/lin-go/vec"
+
+	"github.com/jvlmdr/lin-go/mat"
+	"github.com/jvlmdr/lin-go/vec"
 )
 
 // Computes (alpha A x), with A optionally transposed.

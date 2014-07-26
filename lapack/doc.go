@@ -1,5 +1,5 @@
 /*
-Basic bindings for doing linear algebra with LAPACK.
+Package lapack links to native library for real linear algebra.
 
 Uses the following routines to solve linear systems:
 	SolveEps         dgelsd    SVD      general matrix (threshold singular values)

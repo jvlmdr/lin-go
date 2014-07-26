@@ -1,8 +1,9 @@
 package zvec
 
 import (
-	"github.com/jackvalmadre/lin-go/vec"
 	"math/cmplx"
+
+	"github.com/jvlmdr/lin-go/vec"
 )
 
 // Compute complex conjugate for every element in the vector.

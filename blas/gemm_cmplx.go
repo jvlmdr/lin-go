@@ -2,7 +2,8 @@ package blas
 
 import (
 	"fmt"
-	"github.com/jackvalmadre/lin-go/zmat"
+
+	"github.com/jvlmdr/lin-go/zmat"
 )
 
 // Computes (alpha A B), with A and B optionally transposed.

@@ -1,9 +1,10 @@
 package blas
 
 import (
-	"github.com/jackvalmadre/lin-go/mat"
 	"math/rand"
 	"testing"
+
+	"github.com/jvlmdr/lin-go/mat"
 )
 
 func TestMatTimesMat(t *testing.T) {
