@@ -1,114 +1,84 @@
-package blas
+package blas_test
 
 import (
 	"math/rand"
 	"testing"
 
+	"github.com/jvlmdr/lin-go/blas"
 	"github.com/jvlmdr/lin-go/mat"
 )
 
-func TestMatTimesMat(t *testing.T) {
+func TestMatMul(t *testing.T) {
 	const (
 		m = 3
-		n = 5
 		k = 4
+		n = 5
 	)
 
 	alpha := rand.NormFloat64()
-	A := mat.MakeStrideCopy(mat.Randn(m, k))
-	B := mat.MakeStrideCopy(mat.Randn(n, k))
+	a, b := randMat(m, k), randMat(k, n)
+	got := blas.MatMul(alpha, a, b)
+	want := mat.Scale(alpha, mat.Mul(a, b))
+	checkEqualMat(t, want, got, 1e-9)
 
-	got := MatTimesMat(alpha, A, NoTrans, B, Trans)
-	want := mat.Scale(alpha, mat.Times(A, B.T()))
+	// Try with non-copying transposes.
+	alpha = rand.NormFloat64()
+	a, b = randMat(k, m).T(), randMat(k, n)
+	got = blas.MatMul(alpha, a, b)
+	want = mat.Scale(alpha, mat.Mul(a, b))
+	checkEqualMat(t, want, got, 1e-9)
+
+	alpha = rand.NormFloat64()
+	a, b = randMat(m, k), randMat(n, k).T()
+	got = blas.MatMul(alpha, a, b)
+	want = mat.Scale(alpha, mat.Mul(a, b))
+	checkEqualMat(t, want, got, 1e-9)
+
+	alpha = rand.NormFloat64()
+	a, b = randMat(k, m).T(), randMat(n, k).T()
+	got = blas.MatMul(alpha, a, b)
+	want = mat.Scale(alpha, mat.Mul(a, b))
 	checkEqualMat(t, want, got, 1e-9)
 }
 
-func TestMatTimesMatPlusMat(t *testing.T) {
+func TestGenMatMul(t *testing.T) {
 	const (
 		m = 3
-		n = 5
 		k = 4
-	)
-
-	alpha := rand.NormFloat64()
-	A := mat.MakeStrideCopy(mat.Randn(k, m))
-	B := mat.MakeStrideCopy(mat.Randn(k, n))
-	C := mat.MakeStrideCopy(mat.Randn(m, n))
-
-	got := MatTimesMatPlusMat(alpha, A, Trans, B, NoTrans, C)
-	want := mat.Plus(mat.Scale(alpha, mat.Times(A.T(), B)), C)
-	checkEqualMat(t, want, got, 1e-9)
-}
-
-func TestMatTimesMatPlusMatNoCopy(t *testing.T) {
-	const (
-		m = 3
 		n = 5
-		k = 4
 	)
-
-	alpha := rand.NormFloat64()
-	beta := rand.NormFloat64()
-	A := mat.MakeStrideCopy(mat.Randn(m, k))
-	B := mat.MakeStrideCopy(mat.Randn(k, n))
-	C := mat.MakeStrideCopy(mat.Randn(m, n))
-
-	got := mat.MakeStrideCopy(C)
-	MatTimesMatPlusMatNoCopy(alpha, A, NoTrans, B, NoTrans, beta, got)
-	want := mat.Plus(mat.Scale(alpha, mat.Times(A, B)), mat.Scale(beta, C))
-	checkEqualMat(t, want, got, 1e-9)
+	alpha, beta := rand.NormFloat64(), rand.NormFloat64()
+	a, b, c := randMat(m, k), randMat(k, n), randMat(m, n)
+	want := mat.Plus(mat.Scale(alpha, mat.Mul(a, b)), mat.Scale(beta, c))
+	// Over-write c with result.
+	blas.GenMatMul(alpha, a, b, beta, c)
+	checkEqualMat(t, want, c, 1e-9)
 }
 
-func ExampleMatTimesMat() {
-	A := mat.MakeStride(2, 3)
-	A.Set(0, 0, 1)
-	A.Set(0, 1, 0)
-	A.Set(0, 2, -1)
-	A.Set(1, 0, 0)
-	A.Set(1, 1, 1)
-	A.Set(1, 2, 2)
-
-	B := mat.MakeStride(3, 2)
-	B.Set(0, 0, 1)
-	B.Set(0, 1, 0)
-	B.Set(1, 0, -1)
-	B.Set(1, 1, 0)
-	B.Set(2, 0, 1)
-	B.Set(2, 1, 2)
-
-	C := MatTimesMat(1, A, NoTrans, B, NoTrans)
-	mat.Printf("% 3g", C)
-	// Output:
-	//   0 -2
-	//   1  4
+func benchmarkMatMul(b *testing.B, m, k, n int, naive bool) {
+	x, y := randMat(m, k), randMat(k, n)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if naive {
+			mat.Mul(x, y)
+		} else {
+			blas.MatMul(1, x, y)
+		}
+	}
 }
 
-func ExampleMatTimesMatPlusMatNoCopy() {
-	A := mat.MakeStride(2, 3)
-	A.Set(0, 0, 1)
-	A.Set(0, 1, 0)
-	A.Set(0, 2, -1)
-	A.Set(1, 0, 0)
-	A.Set(1, 1, 1)
-	A.Set(1, 2, 2)
+func BenchmarkMatMul_100x100_100x100(b *testing.B) {
+	benchmarkMatMul(b, 100, 100, 100, false)
+}
 
-	B := mat.MakeStride(3, 2)
-	B.Set(0, 0, 1)
-	B.Set(0, 1, 0)
-	B.Set(1, 0, -1)
-	B.Set(1, 1, 0)
-	B.Set(2, 0, 1)
-	B.Set(2, 1, 2)
+func BenchmarkMatMulNaive_100x100_100x100(b *testing.B) {
+	benchmarkMatMul(b, 100, 100, 100, true)
+}
 
-	C := mat.MakeStride(2, 2)
-	C.Set(0, 0, -4)
-	C.Set(0, 1, -3)
-	C.Set(1, 0, 2)
-	C.Set(1, 1, 1)
+func BenchmarkMatMul_1000x1000_1000x1000(b *testing.B) {
+	benchmarkMatMul(b, 1000, 1000, 1000, false)
+}
 
-	MatTimesMatPlusMatNoCopy(1, A, NoTrans, B, NoTrans, -1, C)
-	mat.Printf("% 3g", C)
-	// Output:
-	//   4  1
-	//  -1  3
+func BenchmarkMatMulNaive_1000x1000_1000x1000(b *testing.B) {
+	benchmarkMatMul(b, 1000, 1000, 1000, true)
 }
