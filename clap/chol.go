@@ -1,5 +1,7 @@
 package clap
 
+import "github.com/jvlmdr/lin-go/cmat"
+
 // Describes a Cholesky factorization.
 type CholFact struct {
 	A   *Mat
@@ -50,4 +52,16 @@ func (chol *CholFact) solve(b []complex128) ([]complex128, error) {
 		return nil, err
 	}
 	return b, nil
+}
+
+// Inv returns the matrix inverse.
+// Calls ZPOTRI.
+func (chol *CholFact) Inv() (*Mat, error) {
+	a := cloneMat(chol.A)
+	n, _ := a.Dims()
+	if err := zpotri(chol.Tri, n, a.Elems, n); err != nil {
+		return nil, err
+	}
+	cmat.Copy(a, &triangleMat{*a, chol.Tri})
+	return a, nil
 }

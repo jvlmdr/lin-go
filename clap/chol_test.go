@@ -58,3 +58,25 @@ func ExampleCholFact_Solve() {
 	// Output:
 	// [(1.000+0.000i) (2.000+0.000i)]
 }
+
+func TestCholFact_Inverse(t *testing.T) {
+	n := 100
+	// Random symmetric positive definite matrix.
+	a := randMat(2*n, n)
+	a = cmat.Mul(cmat.H(a), a)
+
+	// Factorize matrix.
+	chol, err := Chol(a)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	b, err := chol.Inv()
+	if err != nil {
+		t.Fatal(err)
+	}
+	right := cmat.Mul(a, b)
+	testMatEq(t, cmat.I(n), right)
+	left := cmat.Mul(a, b)
+	testMatEq(t, cmat.I(n), left)
+}
