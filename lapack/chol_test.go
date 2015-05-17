@@ -58,3 +58,30 @@ func ExampleCholFact_Solve() {
 	// Output:
 	// [1 2]
 }
+
+func ExampleInvertPosDef() {
+	// A = V' V, with V = [1, 1; 2, 1]
+	v := mat.NewRows([][]float64{
+		{1, 1},
+		{2, 1},
+	})
+	a := mat.Mul(mat.T(v), v)
+
+	b, err := InvertPosDef(a)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for j := 0; j < 2; j++ {
+		for i := 0; i < 2; i++ {
+			if i > 0 {
+				fmt.Printf(" ")
+			}
+			fmt.Printf("%.3g", b.At(i, j))
+		}
+		fmt.Println()
+	}
+	// Output:
+	// 2 -3
+	// -3 5
+}

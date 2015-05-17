@@ -1,6 +1,6 @@
 package lapack
 
-// Solves A x = b where A is symmetric and positive-definite.
+// SolvePosDef finds x such that A x = b where A is symmetric and positive-definite.
 // Calls DPOSV.
 func SolvePosDef(a Const, b []float64) ([]float64, error) {
 	if err := errNonPosDims(a); err != nil {

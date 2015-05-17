@@ -1,12 +1,12 @@
 package lapack
 
-// Describes a Cholesky factorization.
+// CholFact describes a Cholesky factorization.
 type CholFact struct {
 	A   *Mat
 	Tri Triangle
 }
 
-// Computes the Cholesky factorization A = L L' or A = U' U
+// Chol computes the Cholesky factorization A = L L' or A = U' U
 // of a symmetric, positive-definite matrix.
 // Calls DPOTRF.
 // Equivalent to SolvePosDef (calls DPOSV).
@@ -33,7 +33,7 @@ func chol(a *Mat, tri Triangle) (*CholFact, error) {
 	return &CholFact{a, tri}, nil
 }
 
-// Solves A x = b where A is symmetric and positive-definite
+// Solve finds x such that A x = b where A is symmetric and positive-definite
 // given its Cholesky decomposition.
 func (chol *CholFact) Solve(b []float64) ([]float64, error) {
 	if err := errIncompat(chol.A, b); err != nil {
@@ -50,4 +50,36 @@ func (chol *CholFact) solve(b []float64) ([]float64, error) {
 		return nil, err
 	}
 	return b, nil
+}
+
+// InvertPosDef computes the inverse of a symmetric positive-definite matrix.
+// Calls DPOTRF and DPOTRI.
+func InvertPosDef(a Const) (*Mat, error) {
+	if err := errNonPosDims(a); err != nil {
+		return nil, err
+	}
+	if err := errNonSquare(a); err != nil {
+		return nil, err
+	}
+	if err := errNonSymm(a); err != nil {
+		return nil, err
+	}
+	x := cloneMat(a)
+	if err := invertPosDef(x, DefaultTri); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// a will be modified.
+func invertPosDef(a *Mat, tri Triangle) error {
+	n, _ := a.Dims()
+	if err := dpotrf(tri, n, a.Elems, n); err != nil {
+		return err
+	}
+	if err := dpotri(tri, n, a.Elems, n); err != nil {
+		return err
+	}
+	copyToOtherTri(a, tri)
+	return nil
 }
